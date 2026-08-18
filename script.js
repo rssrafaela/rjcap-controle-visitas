@@ -24,6 +24,22 @@ const campoOutraConservadora =
 const outraConservadora =
     document.getElementById("outraConservadora");
 
+const idVisitaGerado =
+    document.getElementById("idVisitaGerado");
+
+const exportarExcel =
+    document.getElementById("exportarExcel");
+
+const exportarPdf =
+    document.getElementById("exportarPdf");
+
+
+/* ========================================
+   ÚLTIMO REGISTRO REALIZADO
+======================================== */
+
+let ultimoRegistro = null;
+
 
 /* ========================================
    DATA PADRÃO = HOJE
@@ -43,7 +59,8 @@ function definirDataAtual() {
         hoje.getDate()
     ).padStart(2, "0");
 
-    dataVisita.value = `${ano}-${mes}-${dia}`;
+    dataVisita.value =
+        `${ano}-${mes}-${dia}`;
 }
 
 definirDataAtual();
@@ -94,7 +111,6 @@ telefone.addEventListener(
 
         }
 
-
         this.value = valor;
 
     }
@@ -112,15 +128,12 @@ valorContrato.addEventListener(
         let valor =
             this.value.replace(/\D/g, "");
 
-
         if (!valor) {
 
             this.value = "";
 
             return;
-
         }
-
 
         valor =
             (
@@ -132,7 +145,6 @@ valorContrato.addEventListener(
                     maximumFractionDigits: 2
                 }
             );
-
 
         this.value = valor;
 
@@ -148,7 +160,6 @@ observacoes.setAttribute(
     "maxlength",
     "1000"
 );
-
 
 observacoes.addEventListener(
     "input",
@@ -170,14 +181,11 @@ function atualizarCampoOutraConservadora() {
     const selecionouOutros =
         empresaConservadora.value === "Outros";
 
-
     campoOutraConservadora.hidden =
         !selecionouOutros;
 
-
     outraConservadora.required =
         selecionouOutros;
-
 
     if (!selecionouOutros) {
 
@@ -193,7 +201,6 @@ empresaConservadora.addEventListener(
     function () {
 
         atualizarCampoOutraConservadora();
-
 
         if (this.value === "Outros") {
 
@@ -212,18 +219,13 @@ empresaConservadora.addEventListener(
 function limparErros() {
 
     document
-        .querySelectorAll(
-            ".erro-mensagem"
-        )
+        .querySelectorAll(".erro-mensagem")
         .forEach(
             (erro) => erro.remove()
         );
 
-
     document
-        .querySelectorAll(
-            ".campo-erro"
-        )
+        .querySelectorAll(".campo-erro")
         .forEach(
             (campo) => {
 
@@ -245,22 +247,11 @@ function limparFormulario() {
 
     formulario.reset();
 
-
-    contadorCaracteres.textContent =
-        "0";
-
+    contadorCaracteres.textContent = "0";
 
     limparErros();
 
-
     definirDataAtual();
-
-
-    /*
-       Depois do reset, garante que
-       o campo "Outros" volte a ficar
-       escondido.
-    */
 
     atualizarCampoOutraConservadora();
 
@@ -278,15 +269,10 @@ function formularioPossuiDados() {
             "input, select, textarea"
         );
 
-
     return Array
         .from(campos)
         .some(
             (campo) => {
-
-                /*
-                   RADIO / CHECKBOX
-                */
 
                 if (
                     campo.type === "radio" ||
@@ -297,16 +283,6 @@ function formularioPossuiDados() {
 
                 }
 
-
-                /*
-                   A data é preenchida
-                   automaticamente.
-
-                   Por isso ela sozinha não
-                   conta como formulário
-                   preenchido.
-                */
-
                 if (
                     campo.id === "dataVisita"
                 ) {
@@ -314,7 +290,6 @@ function formularioPossuiDados() {
                     return false;
 
                 }
-
 
                 return (
                     campo.value.trim() !== ""
@@ -334,11 +309,6 @@ btnLimparFormulario.addEventListener(
     "click",
     function () {
 
-        /*
-           Se não houver nenhum dado
-           preenchido, apenas limpa.
-        */
-
         if (!formularioPossuiDados()) {
 
             limparFormulario();
@@ -347,17 +317,10 @@ btnLimparFormulario.addEventListener(
 
         }
 
-
-        /*
-           Se houver dados, pede confirmação
-           antes de apagar.
-        */
-
         const confirmar =
             window.confirm(
                 "Deseja realmente limpar todos os dados preenchidos?"
             );
-
 
         if (!confirmar) {
 
@@ -365,9 +328,7 @@ btnLimparFormulario.addEventListener(
 
         }
 
-
         limparFormulario();
-
 
         formulario.scrollIntoView({
             behavior: "smooth",
@@ -390,28 +351,20 @@ function mostrarErro(
     const campo =
         elemento.closest(".campo");
 
-
     if (!campo) {
 
         return;
 
     }
 
-
     campo.classList.add(
         "campo-erro"
     );
-
-
-    /*
-       Evita mensagens duplicadas.
-    */
 
     const erroExistente =
         campo.querySelector(
             ".erro-mensagem"
         );
-
 
     if (erroExistente) {
 
@@ -419,20 +372,14 @@ function mostrarErro(
 
     }
 
-
     const erro =
-        document.createElement(
-            "div"
-        );
-
+        document.createElement("div");
 
     erro.className =
         "erro-mensagem";
 
-
     erro.textContent =
         mensagem;
-
 
     campo.appendChild(
         erro
@@ -455,7 +402,6 @@ function validarRadio(
             `input[name="${nome}"]:checked`
         );
 
-
     if (!selecionado) {
 
         const primeiro =
@@ -463,17 +409,14 @@ function validarRadio(
                 `input[name="${nome}"]`
             );
 
-
         mostrarErro(
             primeiro,
             mensagem
         );
 
-
         return false;
 
     }
-
 
     return true;
 
@@ -488,28 +431,18 @@ function validarFormulario() {
 
     limparErros();
 
-
     let valido = true;
-
 
     const campos =
         formulario.querySelectorAll(
             "input:not([type='radio']), select, textarea"
         );
 
-
     campos.forEach(
         (campo) => {
 
-            /*
-               Ignora campos escondidos
-               que não sejam obrigatórios.
-            */
-
             if (
-                campo.hasAttribute(
-                    "required"
-                ) &&
+                campo.hasAttribute("required") &&
                 !campo.value.trim()
             ) {
 
@@ -517,7 +450,6 @@ function validarFormulario() {
                     campo,
                     "Este campo é obrigatório."
                 );
-
 
                 valido = false;
 
@@ -588,18 +520,12 @@ function validarFormulario() {
     ======================================== */
 
     const email =
-        document.getElementById(
-            "email"
-        );
+        document.getElementById("email");
 
-
-    if (
-        email.value.trim()
-    ) {
+    if (email.value.trim()) {
 
         const regexEmail =
             /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
 
         if (
             !regexEmail.test(
@@ -611,7 +537,6 @@ function validarFormulario() {
                 email,
                 "Informe um e-mail válido."
             );
-
 
             valido = false;
 
@@ -630,7 +555,6 @@ function validarFormulario() {
             ""
         );
 
-
     if (
         telefone.value &&
         numerosTelefone.length < 10
@@ -640,7 +564,6 @@ function validarFormulario() {
             telefone,
             "Informe um telefone válido com DDD."
         );
-
 
         valido = false;
 
@@ -661,13 +584,408 @@ function validarFormulario() {
             "Informe um valor de contrato maior que zero."
         );
 
-
         valido = false;
 
     }
 
 
     return valido;
+
+}
+
+
+/* ========================================
+   GERAR ID ÚNICO DA VISITA
+======================================== */
+
+function gerarIdVisita() {
+
+    const agora =
+        new Date();
+
+    const data =
+        [
+            agora.getFullYear(),
+
+            String(
+                agora.getMonth() + 1
+            ).padStart(2, "0"),
+
+            String(
+                agora.getDate()
+            ).padStart(2, "0")
+
+        ].join("");
+
+
+    const hora =
+        [
+            String(
+                agora.getHours()
+            ).padStart(2, "0"),
+
+            String(
+                agora.getMinutes()
+            ).padStart(2, "0"),
+
+            String(
+                agora.getSeconds()
+            ).padStart(2, "0")
+
+        ].join("");
+
+
+    const aleatorio =
+        Math.random()
+            .toString(36)
+            .substring(2, 6)
+            .toUpperCase();
+
+
+    return (
+        `RJCAP-${data}-${hora}-${aleatorio}`
+    );
+
+}
+
+
+/* ========================================
+   ORGANIZAR DADOS PARA EXPORTAÇÃO
+======================================== */
+
+function rotulosRegistro(registro) {
+
+    return {
+
+        "ID da Visita":
+            registro.idVisita,
+
+        "Data da Visita":
+            registro.dataVisita,
+
+        "Consultor":
+            registro.consultor,
+
+        "Modalidade de Negócios":
+            registro.modalidade,
+
+        "Natureza da Visita":
+            registro.natureza,
+
+        "Valor do Contrato":
+            `R$ ${registro.valorContrato}`,
+
+        "Quantidade de Equipamentos":
+            registro.quantidadeEquipamentos,
+
+        "Quantidade de Paradas":
+            registro.quantidadeParadas,
+
+        "Marca":
+            registro.marca,
+
+        "Tipo de Equipamento":
+            registro.tipoEquipamento,
+
+        "Empresa Conservadora":
+            registro.empresaConservadora,
+
+        "Nome do Condomínio":
+            registro.nomeCondominio,
+
+        "Endereço":
+            registro.endereco,
+
+        "Nome do Contato":
+            registro.nomeContato,
+
+        "Telefone":
+            registro.telefone,
+
+        "E-mail":
+            registro.email,
+
+        "Observações":
+            registro.observacoes
+
+    };
+
+}
+
+
+/* ========================================
+   EXPORTAR EXCEL
+======================================== */
+
+function exportarRegistroExcel() {
+
+    if (!ultimoRegistro) {
+
+        alert(
+            "Registre uma visita antes de exportar."
+        );
+
+        return;
+
+    }
+
+
+    if (
+        typeof XLSX === "undefined"
+    ) {
+
+        alert(
+            "Não foi possível carregar o recurso de Excel. Verifique sua internet e tente novamente."
+        );
+
+        return;
+
+    }
+
+
+    const linha =
+        rotulosRegistro(
+            ultimoRegistro
+        );
+
+
+    const planilha =
+        XLSX.utils.json_to_sheet(
+            [linha]
+        );
+
+
+    planilha["!cols"] =
+        Object.keys(linha).map(
+            (chave) => {
+
+                return {
+                    wch: Math.min(
+                        Math.max(
+                            chave.length + 2,
+                            18
+                        ),
+                        42
+                    )
+                };
+
+            }
+        );
+
+
+    const pasta =
+        XLSX.utils.book_new();
+
+
+    XLSX.utils.book_append_sheet(
+        pasta,
+        planilha,
+        "Visita"
+    );
+
+
+    XLSX.writeFile(
+        pasta,
+        `${ultimoRegistro.idVisita}.xlsx`
+    );
+
+}
+
+
+/* ========================================
+   EXPORTAR PDF
+======================================== */
+
+function exportarRegistroPdf() {
+
+    if (!ultimoRegistro) {
+
+        alert(
+            "Registre uma visita antes de exportar."
+        );
+
+        return;
+
+    }
+
+
+    if (
+        !window.jspdf ||
+        !window.jspdf.jsPDF
+    ) {
+
+        alert(
+            "Não foi possível carregar o recurso de PDF. Verifique sua internet e tente novamente."
+        );
+
+        return;
+
+    }
+
+
+    const {
+        jsPDF
+    } = window.jspdf;
+
+
+    const pdf =
+        new jsPDF({
+            unit: "mm",
+            format: "a4"
+        });
+
+
+    const dados =
+        rotulosRegistro(
+            ultimoRegistro
+        );
+
+
+    let y = 20;
+
+
+    /* TÍTULO */
+
+    pdf.setFont(
+        "helvetica",
+        "bold"
+    );
+
+    pdf.setFontSize(18);
+
+    pdf.text(
+        "RJCAP - Registro de Visita Comercial",
+        15,
+        y
+    );
+
+
+    y += 10;
+
+
+    /* ID */
+
+    pdf.setFontSize(10);
+
+    pdf.setFont(
+        "helvetica",
+        "normal"
+    );
+
+    pdf.text(
+        `ID: ${ultimoRegistro.idVisita}`,
+        15,
+        y
+    );
+
+
+    y += 12;
+
+
+    /* DADOS */
+
+    Object.entries(
+        dados
+    ).forEach(
+        ([rotulo, valor]) => {
+
+            if (
+                rotulo === "ID da Visita"
+            ) {
+
+                return;
+
+            }
+
+
+            const valorTexto =
+                String(
+                    valor ?? ""
+                );
+
+
+            const valorLinhas =
+                pdf.splitTextToSize(
+                    valorTexto,
+                    120
+                );
+
+
+            if (
+                y +
+                valorLinhas.length * 6 >
+                282
+            ) {
+
+                pdf.addPage();
+
+                y = 20;
+
+            }
+
+
+            pdf.setFont(
+                "helvetica",
+                "bold"
+            );
+
+
+            pdf.text(
+                `${rotulo}:`,
+                15,
+                y
+            );
+
+
+            pdf.setFont(
+                "helvetica",
+                "normal"
+            );
+
+
+            pdf.text(
+                valorLinhas,
+                75,
+                y
+            );
+
+
+            y += Math.max(
+                8,
+                valorLinhas.length * 6
+            );
+
+        }
+    );
+
+
+    pdf.save(
+        `${ultimoRegistro.idVisita}.pdf`
+    );
+
+}
+
+
+/* ========================================
+   BOTÕES DE EXPORTAÇÃO
+======================================== */
+
+if (exportarExcel) {
+
+    exportarExcel.addEventListener(
+        "click",
+        exportarRegistroExcel
+    );
+
+}
+
+
+if (exportarPdf) {
+
+    exportarPdf.addEventListener(
+        "click",
+        exportarRegistroPdf
+    );
 
 }
 
@@ -683,9 +1001,7 @@ formulario.addEventListener(
         event.preventDefault();
 
 
-        /*
-           VALIDAÇÃO
-        */
+        /* VALIDAÇÃO */
 
         if (
             !validarFormulario()
@@ -697,9 +1013,7 @@ formulario.addEventListener(
                 );
 
 
-            if (
-                primeiroErro
-            ) {
+            if (primeiroErro) {
 
                 primeiroErro.scrollIntoView({
                     behavior: "smooth",
@@ -715,7 +1029,7 @@ formulario.addEventListener(
 
 
         /* ==================================
-           COLETAR OS DADOS
+           COLETAR DADOS
         ================================== */
 
         const dados =
@@ -738,26 +1052,8 @@ formulario.addEventListener(
 
 
         /* ==================================
-           TRATAR EMPRESA CONSERVADORA
+           EMPRESA CONSERVADORA - OUTROS
         ================================== */
-
-        /*
-           Se selecionar "Outros",
-           salvamos diretamente o nome
-           digitado pelo consultor.
-
-           Exemplo:
-
-           Selecionou:
-           Outros
-
-           Digitou:
-           Elevadores ABC
-
-           Resultado:
-           empresaConservadora:
-           "Elevadores ABC"
-        */
 
         if (
             registro.empresaConservadora ===
@@ -773,12 +1069,43 @@ formulario.addEventListener(
 
 
         /*
-           Remove o campo auxiliar para
-           não criarmos uma coluna
-           desnecessária no banco.
+           Remove o campo auxiliar.
+
+           Assim não teremos uma coluna
+           "outraConservadora" futuramente
+           na nossa base.
         */
 
         delete registro.outraConservadora;
+
+
+        /* ==================================
+           CRIAR ID ÚNICO
+        ================================== */
+
+        registro.idVisita =
+            gerarIdVisita();
+
+
+        /* ==================================
+           GUARDAR O REGISTRO
+        ================================== */
+
+        ultimoRegistro = {
+            ...registro
+        };
+
+
+        /* ==================================
+           MOSTRAR ID NO MODAL
+        ================================== */
+
+        if (idVisitaGerado) {
+
+            idVisitaGerado.textContent =
+                registro.idVisita;
+
+        }
 
 
         console.log(
@@ -789,23 +1116,38 @@ formulario.addEventListener(
 
         /*
         =========================================
-        FUTURA INTEGRAÇÃO COM SUPABASE
 
-        Aqui vamos enviar o objeto "registro"
-        para o banco.
+        PRÓXIMA ETAPA:
 
-        IMPORTANTE:
+        Aqui vamos conectar o formulário ao
+        Google Sheets.
 
-        O formulário NÃO será apagado antes
-        do Supabase confirmar que salvou.
+        O objeto que será enviado será:
 
-        Isso evita perda dos dados caso
-        o consultor esteja sem internet
-        ou aconteça algum erro.
+        registro
+
+        Ele já contém:
+
+        - ID único
+        - Data
+        - Consultor
+        - Modalidade
+        - Natureza
+        - Valor
+        - Equipamentos
+        - Conservadora
+        - Condomínio
+        - Endereço
+        - Contato
+        - Telefone
+        - E-mail
+        - Observações
 
         =========================================
         */
 
+
+        /* ABRIR MODAL */
 
         modalSucesso.classList.add(
             "ativo"
@@ -852,7 +1194,6 @@ modalSucesso.addEventListener(
 
 /* ========================================
    REGISTRAR NOVA VISITA
-   BOTÃO DO MODAL
 ======================================== */
 
 novaVisita.addEventListener(
@@ -860,6 +1201,17 @@ novaVisita.addEventListener(
     function () {
 
         limparFormulario();
+
+
+        ultimoRegistro = null;
+
+
+        if (idVisitaGerado) {
+
+            idVisitaGerado.textContent =
+                "—";
+
+        }
 
 
         modalSucesso.classList.remove(
@@ -946,4 +1298,5 @@ formulario.addEventListener(
         );
 
     }
+   
 );
