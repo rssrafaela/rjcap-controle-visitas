@@ -996,7 +996,7 @@ if (exportarPdf) {
 
 formulario.addEventListener(
     "submit",
-    function (event) {
+    async function (event) {
 
         event.preventDefault();
 
@@ -1115,36 +1115,44 @@ formulario.addEventListener(
 
 
         /*
-        =========================================
+        
+        /* ========================================
+   ENVIAR REGISTRO PARA O GOOGLE SHEETS
+======================================== */
 
-        PRÓXIMA ETAPA:
+const URL_GOOGLE_SHEETS =
+    "https://script.google.com/macros/s/AKfycbzuILbvHjE_eZGbU-uMKm5xrg5Dgj0Fe2AMruSqeJ8-zSi1CfGss25yirURW8i1gu7FMg/exec";
 
-        Aqui vamos conectar o formulário ao
-        Google Sheets.
+try {
 
-        O objeto que será enviado será:
+    await fetch(
+        URL_GOOGLE_SHEETS,
+        {
+            method: "POST",
 
-        registro
+            mode: "no-cors",
 
-        Ele já contém:
+            headers: {
+                "Content-Type": "text/plain;charset=utf-8"
+            },
 
-        - ID único
-        - Data
-        - Consultor
-        - Modalidade
-        - Natureza
-        - Valor
-        - Equipamentos
-        - Conservadora
-        - Condomínio
-        - Endereço
-        - Contato
-        - Telefone
-        - E-mail
-        - Observações
+            body: JSON.stringify(registro)
+        }
+    );
 
-        =========================================
-        */
+} catch (erro) {
+
+    console.error(
+        "Erro ao enviar para o Google Sheets:",
+        erro
+    );
+
+    alert(
+        "Não foi possível registrar a visita. Verifique sua conexão com a internet e tente novamente."
+    );
+
+    return;
+}
 
 
         /* ABRIR MODAL */
