@@ -1,0 +1,819 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <meta
+      name="description"
+      content="Controle de Visitas RJCAP - Rio de Janeiro"
+    />
+
+    <title>Controle de Visitas RJCAP | TKE</title>
+
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <!-- =====================================
+         CABEÇALHO
+    ====================================== -->
+
+    <header class="topo">
+      <div class="topo-conteudo">
+        <!-- LOGOTIPO / IDENTIFICAÇÃO -->
+
+        <div class="marca">
+          <img src="img/logo-tke.png" alt="TKE" class="logo" />
+
+          <div class="marca-texto">
+            <span>RJCAP</span>
+            <strong>Rio de Janeiro</strong>
+          </div>
+        </div>
+
+        <!-- AÇÕES DO CABEÇALHO -->
+
+        <div class="acoes-topo">
+          <div class="status">
+            <span class="status-bolinha"></span>
+            <span>Controle de Visitas</span>
+          </div>
+
+          <button
+            type="button"
+            class="btn-limpar-topo"
+            id="btnLimparFormulario"
+            aria-label="Limpar dados preenchidos"
+            title="Limpar todos os dados preenchidos no formulário"
+          >
+            <span class="icone-nova-visita" aria-hidden="true"> ↻ </span>
+
+            <span>Limpar dados</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="pagina">
+      <!-- =====================================
+             HERO
+        ====================================== -->
+
+      <section class="hero">
+        <div class="hero-conteudo">
+          <div class="hero-texto">
+            <span class="tag"> CONTROLE COMERCIAL </span>
+
+            <h1>
+              Registro de
+              <span>Visitas RJCAP</span>
+            </h1>
+
+            <p>
+              Preencha as informações abaixo para registrar uma nova visita
+              comercial.
+            </p>
+          </div>
+
+          <div class="hero-decoracao">
+            <div class="circulo circulo-1"></div>
+            <div class="circulo circulo-2"></div>
+            <div class="circulo circulo-3"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =====================================
+             FORMULÁRIO
+        ====================================== -->
+
+      <section class="formulario-container">
+        <div class="cabecalho-formulario">
+          <div>
+            <span class="numero-etapa"> 01 </span>
+
+            <div>
+              <h2>Informações da visita</h2>
+
+              <p>Todos os campos abaixo são obrigatórios.</p>
+            </div>
+          </div>
+
+          <div class="obrigatorio">
+            <span>*</span>
+            Campos obrigatórios
+          </div>
+        </div>
+
+        <form id="formVisita">
+          <!-- =====================================
+                     BLOCO 1 - DADOS COMERCIAIS
+                ====================================== -->
+
+          <div class="secao-formulario">
+            <div class="titulo-secao">
+              <span>01</span>
+
+              <div>
+                <h3>Dados comerciais</h3>
+                <p>Informações gerais da visita.</p>
+              </div>
+            </div>
+
+            <div class="grid">
+              <!-- CONSULTOR -->
+
+              <div class="campo campo-grande">
+                <label for="consultor">
+                  Consultor
+                  <span>*</span>
+                </label>
+
+                <select id="consultor" name="consultor" required>
+                  <option value="" selected disabled>
+                    Selecione o consultor
+                  </option>
+
+                  <option value="Reinaldo Silva Soares Dias">
+                    Reinaldo Silva Soares Dias
+                  </option>
+
+                  <option value="Pedro Ivo Valendo do Carmo">
+                    Pedro Ivo Valendo do Carmo
+                  </option>
+                </select>
+              </div>
+
+              <!-- MODALIDADE DE NEGÓCIOS -->
+
+              <div class="campo campo-grande">
+                <label>
+                  Modalidade de Negócios
+                  <span>*</span>
+                </label>
+
+                <div class="opcoes">
+                  <label class="opcao-card">
+                    <input
+                      type="radio"
+                      name="modalidade"
+                      value="Resgate"
+                      required
+                    />
+
+                    <span class="radio-personalizado"></span>
+
+                    <span>Resgate</span>
+                  </label>
+
+                  <label class="opcao-card">
+                    <input type="radio" name="modalidade" value="Captação" />
+
+                    <span class="radio-personalizado"></span>
+
+                    <span>Captação</span>
+                  </label>
+
+                  <label class="opcao-card">
+                    <input
+                      type="radio"
+                      name="modalidade"
+                      value="Acessibilidade"
+                    />
+
+                    <span class="radio-personalizado"></span>
+
+                    <span>Acessibilidade</span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- NATUREZA DA VISITA -->
+
+              <div class="campo campo-grande">
+                <label>
+                  Natureza da Visita
+                  <span>*</span>
+                </label>
+
+                <div class="opcoes">
+                  <label class="opcao-card">
+                    <input
+                      type="radio"
+                      name="natureza"
+                      value="Prospecção"
+                      required
+                    />
+
+                    <span class="radio-personalizado"></span>
+
+                    <span>Prospecção</span>
+                  </label>
+
+                  <label class="opcao-card">
+                    <input type="radio" name="natureza" value="Vistoria" />
+
+                    <span class="radio-personalizado"></span>
+
+                    <span>Vistoria</span>
+                  </label>
+
+                  <label class="opcao-card">
+                    <input
+                      type="radio"
+                      name="natureza"
+                      value="Apresentação da Proposta"
+                    />
+
+                    <span class="radio-personalizado"></span>
+
+                    <span> Apresentação da Proposta </span>
+                  </label>
+
+                  <label class="opcao-card">
+                    <input
+                      type="radio"
+                      name="natureza"
+                      value="Reunião com o cliente"
+                    />
+
+                    <span class="radio-personalizado"></span>
+
+                    <span> Reunião com o cliente </span>
+                  </label>
+
+                  <label class="opcao-card">
+                    <input type="radio" name="natureza" value="Fechamento" />
+
+                    <span class="radio-personalizado"></span>
+
+                    <span>Fechamento</span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- VALOR DO CONTRATO -->
+
+              <div class="campo">
+                <label for="valorContrato">
+                  Valor do Contrato
+                  <span>*</span>
+                </label>
+
+                <div class="input-prefixo">
+                  <span>R$</span>
+
+                  <input
+                    type="text"
+                    id="valorContrato"
+                    name="valorContrato"
+                    placeholder="0,00"
+                    inputmode="numeric"
+                    required
+                  />
+                </div>
+              </div>
+
+              <!-- DATA -->
+
+              <div class="campo">
+                <label for="dataVisita">
+                  Data da Visita
+                  <span>*</span>
+                </label>
+
+                <input type="date" id="dataVisita" name="dataVisita" required />
+              </div>
+            </div>
+          </div>
+
+          <!-- =====================================
+                     BLOCO 2 - EQUIPAMENTOS
+                ====================================== -->
+
+          <div class="secao-formulario">
+            <div class="titulo-secao">
+              <span>02</span>
+
+              <div>
+                <h3>Equipamentos</h3>
+
+                <p>Informe os dados dos equipamentos encontrados.</p>
+              </div>
+            </div>
+
+            <div class="grid">
+              <!-- QUANTIDADE DE EQUIPAMENTOS -->
+
+              <div class="campo">
+                <label for="quantidadeEquipamentos">
+                  Quantidade de Equipamentos
+                  <span>*</span>
+                </label>
+
+                <input
+                  type="number"
+                  id="quantidadeEquipamentos"
+                  name="quantidadeEquipamentos"
+                  min="1"
+                  placeholder="Ex.: 2"
+                  required
+                />
+              </div>
+
+              <!-- QUANTIDADE DE PARADAS -->
+
+              <div class="campo">
+                <label for="quantidadeParadas">
+                  Quantidade de Paradas
+                  <span>*</span>
+                </label>
+
+                <input
+                  type="number"
+                  id="quantidadeParadas"
+                  name="quantidadeParadas"
+                  min="1"
+                  placeholder="Ex.: 12"
+                  required
+                />
+              </div>
+
+              <!-- MARCA -->
+
+              <div class="campo campo-grande">
+                <label>
+                  Marca
+                  <span>*</span>
+                </label>
+
+                <div class="opcoes">
+                  <label class="opcao-card">
+                    <input
+                      type="radio"
+                      name="marca"
+                      value="Thyssenkrupp"
+                      required
+                    />
+
+                    <span class="radio-personalizado"></span>
+
+                    <span>Thyssenkrupp</span>
+                  </label>
+
+                  <label class="opcao-card">
+                    <input type="radio" name="marca" value="Atlas" />
+
+                    <span class="radio-personalizado"></span>
+
+                    <span>Atlas</span>
+                  </label>
+
+                  <label class="opcao-card">
+                    <input type="radio" name="marca" value="Otis" />
+
+                    <span class="radio-personalizado"></span>
+
+                    <span>Otis</span>
+                  </label>
+
+                  <label class="opcao-card">
+                    <input type="radio" name="marca" value="Ortobras" />
+
+                    <span class="radio-personalizado"></span>
+
+                    <span>Ortobras</span>
+                  </label>
+
+                  <label class="opcao-card">
+                    <input type="radio" name="marca" value="Outros" />
+
+                    <span class="radio-personalizado"></span>
+
+                    <span>Outros</span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- TIPO DE EQUIPAMENTO -->
+
+              <div class="campo campo-grande">
+                <label>
+                  Tipo de Equipamento
+                  <span>*</span>
+                </label>
+
+                <div class="opcoes opcoes-equipamentos">
+                  <label class="opcao-card">
+                    <input
+                      type="radio"
+                      name="tipoEquipamento"
+                      value="Elevador"
+                      required
+                    />
+
+                    <span class="radio-personalizado"></span>
+
+                    <span>Elevador</span>
+                  </label>
+
+                  <label class="opcao-card">
+                    <input
+                      type="radio"
+                      name="tipoEquipamento"
+                      value="Escada Rolante"
+                    />
+
+                    <span class="radio-personalizado"></span>
+
+                    <span>Escada Rolante</span>
+                  </label>
+
+                  <label class="opcao-card">
+                    <input
+                      type="radio"
+                      name="tipoEquipamento"
+                      value="Home Lift"
+                    />
+
+                    <span class="radio-personalizado"></span>
+
+                    <span>Home Lift</span>
+                  </label>
+
+                  <label class="opcao-card">
+                    <input
+                      type="radio"
+                      name="tipoEquipamento"
+                      value="Plataforma de acessibilidade"
+                    />
+
+                    <span class="radio-personalizado"></span>
+
+                    <span> Plataforma de acessibilidade </span>
+                  </label>
+
+                  <label class="opcao-card">
+                    <input
+                      type="radio"
+                      name="tipoEquipamento"
+                      value="Uso Restrito"
+                    />
+
+                    <span class="radio-personalizado"></span>
+
+                    <span>Uso Restrito</span>
+                  </label>
+
+                  <label class="opcao-card">
+                    <input
+                      type="radio"
+                      name="tipoEquipamento"
+                      value="Monta Carga"
+                    />
+
+                    <span class="radio-personalizado"></span>
+
+                    <span>Monta Carga</span>
+                  </label>
+
+                  <label class="opcao-card">
+                    <input
+                      type="radio"
+                      name="tipoEquipamento"
+                      value="Elevador de Carga"
+                    />
+
+                    <span class="radio-personalizado"></span>
+
+                    <span>Elevador de Carga</span>
+                  </label>
+
+                  <label class="opcao-card">
+                    <input
+                      type="radio"
+                      name="tipoEquipamento"
+                      value="Portas Automáticas"
+                    />
+
+                    <span class="radio-personalizado"></span>
+
+                    <span>Portas Automáticas</span>
+                  </label>
+
+                  <label class="opcao-card">
+                    <input
+                      type="radio"
+                      name="tipoEquipamento"
+                      value="Cadeira Elevante"
+                    />
+
+                    <span class="radio-personalizado"></span>
+
+                    <span>Cadeira Elevante</span>
+                  </label>
+
+                  <label class="opcao-card">
+                    <input
+                      type="radio"
+                      name="tipoEquipamento"
+                      value="Cadeira de Piscina"
+                    />
+
+                    <span class="radio-personalizado"></span>
+
+                    <span>Cadeira de Piscina</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- =====================================
+                     BLOCO 3 - CLIENTE E LOCAL
+                ====================================== -->
+
+          <div class="secao-formulario">
+            <div class="titulo-secao">
+              <span>03</span>
+
+              <div>
+                <h3>Cliente e local</h3>
+
+                <p>Identificação do condomínio e empresa conservadora.</p>
+              </div>
+            </div>
+
+            <div class="grid">
+              <!-- EMPRESA CONSERVADORA -->
+
+              <div class="campo">
+                <label for="empresaConservadora">
+                  Empresa Conservadora
+                  <span>*</span>
+                </label>
+
+                <select
+                  id="empresaConservadora"
+                  name="empresaConservadora"
+                  required
+                >
+                  <option value="" selected disabled>
+                    Selecione a empresa conservadora
+                  </option>
+                  <option value="Atlas/Schindler">Atlas/Schindler</option>
+                  <option value="OTIS">OTIS</option>
+                  <option value="Orona">Orona</option>
+                  <option value="Hyunday">Hyunday</option>
+                  <option value="Advance">Advance</option>
+                  <option value="VIP">VIP</option>
+                  <option value="Vertisul">Vertisul</option>
+                  <option value="Alcer">Alcer</option>
+                  <option value="Elite">Elite</option>
+                  <option value="Vertraem">Vertraem</option>
+                  <option value="Nalc">Nalc</option>
+                  <option value="Concertec">Concertec</option>
+                  <option value="CEL (Central de Elevadores)">
+                    CEL (Central de Elevadores)
+                  </option>
+                  <option value="Engetec">Engetec</option>
+                  <option value="Villarta">Villarta</option>
+                  <option value="Unitec">Unitec</option>
+                  <option value="Negatec Elevadores">Negatec Elevadores</option>
+                  <option value="Elevesul">Elevesul</option>
+                  <option value="OTV">OTV</option>
+                  <option value="Servesul">Servesul</option>
+                  <option value="Castelo">Castelo</option>
+                  <option value="Outros">Outros</option>
+                </select>
+
+                <div
+                  id="campoOutraConservadora"
+                  class="campo-condicional"
+                  hidden
+                >
+                  <label for="outraConservadora">
+                    Qual empresa conservadora?
+                    <span>*</span>
+                  </label>
+
+                  <input
+                    type="text"
+                    id="outraConservadora"
+                    name="outraConservadora"
+                    placeholder="Digite o nome da empresa"
+                    autocomplete="organization"
+                  />
+                </div>
+              </div>
+
+              <!-- CONDOMÍNIO -->
+
+              <div class="campo">
+                <label for="nomeCondominio">
+                  Nome do Condomínio
+                  <span>*</span>
+                </label>
+
+                <input
+                  type="text"
+                  id="nomeCondominio"
+                  name="nomeCondominio"
+                  placeholder="Nome do condomínio"
+                  required
+                />
+              </div>
+
+              <!-- ENDEREÇO -->
+
+              <div class="campo campo-grande">
+                <label for="endereco">
+                  Endereço
+                  <span>*</span>
+                </label>
+
+                <input
+                  type="text"
+                  id="endereco"
+                  name="endereco"
+                  placeholder="Rua, número, bairro, cidade - RJ"
+                  required
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- =====================================
+                     BLOCO 4 - CONTATO
+                ====================================== -->
+
+          <div class="secao-formulario">
+            <div class="titulo-secao">
+              <span>04</span>
+
+              <div>
+                <h3>Contato</h3>
+                <p>Dados do responsável no local.</p>
+              </div>
+            </div>
+
+            <div class="grid">
+              <!-- NOME -->
+
+              <div class="campo">
+                <label for="nomeContato">
+                  Nome Completo do Contato
+                  <span>*</span>
+                </label>
+
+                <input
+                  type="text"
+                  id="nomeContato"
+                  name="nomeContato"
+                  placeholder="Nome e sobrenome"
+                  required
+                />
+              </div>
+
+              <!-- TELEFONE -->
+
+              <div class="campo">
+                <label for="telefone">
+                  Telefone do Contato (WhatsApp)
+                  <span>*</span>
+                </label>
+
+                <input
+                  type="tel"
+                  id="telefone"
+                  name="telefone"
+                  maxlength="15"
+                  placeholder="(21) 99999-9999"
+                  inputmode="tel"
+                  autocomplete="tel"
+                  required
+                />
+              </div>
+
+              <!-- E-MAIL -->
+
+              <div class="campo campo-grande">
+                <label for="email">
+                  E-mail do Contato
+                  <span>*</span>
+                </label>
+
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  placeholder="contato@empresa.com.br"
+                  inputmode="email"
+                  autocomplete="email"
+                  required
+                />
+              </div>
+
+              <!-- OBSERVAÇÕES -->
+
+              <div class="campo campo-grande">
+                <label for="observacoes">
+                  Observações
+                  <span>*</span>
+                </label>
+
+                <textarea
+                  id="observacoes"
+                  name="observacoes"
+                  rows="5"
+                  maxlength="1000"
+                  placeholder="Registre informações importantes sobre a visita..."
+                  required
+                ></textarea>
+
+                <div class="contador">
+                  <span id="contadorCaracteres">0</span>/1000
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- =====================================
+                     FINAL DO FORMULÁRIO
+                ====================================== -->
+
+          <div class="acoes">
+            <div class="seguranca">
+              <span class="icone-check"> ✓ </span>
+
+              <div>
+                <strong> Confira os dados antes de enviar </strong>
+
+                <small> Todos os campos são obrigatórios. </small>
+              </div>
+            </div>
+
+            <button type="submit" class="btn-enviar">
+              <span> Registrar visita </span>
+
+              <span class="seta" aria-hidden="true"> → </span>
+            </button>
+          </div>
+        </form>
+      </section>
+    </main>
+
+    <!-- =====================================
+         MODAL DE SUCESSO
+    ====================================== -->
+
+    <div
+      class="modal"
+      id="modalSucesso"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="tituloModalSucesso"
+    >
+      <div class="modal-box">
+        <button
+          type="button"
+          class="fechar-modal"
+          id="fecharModal"
+          aria-label="Fechar"
+        >
+          ×
+        </button>
+
+        <div class="icone-sucesso">✓</div>
+
+        <span class="modal-tag"> REGISTRO CONCLUÍDO </span>
+
+        <h2 id="tituloModalSucesso">Visita registrada!</h2>
+
+        <p>As informações da visita foram validadas com sucesso.</p>
+
+        <button type="button" class="btn-novo" id="novaVisita">
+          Registrar nova visita
+        </button>
+      </div>
+    </div>
+
+    <!-- =====================================
+         RODAPÉ
+    ====================================== -->
+
+    <footer>
+      <div class="footer-conteudo">
+        <img src="img/logo-tke.png" alt="TKE" />
+
+        <p>Controle de Visitas RJCAP • Rio de Janeiro</p>
+      </div>
+    </footer>
+
+    <!-- JAVASCRIPT -->
+
+    <script src="script.js"></script>
+  </body>
+</html>
