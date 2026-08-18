@@ -1165,9 +1165,27 @@ fecharModal.addEventListener(
     "click",
     function () {
 
+        // Fecha o modal
         modalSucesso.classList.remove(
             "ativo"
         );
+
+        // Limpa todos os campos do formulário
+        limparFormulario();
+
+        // Apaga o último registro da memória
+        ultimoRegistro = null;
+
+        // Limpa o ID exibido no modal
+        if (idVisitaGerado) {
+            idVisitaGerado.textContent = "—";
+        }
+
+        // Volta para o início da página
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
 
     }
 );
@@ -1182,9 +1200,27 @@ modalSucesso.addEventListener(
             modalSucesso
         ) {
 
+            // Fecha o modal
             modalSucesso.classList.remove(
                 "ativo"
             );
+
+            // Limpa o formulário
+            limparFormulario();
+
+            // Apaga o registro temporário
+            ultimoRegistro = null;
+
+            // Limpa o ID
+            if (idVisitaGerado) {
+                idVisitaGerado.textContent = "—";
+            }
+
+            // Volta para o início
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
 
         }
 
