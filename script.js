@@ -1158,69 +1158,120 @@ formulario.addEventListener(
 
 
 /* ========================================
-   FECHAR MODAL
+   FECHAR MODAL + LIMPAR REGISTRO
+======================================== */
+
+function fecharModalELimpar() {
+
+    // Fecha o modal
+    modalSucesso.classList.remove("ativo");
+
+    // Reseta todos os campos HTML
+    formulario.reset();
+
+    // Limpa manualmente inputs, selects e textareas
+    formulario
+        .querySelectorAll("input, select, textarea")
+        .forEach((campo) => {
+
+            // Não mexer na data aqui
+            // porque ela será redefinida abaixo
+            if (campo === dataVisita) {
+                return;
+            }
+
+            if (
+                campo.type === "radio" ||
+                campo.type === "checkbox"
+            ) {
+                campo.checked = false;
+            } else {
+                campo.value = "";
+            }
+
+        });
+
+
+    // Zera observações
+    if (observacoes) {
+        observacoes.value = "";
+    }
+
+    if (contadorCaracteres) {
+        contadorCaracteres.textContent = "0";
+    }
+
+
+    // Reseta empresa conservadora
+    if (empresaConservadora) {
+        empresaConservadora.selectedIndex = 0;
+    }
+
+    if (outraConservadora) {
+        outraConservadora.value = "";
+        outraConservadora.required = false;
+    }
+
+    if (campoOutraConservadora) {
+        campoOutraConservadora.hidden = true;
+    }
+
+
+    // Limpa mensagens de erro
+    limparErros();
+
+
+    // Coloca novamente a data atual
+    definirDataAtual();
+
+
+    // Apaga o registro temporário
+    ultimoRegistro = null;
+
+
+    // Limpa o ID mostrado no modal
+    if (idVisitaGerado) {
+        idVisitaGerado.textContent = "—";
+    }
+
+
+    // Volta ao início da página
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+}
+
+
+/* ========================================
+   BOTÃO X
 ======================================== */
 
 fecharModal.addEventListener(
     "click",
-    function () {
+    function (event) {
 
-        // Fecha o modal
-        modalSucesso.classList.remove(
-            "ativo"
-        );
+        event.preventDefault();
+        event.stopPropagation();
 
-        // Limpa todos os campos do formulário
-        limparFormulario();
-
-        // Apaga o último registro da memória
-        ultimoRegistro = null;
-
-        // Limpa o ID exibido no modal
-        if (idVisitaGerado) {
-            idVisitaGerado.textContent = "—";
-        }
-
-        // Volta para o início da página
-        window.scrollTo({
-            top: 0,
-            behavior: "smooth"
-        });
+        fecharModalELimpar();
 
     }
 );
 
 
+/* ========================================
+   TOCAR FORA DO MODAL
+======================================== */
+
 modalSucesso.addEventListener(
     "click",
     function (event) {
 
-        if (
-            event.target ===
-            modalSucesso
-        ) {
+        if (event.target === modalSucesso) {
 
-            // Fecha o modal
-            modalSucesso.classList.remove(
-                "ativo"
-            );
-
-            // Limpa o formulário
-            limparFormulario();
-
-            // Apaga o registro temporário
-            ultimoRegistro = null;
-
-            // Limpa o ID
-            if (idVisitaGerado) {
-                idVisitaGerado.textContent = "—";
-            }
-
-            // Volta para o início
-            window.scrollTo({
-                top: 0,
-                behavior: "smooth"
-            });
+            fecharModalELimpar();
 
         }
 
