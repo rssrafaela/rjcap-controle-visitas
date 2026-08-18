@@ -40,6 +40,129 @@ const exportarPdf =
 
 let ultimoRegistro = null;
 
+/* ========================================
+   SEGURANÇA LOCAL DOS REGISTROS
+======================================== */
+
+const CHAVE_PENDENTES =
+    "rjcap_registros_pendentes";
+
+
+function obterPendentes() {
+
+    try {
+
+        const dados =
+            localStorage.getItem(
+                CHAVE_PENDENTES
+            );
+
+        return dados
+            ? JSON.parse(dados)
+            : [];
+
+    } catch (erro) {
+
+        console.error(
+            "Erro ao ler registros pendentes:",
+            erro
+        );
+
+        return [];
+
+    }
+
+}
+
+
+function salvarPendentes(lista) {
+
+    try {
+
+        localStorage.setItem(
+            CHAVE_PENDENTES,
+            JSON.stringify(lista)
+        );
+
+        return true;
+
+    } catch (erro) {
+
+        console.error(
+            "Erro ao salvar registro local:",
+            erro
+        );
+
+        return false;
+
+    }
+
+}
+
+
+function adicionarPendente(registro) {
+
+    const pendentes =
+        obterPendentes();
+
+    const jaExiste =
+        pendentes.some(
+            item =>
+                item.idVisita ===
+                registro.idVisita
+        );
+
+    if (!jaExiste) {
+
+        pendentes.push({
+            ...registro,
+            salvoLocalmenteEm:
+                new Date().toISOString()
+        });
+
+        salvarPendentes(
+            pendentes
+        );
+
+    }
+
+}
+
+const URL_GOOGLE_SHEETS =
+    "https://script.google.com/macros/s/AKfycbzuILbvHjE_eZGbU-uMKm5xrg5Dgj0Fe2AMruSqeJ8-zSi1CfGss25yirURW8i1gu7FMg/exec";
+
+
+async function enviarParaGoogleSheets(
+    registro
+) {
+
+    if (!navigator.onLine) {
+
+        throw new Error(
+            "SEM_INTERNET"
+        );
+
+    }
+
+
+    await fetch(
+        URL_GOOGLE_SHEETS,
+        {
+            method: "POST",
+
+            mode: "no-cors",
+
+            headers: {
+                "Content-Type":
+                    "text/plain;charset=utf-8"
+            },
+
+            body:
+                JSON.stringify(registro)
+        }
+    );
+
+}
 
 /* ========================================
    DATA PADRÃO = HOJE
@@ -1086,6 +1209,29 @@ formulario.addEventListener(
         registro.idVisita =
             gerarIdVisita();
 
+           /* ========================================
+   SALVAR CÓPIA LOCAL ANTES DO ENVIO
+======================================== */
+
+adicionarPendente(registro);
+
+const copiaSalva =
+    obterPendentes().some(
+        item =>
+            item.idVisita ===
+            registro.idVisita
+    );
+
+if (!copiaSalva) {
+
+    alert(
+        "Não foi possível criar a cópia de segurança deste registro. Não feche a página e tente novamente."
+    );
+
+    return;
+} 
+
+
 
         /* ==================================
            GUARDAR O REGISTRO
@@ -1112,44 +1258,45 @@ formulario.addEventListener(
             "Dados da visita:",
             registro
         );
+  
 
-
-        /*
-        
-        /* ========================================
+/* ========================================
    ENVIAR REGISTRO PARA O GOOGLE SHEETS
 ======================================== */
 
-const URL_GOOGLE_SHEETS =
-    "https://script.google.com/macros/s/AKfycbzuILbvHjE_eZGbU-uMKm5xrg5Dgj0Fe2AMruSqeJ8-zSi1CfGss25yirURW8i1gu7FMg/exec";
-
 try {
 
-    await fetch(
-        URL_GOOGLE_SHEETS,
-        {
-            method: "POST",
-
-            mode: "no-cors",
-
-            headers: {
-                "Content-Type": "text/plain;charset=utf-8"
-            },
-
-            body: JSON.stringify(registro)
-        }
+    await enviarParaGoogleSheets(
+        registro
     );
 
 } catch (erro) {
 
     console.error(
-        "Erro ao enviar para o Google Sheets:",
+        "Falha no envio da visita:",
         erro
     );
 
-    alert(
-        "Não foi possível registrar a visita. Verifique sua conexão com a internet e tente novamente."
-    );
+
+    if (
+        erro.message === "SEM_INTERNET"
+    ) {
+
+        alert(
+            "Você está sem internet.\n\n" +
+            "A visita foi salva com segurança neste aparelho, " +
+            "mas ainda não foi enviada para a planilha.\n\n" +
+            "Não limpe os dados do navegador."
+        );
+
+    } else {
+
+        alert(
+            "Não foi possível enviar a visita agora.\n\n" +
+            "Uma cópia foi salva neste aparelho para evitar a perda dos dados."
+        );
+
+    }
 
     return;
 }
