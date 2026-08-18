@@ -140,7 +140,7 @@
                     Reinaldo Silva Soares Dias
                   </option>
 
-                  <option value="Pedro Ivo Valendo do Carmo">
+                  <option value="Pedro Ivo Valente do Carmo Gomes">
                     Pedro Ivo Valente do Carmo Gomes
                   </option>
                 </select>
@@ -766,8 +766,8 @@
     </main>
 
     <!-- =====================================
-         MODAL DE SUCESSO
-    ====================================== -->
+     MODAL DE SUCESSO
+====================================== -->
 
     <div
       class="modal"
@@ -794,6 +794,78 @@
 
         <p>As informações da visita foram validadas com sucesso.</p>
 
+        <!-- ID DA VISITA -->
+
+        <div class="registro-id-box">
+          <span>ID DA VISITA</span>
+
+          <strong id="idVisitaGerado"> — </strong>
+        </div>
+
+        <!-- EXPORTAÇÕES -->
+
+        <div class="acoes-exportacao">
+          <!-- EXCEL -->
+          <button
+            type="button"
+            class="btn-exportar btn-excel"
+            id="exportarExcel"
+          >
+            <span class="icone-exportacao icone-excel">
+              <svg
+                viewBox="0 0 24 24"
+                width="25"
+                height="25"
+                aria-hidden="true"
+              >
+                <path
+                  fill="currentColor"
+                  d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm1 7V4.5L19.5 9H15z"
+                />
+                <path
+                  fill="#ffffff"
+                  d="m7.3 11 1.8 3-1.9 3h1.7l1.1-1.9 1.1 1.9h1.7l-1.9-3 1.8-3H11l-1 1.8L9 11H7.3z"
+                />
+              </svg>
+            </span>
+
+            <span class="texto-exportacao">
+              <small>Baixar arquivo</small>
+              Excel
+            </span>
+          </button>
+
+          <!-- PDF -->
+          <button type="button" class="btn-exportar btn-pdf" id="exportarPdf">
+            <span class="icone-exportacao icone-pdf">
+              <svg
+                viewBox="0 0 24 24"
+                width="25"
+                height="25"
+                aria-hidden="true"
+              >
+                <path
+                  fill="currentColor"
+                  d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm1 7V4.5L19.5 9H15z"
+                />
+                <text
+                  x="6.4"
+                  y="17"
+                  fill="#ffffff"
+                  font-size="5.3"
+                  font-weight="bold"
+                >
+                  PDF
+                </text>
+              </svg>
+            </span>
+
+            <span class="texto-exportacao">
+              <small>Baixar arquivo</small>
+              PDF
+            </span>
+          </button>
+        </div>
         <button type="button" class="btn-novo" id="novaVisita">
           Registrar nova visita
         </button>
@@ -812,8 +884,13 @@
       </div>
     </footer>
 
-    <!-- JAVASCRIPT -->
+    <!-- BIBLIOTECAS PARA EXPORTAÇÃO -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 
+    <!-- JAVASCRIPT -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf/dist/jspdf.umd.min.js"></script>
     <script src="script.js"></script>
   </body>
 </html>
