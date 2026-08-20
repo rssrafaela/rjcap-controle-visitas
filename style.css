@@ -1585,200 +1585,401 @@ footer {
     }
 }
 
-/* =========================================
-   EXPORTAÇÕES - CONFIGURAÇÃO FINAL
-========================================= */
+/* =========================================================
+   ENDEREÇO PADRONIZADO / BAIRRO PESQUISÁVEL
+========================================================= */
+.ajuda-campo {
+    margin-top: 7px;
+    color: var(--texto-secundario);
+    font-size: 11px;
+    line-height: 1.45;
+}
 
-.acoes-exportacao {
-    width: 100%;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-top: 24px;
-    margin-bottom: 12px;
+input[readonly] {
+    background: #f3f3f6;
+    color: #5f5f69;
+    cursor: default;
+}
+
+/* =========================================================
+   LISTA PESQUISÁVEL DE BAIRROS
+========================================================= */
+
+.lista-bairros {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+
+    max-height: 260px;
+    overflow-y: auto;
+
+    background: #ffffff;
+
+    border: 1px solid var(--borda);
+    border-radius: 11px;
+
+    box-shadow:
+        0 14px 35px rgba(32, 20, 50, 0.14);
+
+    z-index: 1000;
+
+    padding: 6px;
 }
 
 
-/* BOTÕES */
+/* Quando estiver escondida */
 
-.btn-exportar {
-    min-height: 58px;
-    padding: 10px 14px;
+.lista-bairros[hidden] {
+    display: none;
+}
 
-    background: #ffffff;
-    border: 1px solid #dcc5f5;
-    border-radius: 10px;
 
-    color: #25232a;
+/* =========================================================
+   CADA BAIRRO DA LISTA
+========================================================= */
 
-    font-family: inherit;
+.opcao-bairro {
+    width: 100%;
+    min-height: 42px;
 
     display: flex;
     align-items: center;
-    justify-content: flex-start;
-    gap: 11px;
+
+    padding: 10px 12px;
+
+    border: none;
+    border-radius: 8px;
+
+    background: transparent;
+
+    color: var(--texto);
+
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+
+    text-align: left;
 
     cursor: pointer;
 
     transition:
+        background 0.15s ease,
+        color 0.15s ease;
+}
+
+
+/* Mouse em cima */
+
+.opcao-bairro:hover {
+    background: #f5edff;
+    color: var(--roxo);
+}
+
+
+/* Seleção usando as setas do teclado */
+
+.opcao-bairro.ativo {
+    background: #f1e8ff;
+    color: var(--roxo);
+}
+
+
+/* =========================================================
+   NENHUM BAIRRO ENCONTRADO
+========================================================= */
+
+.bairro-sem-resultado {
+    padding: 14px 12px;
+
+    color: var(--texto-secundario);
+
+    font-size: 13px;
+    text-align: center;
+}
+
+
+/* =========================================================
+   BARRA DE ROLAGEM
+========================================================= */
+
+.lista-bairros::-webkit-scrollbar {
+    width: 7px;
+}
+
+.lista-bairros::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.lista-bairros::-webkit-scrollbar-thumb {
+    background: #d6c6e7;
+    border-radius: 20px;
+}
+
+.lista-bairros::-webkit-scrollbar-thumb:hover {
+    background: #b99bd5;
+}
+
+
+/* =========================================================
+   BAIRRO COM FOCO
+========================================================= */
+
+#bairro:focus {
+    background: #ffffff;
+
+    border-color: #9b43e8;
+
+    box-shadow:
+        0 0 0 4px rgba(105, 0, 216, 0.08);
+}
+
+
+/* =========================================================
+   CELULAR
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .lista-bairros {
+        max-height: 230px;
+
+        border-radius: 10px;
+
+        padding: 5px;
+    }
+
+    .opcao-bairro {
+        min-height: 46px;
+
+        padding: 11px 12px;
+
+        font-size: 15px;
+    }
+
+}
+
+
+/* =========================================================
+   MODAL DE SUCESSO — AJUSTE FINAL
+   Layout compacto: ID em caixa + Excel/PDF empilhados
+========================================================= */
+
+.modal-box {
+    width: min(390px, 100%);
+    position: relative;
+    background: #ffffff;
+    padding: 32px 24px 24px;
+    border-radius: 18px;
+    text-align: center;
+    box-shadow: 0 28px 80px rgba(0, 0, 0, 0.24);
+    animation: aparecer 0.3s ease;
+}
+
+.fechar-modal {
+    position: absolute;
+    right: 15px;
+    top: 12px;
+    border: none;
+    background: transparent;
+    color: #8b8b8b;
+    font-family: inherit;
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.icone-sucesso {
+    width: 62px;
+    height: 62px;
+    margin: 0 auto 15px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--gradiente);
+    color: #ffffff;
+    font-size: 28px;
+    font-weight: 900;
+    box-shadow: 0 12px 30px rgba(130, 0, 190, 0.18);
+}
+
+.modal-tag {
+    display: block;
+    margin: 0;
+    color: var(--roxo);
+    font-size: 9px;
+    line-height: 1.2;
+    letter-spacing: 2.2px;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.modal-box h2 {
+    margin: 10px 0 0;
+    color: var(--texto);
+    font-size: 23px;
+    line-height: 1.15;
+    letter-spacing: -0.6px;
+}
+
+.modal-box p {
+    margin: 12px auto 17px;
+    max-width: 310px;
+    color: var(--texto-secundario);
+    font-size: 12px;
+    line-height: 1.55;
+}
+
+/* Caixa separada do ID */
+.registro-id {
+    width: 100%;
+    margin: 0 0 10px;
+    padding: 11px 12px;
+    border: 1px solid rgba(105, 0, 216, 0.16);
+    border-radius: 10px;
+    background: #faf7ff;
+    text-align: center;
+}
+
+.registro-id span {
+    display: block;
+    margin: 0 0 3px;
+    color: #777681;
+    font-size: 8px;
+    line-height: 1.2;
+    font-weight: 800;
+    letter-spacing: 1.7px;
+    text-transform: uppercase;
+}
+
+.registro-id strong {
+    display: block;
+    color: var(--texto);
+    font-size: 12px;
+    line-height: 1.3;
+    font-weight: 800;
+    overflow-wrap: anywhere;
+}
+
+/* Excel e PDF: um embaixo do outro */
+.acoes-exportacao {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+    margin: 0 0 9px;
+}
+
+.btn-exportar {
+    width: 100%;
+    min-height: 55px;
+    padding: 8px 15px;
+    border: 1px solid rgba(105, 0, 216, 0.22);
+    border-radius: 10px;
+    background: #ffffff;
+    color: var(--texto);
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 800;
+    text-align: left;
+    cursor: pointer;
+    transition:
         transform 0.2s ease,
-        box-shadow 0.2s ease,
-        border-color 0.2s ease;
+        background 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
 }
 
 .btn-exportar:hover {
     transform: translateY(-1px);
-    border-color: #b991e8;
-    box-shadow: 0 8px 20px rgba(105, 0, 216, 0.08);
+    background: #faf7ff;
+    border-color: rgba(105, 0, 216, 0.38);
+    box-shadow: 0 7px 18px rgba(105, 0, 216, 0.08);
 }
 
+/* Mantém ícones/conteúdo internos alinhados caso existam */
+.btn-exportar > * {
+    vertical-align: middle;
+}
 
-/* =========================================
-   TEXTO
-========================================= */
-
-.btn-exportar .texto-exportacao {
-    display: flex;
-    flex-direction: column;
-
-    color: #25232a;
-
+/* Botão final */
+.btn-novo {
+    width: 100%;
+    height: 50px;
+    border: none;
+    border-radius: 10px;
+    background: var(--gradiente);
+    color: #ffffff;
+    font-family: inherit;
     font-size: 13px;
     font-weight: 800;
-    line-height: 1.2;
-
-    text-align: left;
+    cursor: pointer;
 }
 
-.btn-exportar .texto-exportacao small {
-    margin-bottom: 3px;
-
-    color: #77747d;
-
-    font-size: 9px;
-    font-weight: 600;
-
-    opacity: 1;
-}
-
-
-/* =========================================
-   ÁREA DO ÍCONE
-========================================= */
-
-.btn-exportar .icone-exportacao {
-    width: 42px;
-    height: 42px;
-    min-width: 42px;
-
-    padding: 0;
-
-    background: transparent;
-
-    border-radius: 0;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-
-/* =========================================
-   EXCEL - VERDE
-========================================= */
-
-.btn-excel {
-    color: #25232a;
-}
-
-.btn-excel .icone-exportacao {
-    color: #217346;
-}
-
-.btn-excel .icone-exportacao svg {
-    color: #217346;
-}
-
-
-/* =========================================
-   PDF - VERMELHO
-========================================= */
-
-.btn-pdf {
-    color: #25232a;
-}
-
-.btn-pdf .icone-exportacao {
-    color: #e53935;
-}
-
-.btn-pdf .icone-exportacao svg {
-    color: #e53935;
-}
-
-
-/* =========================================
-   ID DA VISITA
-========================================= */
-
-.registro-id-box {
-    width: 100%;
-
-    margin: 4px 0 0;
-    padding: 14px 16px;
-
-    background: #faf7ff;
-    border: 1px solid rgba(105, 0, 216, 0.12);
-    border-radius: 11px;
-
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 5px;
-}
-
-.registro-id-box span {
-    color: #77747d;
-
-    font-size: 9px;
-    font-weight: 900;
-    letter-spacing: 1.5px;
-}
-
-.registro-id-box strong {
-    color: #25232a;
-
-    font-size: 13px;
-    font-weight: 900;
-
-    letter-spacing: 0.3px;
-
-    word-break: break-word;
-}
-
-
-/* =========================================
-   CELULAR
-========================================= */
-
+/* Celular: mantém exatamente a mesma organização vertical */
 @media (max-width: 600px) {
+    .modal {
+        padding: 10px;
+    }
+
+    .modal-box {
+        width: min(100%, 390px);
+        padding: 30px 16px 17px;
+        border-radius: 16px;
+    }
+
+    .fechar-modal {
+        right: 12px;
+        top: 10px;
+        font-size: 22px;
+    }
+
+    .icone-sucesso {
+        width: 58px;
+        height: 58px;
+        margin-bottom: 13px;
+        font-size: 26px;
+    }
+
+    .modal-tag {
+        font-size: 8px;
+        letter-spacing: 2px;
+    }
+
+    .modal-box h2 {
+        margin-top: 9px;
+        font-size: 20px;
+    }
+
+    .modal-box p {
+        margin: 10px auto 15px;
+        max-width: 285px;
+        font-size: 11px;
+        line-height: 1.5;
+    }
+
+    .registro-id {
+        padding: 10px;
+        margin-bottom: 8px;
+    }
+
+    .registro-id strong {
+        font-size: 11px;
+    }
 
     .acoes-exportacao {
         grid-template-columns: 1fr;
-        margin-top: 20px;
+        gap: 7px;
+        margin-bottom: 8px;
     }
 
     .btn-exportar {
-        width: 100%;
-        min-height: 56px;
+        min-height: 52px;
+        padding: 7px 13px;
     }
 
-    .registro-id-box {
-        padding: 13px 10px;
-    }
-
-    .registro-id-box strong {
+    .btn-novo {
+        height: 48px;
         font-size: 12px;
     }
-
 }
