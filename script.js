@@ -1,7 +1,13 @@
+/* =========================================================
+   RJCAP - CONTROLE DE VISITAS
+   SCRIPT.JS
+========================================================= */
+
 const formulario = document.getElementById("formVisita");
 
 const telefone = document.getElementById("telefone");
 const valorContrato = document.getElementById("valorContrato");
+const dataVisita = document.getElementById("dataVisita");
 
 const observacoes = document.getElementById("observacoes");
 const contadorCaracteres = document.getElementById("contadorCaracteres");
@@ -12,8 +18,6 @@ const novaVisita = document.getElementById("novaVisita");
 
 const btnLimparFormulario =
     document.getElementById("btnLimparFormulario");
-
-const dataVisita = document.getElementById("dataVisita");
 
 const empresaConservadora =
     document.getElementById("empresaConservadora");
@@ -34,15 +38,91 @@ const exportarPdf =
     document.getElementById("exportarPdf");
 
 
-/* ========================================
-   ÚLTIMO REGISTRO REALIZADO
-======================================== */
+/* =========================================================
+   NOVOS CAMPOS
+========================================================= */
+
+const campoApoios =
+    document.getElementById("campoApoios");
+
+const radiosPrecisaApoio =
+    document.querySelectorAll(
+        'input[name="precisaApoio"]'
+    );
+
+const checkboxesApoio =
+    document.querySelectorAll(
+        'input[name="apoio"]'
+    );
+
+const tipoContrato =
+    document.getElementById("tipoContrato");
+
+const margemVenda =
+    document.getElementById("margemVenda");
+
+const numeroProposta =
+    document.getElementById("numeroProposta");
+
+const bairro =
+    document.getElementById("bairro");
+
+const cidade =
+    document.getElementById("cidade");
+
+const uf =
+    document.getElementById("uf");
+
+const regiao =
+    document.getElementById("regiao");
+
+
+/* =========================================================
+   ÚLTIMO REGISTRO
+========================================================= */
 
 let ultimoRegistro = null;
 
-/* ========================================
+
+/* =========================================================
+   GOOGLE SHEETS
+========================================================= */
+
+const URL_GOOGLE_SHEETS =
+    "https://script.google.com/macros/s/AKfycbzuILbvHjE_eZGbU-uMKm5xrg5Dgj0Fe2AMruSqeJ8-zSi1CfGss25yirURW8i1gu7FMg/exec";
+
+
+async function enviarParaGoogleSheets(registro) {
+
+    if (!navigator.onLine) {
+
+        throw new Error("SEM_INTERNET");
+
+    }
+
+    await fetch(
+        URL_GOOGLE_SHEETS,
+        {
+            method: "POST",
+
+            mode: "no-cors",
+
+            headers: {
+                "Content-Type":
+                    "text/plain;charset=utf-8"
+            },
+
+            body:
+                JSON.stringify(registro)
+        }
+    );
+
+}
+
+
+/* =========================================================
    SEGURANÇA LOCAL DOS REGISTROS
-======================================== */
+========================================================= */
 
 const CHAVE_PENDENTES =
     "rjcap_registros_pendentes";
@@ -89,7 +169,7 @@ function salvarPendentes(lista) {
     } catch (erro) {
 
         console.error(
-            "Erro ao salvar registro local:",
+            "Erro ao salvar registros pendentes:",
             erro
         );
 
@@ -105,17 +185,18 @@ function adicionarPendente(registro) {
     const pendentes =
         obterPendentes();
 
-    const jaExiste =
+    const existe =
         pendentes.some(
             item =>
                 item.idVisita ===
                 registro.idVisita
         );
 
-    if (!jaExiste) {
+    if (!existe) {
 
         pendentes.push({
             ...registro,
+
             salvoLocalmenteEm:
                 new Date().toISOString()
         });
@@ -128,181 +209,248 @@ function adicionarPendente(registro) {
 
 }
 
-const URL_GOOGLE_SHEETS =
-    "https://script.google.com/macros/s/AKfycbzuILbvHjE_eZGbU-uMKm5xrg5Dgj0Fe2AMruSqeJ8-zSi1CfGss25yirURW8i1gu7FMg/exec";
 
-
-async function enviarParaGoogleSheets(
-    registro
-) {
-
-    if (!navigator.onLine) {
-
-        throw new Error(
-            "SEM_INTERNET"
-        );
-
-    }
-
-
-    await fetch(
-        URL_GOOGLE_SHEETS,
-        {
-            method: "POST",
-
-            mode: "no-cors",
-
-            headers: {
-                "Content-Type":
-                    "text/plain;charset=utf-8"
-            },
-
-            body:
-                JSON.stringify(registro)
-        }
-    );
-
-}
-
-/* ========================================
+/* =========================================================
    DATA PADRÃO = HOJE
-======================================== */
+========================================================= */
 
 function definirDataAtual() {
 
-    const hoje = new Date();
+    if (!dataVisita) {
+        return;
+    }
 
-    const ano = hoje.getFullYear();
+    const hoje =
+        new Date();
 
-    const mes = String(
-        hoje.getMonth() + 1
-    ).padStart(2, "0");
+    const ano =
+        hoje.getFullYear();
 
-    const dia = String(
-        hoje.getDate()
-    ).padStart(2, "0");
+    const mes =
+        String(
+            hoje.getMonth() + 1
+        ).padStart(
+            2,
+            "0"
+        );
+
+    const dia =
+        String(
+            hoje.getDate()
+        ).padStart(
+            2,
+            "0"
+        );
 
     dataVisita.value =
         `${ano}-${mes}-${dia}`;
+
 }
 
 definirDataAtual();
 
 
-/* ========================================
+/* =========================================================
    MÁSCARA DE TELEFONE
-======================================== */
+========================================================= */
 
-telefone.addEventListener(
-    "input",
-    function () {
+if (telefone) {
 
-        let valor =
-            this.value.replace(/\D/g, "");
+    telefone.addEventListener(
+        "input",
+        function () {
 
-        valor =
-            valor.substring(0, 11);
+            let valor =
+                this.value.replace(
+                    /\D/g,
+                    ""
+                );
 
+            valor =
+                valor.substring(
+                    0,
+                    11
+                );
 
-        if (valor.length > 10) {
+            if (valor.length > 10) {
 
-            valor = valor.replace(
-                /^(\d{2})(\d{5})(\d{4})$/,
-                "($1) $2-$3"
-            );
+                valor =
+                    valor.replace(
+                        /^(\d{2})(\d{5})(\d{4})$/,
+                        "($1) $2-$3"
+                    );
 
-        } else if (valor.length > 6) {
+            } else if (
+                valor.length > 6
+            ) {
 
-            valor = valor.replace(
-                /^(\d{2})(\d{4})(\d{0,4})$/,
-                "($1) $2-$3"
-            );
+                valor =
+                    valor.replace(
+                        /^(\d{2})(\d{4})(\d{0,4})$/,
+                        "($1) $2-$3"
+                    );
 
-        } else if (valor.length > 2) {
+            } else if (
+                valor.length > 2
+            ) {
 
-            valor = valor.replace(
-                /^(\d{2})(\d+)/,
-                "($1) $2"
-            );
+                valor =
+                    valor.replace(
+                        /^(\d{2})(\d+)/,
+                        "($1) $2"
+                    );
 
-        } else if (valor.length > 0) {
+            } else if (
+                valor.length > 0
+            ) {
 
-            valor = valor.replace(
-                /^(\d{0,2})/,
-                "($1"
-            );
+                valor =
+                    valor.replace(
+                        /^(\d{0,2})/,
+                        "($1"
+                    );
+
+            }
+
+            this.value =
+                valor;
 
         }
+    );
 
-        this.value = valor;
-
-    }
-);
+}
 
 
-/* ========================================
-   FORMATAÇÃO DO VALOR EM REAIS
-======================================== */
+/* =========================================================
+   FORMATAÇÃO DO VALOR DO CONTRATO
+========================================================= */
 
-valorContrato.addEventListener(
-    "input",
-    function () {
+if (valorContrato) {
 
-        let valor =
-            this.value.replace(/\D/g, "");
+    valorContrato.addEventListener(
+        "input",
+        function () {
 
-        if (!valor) {
+            let valor =
+                this.value.replace(
+                    /\D/g,
+                    ""
+                );
 
-            this.value = "";
+            if (!valor) {
 
-            return;
+                this.value = "";
+
+                return;
+
+            }
+
+            valor =
+                (
+                    Number(valor) / 100
+                ).toLocaleString(
+                    "pt-BR",
+                    {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    }
+                );
+
+            this.value =
+                valor;
+
         }
+    );
 
-        valor =
-            (
-                Number(valor) / 100
-            ).toLocaleString(
-                "pt-BR",
-                {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2
-                }
-            );
-
-        this.value = valor;
-
-    }
-);
+}
 
 
-/* ========================================
+/* =========================================================
+   MARGEM DE VENDA
+========================================================= */
+
+if (margemVenda) {
+
+    margemVenda.addEventListener(
+        "input",
+        function () {
+
+            let valor =
+                this.value;
+
+            if (
+                valor === ""
+            ) {
+                return;
+            }
+
+            valor =
+                valor.replace(
+                    ",",
+                    "."
+                );
+
+            if (
+                Number(valor) < 0
+            ) {
+
+                this.value = 0;
+
+            }
+
+        }
+    );
+
+}
+
+
+/* =========================================================
    CONTADOR DE OBSERVAÇÕES
-======================================== */
+========================================================= */
 
-observacoes.setAttribute(
-    "maxlength",
-    "1000"
-);
+if (
+    observacoes &&
+    contadorCaracteres
+) {
 
-observacoes.addEventListener(
-    "input",
-    function () {
+    observacoes.setAttribute(
+        "maxlength",
+        "1000"
+    );
 
-        contadorCaracteres.textContent =
-            this.value.length;
+    observacoes.addEventListener(
+        "input",
+        function () {
 
-    }
-);
+            contadorCaracteres
+                .textContent =
+                this.value.length;
+
+        }
+    );
+
+}
 
 
-/* ========================================
+/* =========================================================
    EMPRESA CONSERVADORA - OUTROS
-======================================== */
+========================================================= */
 
 function atualizarCampoOutraConservadora() {
 
+    if (
+        !empresaConservadora ||
+        !campoOutraConservadora ||
+        !outraConservadora
+    ) {
+
+        return;
+
+    }
+
     const selecionouOutros =
-        empresaConservadora.value === "Outros";
+        empresaConservadora.value ===
+        "Outros";
 
     campoOutraConservadora.hidden =
         !selecionouOutros;
@@ -312,191 +460,452 @@ function atualizarCampoOutraConservadora() {
 
     if (!selecionouOutros) {
 
-        outraConservadora.value = "";
+        outraConservadora.value =
+            "";
 
     }
 
 }
 
 
-empresaConservadora.addEventListener(
-    "change",
-    function () {
+if (empresaConservadora) {
 
-        atualizarCampoOutraConservadora();
+    empresaConservadora.addEventListener(
+        "change",
+        function () {
 
-        if (this.value === "Outros") {
+            atualizarCampoOutraConservadora();
 
-            outraConservadora.focus();
+            if (
+                this.value ===
+                "Outros"
+            ) {
+
+                outraConservadora.focus();
+
+            }
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   PRECISA DE APOIO?
+========================================================= */
+
+function atualizarCampoApoio() {
+
+    if (!campoApoios) {
+        return;
+    }
+
+    const escolha =
+        document.querySelector(
+            'input[name="precisaApoio"]:checked'
+        );
+
+    const precisa =
+        escolha &&
+        escolha.value === "Sim";
+
+    campoApoios.hidden =
+        !precisa;
+
+    if (!precisa) {
+
+        checkboxesApoio
+            .forEach(
+                checkbox => {
+
+                    checkbox.checked =
+                        false;
+
+                }
+            );
+
+    }
+
+}
+
+
+radiosPrecisaApoio
+    .forEach(
+        radio => {
+
+            radio.addEventListener(
+                "change",
+                atualizarCampoApoio
+            );
+
+        }
+    );
+
+atualizarCampoApoio();
+
+/* =========================================================
+   BAIRROS DO RIO DE JANEIRO
+   REGIÃO AUTOMÁTICA
+========================================================= */
+
+const bairrosPorRegiao = {
+
+    "Centro": [
+        "Benfica",
+        "Caju",
+        "Catumbi",
+        "Centro",
+        "Cidade Nova",
+        "Estácio",
+        "Gamboa",
+        "Glória",
+        "Lapa",
+        "Mangueira",
+        "Paquetá",
+        "Rio Comprido",
+        "Santa Teresa",
+        "Santo Cristo",
+        "Saúde",
+        "São Cristóvão",
+        "Vasco da Gama"
+    ],
+
+    "Zona Sul": [
+        "Botafogo",
+        "Catete",
+        "Copacabana",
+        "Cosme Velho",
+        "Flamengo",
+        "Gávea",
+        "Humaitá",
+        "Ipanema",
+        "Jardim Botânico",
+        "Lagoa",
+        "Laranjeiras",
+        "Leblon",
+        "Leme",
+        "Rocinha",
+        "São Conrado",
+        "Urca",
+        "Vidigal"
+    ],
+
+    "Zona Norte": [
+        "Abolição",
+        "Acari",
+        "Água Santa",
+        "Alto da Boa Vista",
+        "Anchieta",
+        "Andaraí",
+        "Barros Filho",
+        "Bento Ribeiro",
+        "Bonsucesso",
+        "Brás de Pina",
+        "Cachambi",
+        "Campinho",
+        "Cascadura",
+        "Cavalcanti",
+        "Cidade Universitária",
+        "Coelho Neto",
+        "Colégio",
+        "Complexo do Alemão",
+        "Cordovil",
+        "Costa Barros",
+        "Del Castilho",
+        "Encantado",
+        "Engenheiro Leal",
+        "Engenho da Rainha",
+        "Engenho de Dentro",
+        "Engenho Novo",
+        "Freguesia (Ilha do Governador)",
+        "Galeão",
+        "Grajaú",
+        "Guadalupe",
+        "Higienópolis",
+        "Honório Gurgel",
+        "Inhaúma",
+        "Irajá",
+        "Jacaré",
+        "Jacarezinho",
+        "Jardim América",
+        "Jardim Carioca",
+        "Jardim Guanabara",
+        "Lins de Vasconcelos",
+        "Madureira",
+        "Maracanã",
+        "Marechal Hermes",
+        "Maria da Graça",
+        "Méier",
+        "Moneró",
+        "Manguinhos",
+        "Olaria",
+        "Oswaldo Cruz",
+        "Parada de Lucas",
+        "Parque Anchieta",
+        "Parque Colúmbia",
+        "Pavuna",
+        "Penha",
+        "Penha Circular",
+        "Piedade",
+        "Pilares",
+        "Pitanga",
+        "Portuguesa",
+        "Praça da Bandeira",
+        "Praia da Bandeira",
+        "Quintino Bocaiúva",
+        "Ramos",
+        "Riachuelo",
+        "Ribeira",
+        "Ricardo de Albuquerque",
+        "Rocha",
+        "Rocha Miranda",
+        "Sampaio",
+        "São Francisco Xavier",
+        "Tauá",
+        "Tijuca",
+        "Todos os Santos",
+        "Tomás Coelho",
+        "Turiaçu",
+        "Vaz Lobo",
+        "Vicente de Carvalho",
+        "Vigário Geral",
+        "Vila da Penha",
+        "Vila Isabel",
+        "Vila Kosmos",
+        "Vista Alegre",
+        "Zumbi"
+    ],
+
+    "Zona Oeste": [
+        "Anil",
+        "Bangu",
+        "Barra da Tijuca",
+        "Barra de Guaratiba",
+        "Camorim",
+        "Campo dos Afonsos",
+        "Campo Grande",
+        "Cidade de Deus",
+        "Cosmos",
+        "Curicica",
+        "Deodoro",
+        "Freguesia (Jacarepaguá)",
+        "Gardênia Azul",
+        "Gericinó",
+        "Grumari",
+        "Guaratiba",
+        "Inhoaíba",
+        "Itanhangá",
+        "Jabour",
+        "Jacarepaguá",
+        "Jardim Sulacap",
+        "Joá",
+        "Magalhães Bastos",
+        "Paciência",
+        "Padre Miguel",
+        "Pechincha",
+        "Pedra de Guaratiba",
+        "Praça Seca",
+        "Realengo",
+        "Recreio dos Bandeirantes",
+        "Santíssimo",
+        "Santa Cruz",
+        "Senador Camará",
+        "Senador Vasconcelos",
+        "Sepetiba",
+        "Tanque",
+        "Taquara",
+        "Vargem Grande",
+        "Vargem Pequena",
+        "Vila Kennedy",
+        "Vila Militar"
+    ]
+
+};
+
+
+/* =========================================================
+   LISTA GERAL DE BAIRROS
+========================================================= */
+
+const listaBairros = Object
+    .values(bairrosPorRegiao)
+    .flat()
+    .sort(
+        (a, b) =>
+            a.localeCompare(
+                b,
+                "pt-BR"
+            )
+    );
+
+
+/* =========================================================
+   DESCOBRIR REGIÃO PELO BAIRRO
+========================================================= */
+
+function descobrirRegiao(bairroSelecionado) {
+
+    if (!bairroSelecionado) {
+        return "";
+    }
+
+    for (
+        const [nomeRegiao, bairros]
+        of Object.entries(bairrosPorRegiao)
+    ) {
+
+        if (
+            bairros.includes(
+                bairroSelecionado
+            )
+        ) {
+
+            return nomeRegiao;
 
         }
 
     }
-);
+
+    return "";
+
+}
 
 
-/* ========================================
-   REMOVER MENSAGENS DE ERRO
-======================================== */
+/* =========================================================
+   PREENCHER REGIÃO AUTOMATICAMENTE
+========================================================= */
+
+function atualizarRegiaoPorBairro() {
+
+    if (
+        !bairro ||
+        !regiao
+    ) {
+        return;
+    }
+
+    const bairroSelecionado =
+        bairro.value.trim();
+
+    const regiaoEncontrada =
+        descobrirRegiao(
+            bairroSelecionado
+        );
+
+    regiao.value =
+        regiaoEncontrada;
+
+}
+
+
+if (bairro) {
+
+    bairro.addEventListener(
+        "change",
+        atualizarRegiaoPorBairro
+    );
+
+    bairro.addEventListener(
+        "input",
+        atualizarRegiaoPorBairro
+    );
+
+}
+
+
+/* =========================================================
+   CIDADE E UF FIXOS
+========================================================= */
+
+function definirLocalizacaoPadrao() {
+
+    if (cidade) {
+
+        cidade.value =
+            "Rio de Janeiro";
+
+    }
+
+    if (uf) {
+
+        uf.value =
+            "RJ";
+
+    }
+
+}
+
+
+definirLocalizacaoPadrao();
+
+
+/* =========================================================
+   ERROS DO FORMULÁRIO
+========================================================= */
 
 function limparErros() {
 
     document
-        .querySelectorAll(".erro-mensagem")
+        .querySelectorAll(
+            ".erro-mensagem"
+        )
         .forEach(
-            (erro) => erro.remove()
+            erro =>
+                erro.remove()
         );
 
     document
-        .querySelectorAll(".campo-erro")
+        .querySelectorAll(
+            ".campo-erro"
+        )
         .forEach(
-            (campo) => {
-
+            campo =>
                 campo.classList.remove(
                     "campo-erro"
-                );
-
-            }
+                )
         );
 
 }
 
-
-/* ========================================
-   FUNÇÃO CENTRAL PARA LIMPAR FORMULÁRIO
-======================================== */
-
-function limparFormulario() {
-
-    formulario.reset();
-
-    contadorCaracteres.textContent = "0";
-
-    limparErros();
-
-    definirDataAtual();
-
-    atualizarCampoOutraConservadora();
-
-}
-
-
-/* ========================================
-   VERIFICAR SE EXISTEM DADOS PREENCHIDOS
-======================================== */
-
-function formularioPossuiDados() {
-
-    const campos =
-        formulario.querySelectorAll(
-            "input, select, textarea"
-        );
-
-    return Array
-        .from(campos)
-        .some(
-            (campo) => {
-
-                if (
-                    campo.type === "radio" ||
-                    campo.type === "checkbox"
-                ) {
-
-                    return campo.checked;
-
-                }
-
-                if (
-                    campo.id === "dataVisita"
-                ) {
-
-                    return false;
-
-                }
-
-                return (
-                    campo.value.trim() !== ""
-                );
-
-            }
-        );
-
-}
-
-
-/* ========================================
-   BOTÃO LIMPAR DADOS
-======================================== */
-
-btnLimparFormulario.addEventListener(
-    "click",
-    function () {
-
-        if (!formularioPossuiDados()) {
-
-            limparFormulario();
-
-            return;
-
-        }
-
-        const confirmar =
-            window.confirm(
-                "Deseja realmente limpar todos os dados preenchidos?"
-            );
-
-        if (!confirmar) {
-
-            return;
-
-        }
-
-        limparFormulario();
-
-        formulario.scrollIntoView({
-            behavior: "smooth",
-            block: "start"
-        });
-
-    }
-);
-
-
-/* ========================================
-   MOSTRAR ERRO
-======================================== */
 
 function mostrarErro(
     elemento,
     mensagem
 ) {
 
+    if (!elemento) {
+        return;
+    }
+
     const campo =
-        elemento.closest(".campo");
+        elemento.closest(
+            ".campo"
+        );
 
     if (!campo) {
-
         return;
-
     }
 
     campo.classList.add(
         "campo-erro"
     );
 
-    const erroExistente =
+    const erroAnterior =
         campo.querySelector(
             ".erro-mensagem"
         );
 
-    if (erroExistente) {
+    if (erroAnterior) {
 
-        erroExistente.remove();
+        erroAnterior.remove();
 
     }
 
     const erro =
-        document.createElement("div");
+        document.createElement(
+            "div"
+        );
 
     erro.className =
         "erro-mensagem";
@@ -511,9 +920,44 @@ function mostrarErro(
 }
 
 
-/* ========================================
-   VALIDAR RADIO
-======================================== */
+function removerErroDoCampo(
+    elemento
+) {
+
+    if (!elemento) {
+        return;
+    }
+
+    const campo =
+        elemento.closest(
+            ".campo"
+        );
+
+    if (!campo) {
+        return;
+    }
+
+    campo.classList.remove(
+        "campo-erro"
+    );
+
+    const erro =
+        campo.querySelector(
+            ".erro-mensagem"
+        );
+
+    if (erro) {
+
+        erro.remove();
+
+    }
+
+}
+
+
+/* =========================================================
+   VALIDAR CAMPOS RADIO
+========================================================= */
 
 function validarRadio(
     nome,
@@ -546,27 +990,110 @@ function validarRadio(
 }
 
 
-/* ========================================
-   VALIDAÇÃO DO FORMULÁRIO
-======================================== */
+/* =========================================================
+   VALIDAR BAIRRO
+========================================================= */
+
+function validarBairro() {
+
+    if (!bairro) {
+        return true;
+    }
+
+    const bairroDigitado =
+        bairro.value.trim();
+
+    if (!bairroDigitado) {
+
+        mostrarErro(
+            bairro,
+            "Selecione o bairro."
+        );
+
+        return false;
+
+    }
+
+    const bairroValido =
+        listaBairros.some(
+            item =>
+                item.toLocaleLowerCase(
+                    "pt-BR"
+                ) ===
+                bairroDigitado.toLocaleLowerCase(
+                    "pt-BR"
+                )
+        );
+
+    if (!bairroValido) {
+
+        mostrarErro(
+            bairro,
+            "Selecione um bairro válido da lista."
+        );
+
+        return false;
+
+    }
+
+    /*
+       PADRONIZA A ESCRITA.
+
+       Exemplo:
+       se alguém digitar "olaria",
+       o sistema transforma em "Olaria".
+    */
+
+    const nomePadronizado =
+        listaBairros.find(
+            item =>
+                item.toLocaleLowerCase(
+                    "pt-BR"
+                ) ===
+                bairroDigitado.toLocaleLowerCase(
+                    "pt-BR"
+                )
+        );
+
+    bairro.value =
+        nomePadronizado;
+
+    atualizarRegiaoPorBairro();
+
+    return true;
+
+}
+
+
+/* =========================================================
+   VALIDAÇÃO COMPLETA DO FORMULÁRIO
+========================================================= */
 
 function validarFormulario() {
 
     limparErros();
 
-    let valido = true;
+    let valido =
+        true;
+
+
+    /* CAMPOS OBRIGATÓRIOS */
 
     const campos =
         formulario.querySelectorAll(
-            "input:not([type='radio']), select, textarea"
+            "input:not([type='radio']):not([type='checkbox']), select, textarea"
         );
 
     campos.forEach(
-        (campo) => {
+        campo => {
 
             if (
-                campo.hasAttribute("required") &&
-                !campo.value.trim()
+                campo.hasAttribute(
+                    "required"
+                ) &&
+                !String(
+                    campo.value
+                ).trim()
             ) {
 
                 mostrarErro(
@@ -574,7 +1101,8 @@ function validarFormulario() {
                     "Este campo é obrigatório."
                 );
 
-                valido = false;
+                valido =
+                    false;
 
             }
 
@@ -582,7 +1110,7 @@ function validarFormulario() {
     );
 
 
-    /* MODALIDADE */
+    /* MODALIDADE DE NEGÓCIOS */
 
     if (
         !validarRadio(
@@ -591,12 +1119,13 @@ function validarFormulario() {
         )
     ) {
 
-        valido = false;
+        valido =
+            false;
 
     }
 
 
-    /* NATUREZA */
+    /* NATUREZA DA VISITA */
 
     if (
         !validarRadio(
@@ -605,7 +1134,60 @@ function validarFormulario() {
         )
     ) {
 
-        valido = false;
+        valido =
+            false;
+
+    }
+
+
+    /* PRECISA DE APOIO */
+
+    if (
+        !validarRadio(
+            "precisaApoio",
+            "Informe se precisa de apoio."
+        )
+    ) {
+
+        valido =
+            false;
+
+    }
+
+
+    /* SE PRECISA DE APOIO, EXIGE PELO MENOS UM */
+
+    const precisaApoio =
+        document.querySelector(
+            'input[name="precisaApoio"]:checked'
+        );
+
+    if (
+        precisaApoio &&
+        precisaApoio.value === "Sim"
+    ) {
+
+        const apoioSelecionado =
+            document.querySelector(
+                'input[name="apoio"]:checked'
+            );
+
+        if (!apoioSelecionado) {
+
+            const primeiroApoio =
+                document.querySelector(
+                    'input[name="apoio"]'
+                );
+
+            mostrarErro(
+                primeiroApoio,
+                "Selecione pelo menos um tipo de apoio."
+            );
+
+            valido =
+                false;
+
+        }
 
     }
 
@@ -619,7 +1201,8 @@ function validarFormulario() {
         )
     ) {
 
-        valido = false;
+        valido =
+            false;
 
     }
 
@@ -633,19 +1216,35 @@ function validarFormulario() {
         )
     ) {
 
-        valido = false;
+        valido =
+            false;
 
     }
 
 
-    /* ========================================
-       E-MAIL
-    ======================================== */
+    /* BAIRRO */
+
+    if (
+        !validarBairro()
+    ) {
+
+        valido =
+            false;
+
+    }
+
+
+    /* EMAIL */
 
     const email =
-        document.getElementById("email");
+        document.getElementById(
+            "email"
+        );
 
-    if (email.value.trim()) {
+    if (
+        email &&
+        email.value.trim()
+    ) {
 
         const regexEmail =
             /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -661,45 +1260,50 @@ function validarFormulario() {
                 "Informe um e-mail válido."
             );
 
-            valido = false;
+            valido =
+                false;
 
         }
 
     }
 
 
-    /* ========================================
-       TELEFONE
-    ======================================== */
-
-    const numerosTelefone =
-        telefone.value.replace(
-            /\D/g,
-            ""
-        );
+    /* TELEFONE */
 
     if (
-        telefone.value &&
-        numerosTelefone.length < 10
+        telefone &&
+        telefone.value
     ) {
 
-        mostrarErro(
-            telefone,
-            "Informe um telefone válido com DDD."
-        );
+        const numeros =
+            telefone.value.replace(
+                /\D/g,
+                ""
+            );
 
-        valido = false;
+        if (
+            numeros.length < 10
+        ) {
+
+            mostrarErro(
+                telefone,
+                "Informe um telefone válido com DDD."
+            );
+
+            valido =
+                false;
+
+        }
 
     }
 
 
-    /* ========================================
-       VALOR DO CONTRATO
-    ======================================== */
+    /* VALOR DO CONTRATO */
 
     if (
-        valorContrato.value &&
-        valorContrato.value === "0,00"
+        valorContrato &&
+        valorContrato.value ===
+        "0,00"
     ) {
 
         mostrarErro(
@@ -707,7 +1311,34 @@ function validarFormulario() {
             "Informe um valor de contrato maior que zero."
         );
 
-        valido = false;
+        valido =
+            false;
+
+    }
+
+
+    /* MARGEM DE VENDA */
+
+    if (
+        margemVenda &&
+        margemVenda.value !== "" &&
+        Number(
+            String(
+                margemVenda.value
+            ).replace(
+                ",",
+                "."
+            )
+        ) < 0
+    ) {
+
+        mostrarErro(
+            margemVenda,
+            "Informe uma margem válida."
+        );
+
+        valido =
+            false;
 
     }
 
@@ -716,10 +1347,9 @@ function validarFormulario() {
 
 }
 
-
-/* ========================================
-   GERAR ID ÚNICO DA VISITA
-======================================== */
+/* =========================================================
+   GERAR ID DA VISITA
+========================================================= */
 
 function gerarIdVisita() {
 
@@ -732,11 +1362,17 @@ function gerarIdVisita() {
 
             String(
                 agora.getMonth() + 1
-            ).padStart(2, "0"),
+            ).padStart(
+                2,
+                "0"
+            ),
 
             String(
                 agora.getDate()
-            ).padStart(2, "0")
+            ).padStart(
+                2,
+                "0"
+            )
 
         ].join("");
 
@@ -745,15 +1381,24 @@ function gerarIdVisita() {
         [
             String(
                 agora.getHours()
-            ).padStart(2, "0"),
+            ).padStart(
+                2,
+                "0"
+            ),
 
             String(
                 agora.getMinutes()
-            ).padStart(2, "0"),
+            ).padStart(
+                2,
+                "0"
+            ),
 
             String(
                 agora.getSeconds()
-            ).padStart(2, "0")
+            ).padStart(
+                2,
+                "0"
+            )
 
         ].join("");
 
@@ -761,7 +1406,10 @@ function gerarIdVisita() {
     const aleatorio =
         Math.random()
             .toString(36)
-            .substring(2, 6)
+            .substring(
+                2,
+                6
+            )
             .toUpperCase();
 
 
@@ -772,11 +1420,72 @@ function gerarIdVisita() {
 }
 
 
-/* ========================================
-   ORGANIZAR DADOS PARA EXPORTAÇÃO
-======================================== */
+/* =========================================================
+   FORMATAR ENDEREÇO COMPLETO
+========================================================= */
 
-function rotulosRegistro(registro) {
+function montarEnderecoCompleto(registro) {
+
+    const partes = [];
+
+    if (
+        registro.endereco
+    ) {
+
+        partes.push(
+            registro.endereco
+        );
+
+    }
+
+    if (
+        registro.bairro
+    ) {
+
+        partes.push(
+            registro.bairro
+        );
+
+    }
+
+    if (
+        registro.cidade
+    ) {
+
+        partes.push(
+            registro.cidade
+        );
+
+    }
+
+
+    let enderecoCompleto =
+        partes.join(", ");
+
+
+    if (
+        registro.uf
+    ) {
+
+        enderecoCompleto +=
+            ` - ${registro.uf}`;
+
+    }
+
+
+    return enderecoCompleto;
+
+}
+
+
+/* =========================================================
+   RÓTULOS DO REGISTRO
+   USADOS NO PDF E EXCEL
+========================================================= */
+
+function rotulosRegistro(
+    registro
+) {
 
     return {
 
@@ -795,8 +1504,25 @@ function rotulosRegistro(registro) {
         "Natureza da Visita":
             registro.natureza,
 
+        "Precisa de Apoio":
+            registro.precisaApoio,
+
+        "Apoio":
+            registro.apoio,
+
+        "Tipo de Contrato":
+            registro.tipoContrato,
+
         "Valor do Contrato":
             `R$ ${registro.valorContrato}`,
+
+        "Margem de Venda (%)":
+            registro.margemVenda
+                ? `${registro.margemVenda}%`
+                : "",
+
+        "Número da Proposta":
+            registro.numeroProposta,
 
         "Quantidade de Equipamentos":
             registro.quantidadeEquipamentos,
@@ -819,6 +1545,23 @@ function rotulosRegistro(registro) {
         "Endereço":
             registro.endereco,
 
+        "Bairro":
+            registro.bairro,
+
+        "Cidade":
+            registro.cidade,
+
+        "UF":
+            registro.uf,
+
+        "Região":
+            registro.regiao,
+
+        "Endereço Completo":
+            montarEnderecoCompleto(
+                registro
+            ),
+
         "Nome do Contato":
             registro.nomeContato,
 
@@ -836,9 +1579,9 @@ function rotulosRegistro(registro) {
 }
 
 
-/* ========================================
-   EXPORTAR EXCEL
-======================================== */
+/* =========================================================
+   EXPORTAR REGISTRO PARA EXCEL
+========================================================= */
 
 function exportarRegistroExcel() {
 
@@ -854,11 +1597,12 @@ function exportarRegistroExcel() {
 
 
     if (
-        typeof XLSX === "undefined"
+        typeof XLSX ===
+        "undefined"
     ) {
 
         alert(
-            "Não foi possível carregar o recurso de Excel. Verifique sua internet e tente novamente."
+            "Não foi possível carregar o recurso de Excel."
         );
 
         return;
@@ -878,21 +1622,27 @@ function exportarRegistroExcel() {
         );
 
 
-    planilha["!cols"] =
-        Object.keys(linha).map(
-            (chave) => {
+    /*
+       Ajusta automaticamente
+       a largura das colunas.
+    */
 
-                return {
-                    wch: Math.min(
+    planilha["!cols"] =
+        Object.keys(
+            linha
+        ).map(
+            chave => ({
+
+                wch:
+                    Math.min(
                         Math.max(
                             chave.length + 2,
                             18
                         ),
                         42
                     )
-                };
 
-            }
+            })
         );
 
 
@@ -915,9 +1665,9 @@ function exportarRegistroExcel() {
 }
 
 
-/* ========================================
-   EXPORTAR PDF
-======================================== */
+/* =========================================================
+   EXPORTAR REGISTRO PARA PDF
+========================================================= */
 
 function exportarRegistroPdf() {
 
@@ -938,7 +1688,7 @@ function exportarRegistroPdf() {
     ) {
 
         alert(
-            "Não foi possível carregar o recurso de PDF. Verifique sua internet e tente novamente."
+            "Não foi possível carregar o recurso de PDF."
         );
 
         return;
@@ -948,7 +1698,8 @@ function exportarRegistroPdf() {
 
     const {
         jsPDF
-    } = window.jspdf;
+    } =
+        window.jspdf;
 
 
     const pdf =
@@ -964,17 +1715,22 @@ function exportarRegistroPdf() {
         );
 
 
-    let y = 20;
+    let y =
+        20;
 
 
-    /* TÍTULO */
+    /* -----------------------------
+       TÍTULO
+    ----------------------------- */
 
     pdf.setFont(
         "helvetica",
         "bold"
     );
 
-    pdf.setFontSize(18);
+    pdf.setFontSize(
+        18
+    );
 
     pdf.text(
         "RJCAP - Registro de Visita Comercial",
@@ -983,17 +1739,23 @@ function exportarRegistroPdf() {
     );
 
 
-    y += 10;
+    y +=
+        10;
 
 
-    /* ID */
+    /* -----------------------------
+       ID
+    ----------------------------- */
 
-    pdf.setFontSize(10);
+    pdf.setFontSize(
+        10
+    );
 
     pdf.setFont(
         "helvetica",
         "normal"
     );
+
 
     pdf.text(
         `ID: ${ultimoRegistro.idVisita}`,
@@ -1002,18 +1764,28 @@ function exportarRegistroPdf() {
     );
 
 
-    y += 12;
+    y +=
+        12;
 
 
-    /* DADOS */
+    /* -----------------------------
+       DADOS
+    ----------------------------- */
 
     Object.entries(
         dados
     ).forEach(
         ([rotulo, valor]) => {
 
+
+            /*
+               O ID já apareceu
+               no cabeçalho.
+            */
+
             if (
-                rotulo === "ID da Visita"
+                rotulo ===
+                "ID da Visita"
             ) {
 
                 return;
@@ -1030,9 +1802,14 @@ function exportarRegistroPdf() {
             const valorLinhas =
                 pdf.splitTextToSize(
                     valorTexto,
-                    120
+                    115
                 );
 
+
+            /*
+               Cria nova página
+               quando necessário.
+            */
 
             if (
                 y +
@@ -1042,10 +1819,13 @@ function exportarRegistroPdf() {
 
                 pdf.addPage();
 
-                y = 20;
+                y =
+                    20;
 
             }
 
+
+            /* RÓTULO */
 
             pdf.setFont(
                 "helvetica",
@@ -1060,6 +1840,8 @@ function exportarRegistroPdf() {
             );
 
 
+            /* VALOR */
+
             pdf.setFont(
                 "helvetica",
                 "normal"
@@ -1068,15 +1850,16 @@ function exportarRegistroPdf() {
 
             pdf.text(
                 valorLinhas,
-                75,
+                78,
                 y
             );
 
 
-            y += Math.max(
-                8,
-                valorLinhas.length * 6
-            );
+            y +=
+                Math.max(
+                    8,
+                    valorLinhas.length * 6
+                );
 
         }
     );
@@ -1089,11 +1872,13 @@ function exportarRegistroPdf() {
 }
 
 
-/* ========================================
+/* =========================================================
    BOTÕES DE EXPORTAÇÃO
-======================================== */
+========================================================= */
 
-if (exportarExcel) {
+if (
+    exportarExcel
+) {
 
     exportarExcel.addEventListener(
         "click",
@@ -1103,7 +1888,9 @@ if (exportarExcel) {
 }
 
 
-if (exportarPdf) {
+if (
+    exportarPdf
+) {
 
     exportarPdf.addEventListener(
         "click",
@@ -1113,9 +1900,207 @@ if (exportarPdf) {
 }
 
 
-/* ========================================
+/* =========================================================
+   LIMPAR FORMULÁRIO
+========================================================= */
+
+function limparFormulario() {
+
+    formulario.reset();
+
+
+    if (
+        contadorCaracteres
+    ) {
+
+        contadorCaracteres
+            .textContent =
+            "0";
+
+    }
+
+
+    limparErros();
+
+
+    /*
+       Volta a data para hoje.
+    */
+
+    definirDataAtual();
+
+
+    /*
+       Cidade e UF permanecem
+       padronizados.
+    */
+
+    definirLocalizacaoPadrao();
+
+
+    /*
+       Região volta vazia até
+       selecionar o bairro.
+    */
+
+    if (
+        regiao
+    ) {
+
+        regiao.value =
+            "";
+
+    }
+
+
+    /*
+       Atualiza campos condicionais.
+    */
+
+    atualizarCampoOutraConservadora();
+
+    atualizarCampoApoio();
+
+}
+
+
+/* =========================================================
+   VERIFICAR SE O FORMULÁRIO TEM DADOS
+========================================================= */
+
+function formularioPossuiDados() {
+
+    const campos =
+        formulario.querySelectorAll(
+            "input, select, textarea"
+        );
+
+
+    return Array
+        .from(
+            campos
+        )
+        .some(
+            campo => {
+
+
+                /*
+                   RADIO / CHECKBOX
+                */
+
+                if (
+                    campo.type ===
+                        "radio" ||
+                    campo.type ===
+                        "checkbox"
+                ) {
+
+                    return (
+                        campo.checked
+                    );
+
+                }
+
+
+                /*
+                   DATA NÃO CONTA,
+                   POIS JÁ VEM PREENCHIDA.
+                */
+
+                if (
+                    campo.id ===
+                    "dataVisita"
+                ) {
+
+                    return false;
+
+                }
+
+
+                /*
+                   CIDADE E UF TAMBÉM
+                   JÁ VÊM PREENCHIDOS.
+                */
+
+                if (
+                    campo.id ===
+                        "cidade" ||
+                    campo.id ===
+                        "uf"
+                ) {
+
+                    return false;
+
+                }
+
+
+                return (
+                    String(
+                        campo.value
+                    ).trim() !== ""
+                );
+
+            }
+        );
+
+}
+
+
+/* =========================================================
+   BOTÃO LIMPAR DADOS
+========================================================= */
+
+if (
+    btnLimparFormulario
+) {
+
+    btnLimparFormulario.addEventListener(
+        "click",
+        function () {
+
+
+            if (
+                !formularioPossuiDados()
+            ) {
+
+                limparFormulario();
+
+                return;
+
+            }
+
+
+            const confirmar =
+                window.confirm(
+                    "Deseja realmente limpar todos os dados preenchidos?"
+                );
+
+
+            if (
+                !confirmar
+            ) {
+
+                return;
+
+            }
+
+
+            limparFormulario();
+
+
+            formulario.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+
+        }
+    );
+
+}
+
+/* =========================================================
    ENVIO DO FORMULÁRIO
-======================================== */
+========================================================= */
 
 formulario.addEventListener(
     "submit",
@@ -1124,7 +2109,9 @@ formulario.addEventListener(
         event.preventDefault();
 
 
-        /* VALIDAÇÃO */
+        /* =================================================
+           1. VALIDAR FORMULÁRIO
+        ================================================= */
 
         if (
             !validarFormulario()
@@ -1136,12 +2123,15 @@ formulario.addEventListener(
                 );
 
 
-            if (primeiroErro) {
+            if (
+                primeiroErro
+            ) {
 
-                primeiroErro.scrollIntoView({
-                    behavior: "smooth",
-                    block: "center"
-                });
+                primeiroErro
+                    .scrollIntoView({
+                        behavior: "smooth",
+                        block: "center"
+                    });
 
             }
 
@@ -1151,9 +2141,18 @@ formulario.addEventListener(
         }
 
 
-        /* ==================================
-           COLETAR DADOS
-        ================================== */
+        /* =================================================
+           2. GARANTIR PADRONIZAÇÃO DA LOCALIZAÇÃO
+        ================================================= */
+
+        atualizarRegiaoPorBairro();
+
+        definirLocalizacaoPadrao();
+
+
+        /* =================================================
+           3. COLETAR DADOS DO FORMULÁRIO
+        ================================================= */
 
         const dados =
             new FormData(
@@ -1161,22 +2160,70 @@ formulario.addEventListener(
             );
 
 
-        const registro = {};
+        const registro =
+            {};
 
+
+        /*
+           O campo "apoio" é diferente
+           dos demais porque permite
+           selecionar vários checkboxes.
+
+           Por isso ele será tratado
+           separadamente.
+        */
 
         dados.forEach(
             (valor, chave) => {
 
-                registro[chave] =
-                    valor;
+                if (
+                    chave !==
+                    "apoio"
+                ) {
+
+                    registro[chave] =
+                        typeof valor === "string"
+                            ? valor.trim()
+                            : valor;
+
+                }
 
             }
         );
 
 
-        /* ==================================
-           EMPRESA CONSERVADORA - OUTROS
-        ================================== */
+        /* =================================================
+           4. APOIOS SELECIONADOS
+        ================================================= */
+
+        const apoiosSelecionados =
+            dados.getAll(
+                "apoio"
+            );
+
+
+        if (
+            registro.precisaApoio ===
+            "Sim"
+        ) {
+
+            registro.apoio =
+                apoiosSelecionados
+                    .join(
+                        ", "
+                    );
+
+        } else {
+
+            registro.apoio =
+                "Não necessita";
+
+        }
+
+
+        /* =================================================
+           5. EMPRESA CONSERVADORA
+        ================================================= */
 
         if (
             registro.empresaConservadora ===
@@ -1185,212 +2232,501 @@ formulario.addEventListener(
 
             registro.empresaConservadora =
                 outraConservadora
-                    .value
-                    .trim();
+                    ? outraConservadora.value.trim()
+                    : "";
 
         }
 
 
         /*
-           Remove o campo auxiliar.
-
-           Assim não teremos uma coluna
-           "outraConservadora" futuramente
-           na nossa base.
+           Não precisamos enviar
+           "outraConservadora" como
+           coluna separada.
         */
 
-        delete registro.outraConservadora;
+        delete registro
+            .outraConservadora;
 
 
-        /* ==================================
-           CRIAR ID ÚNICO
-        ================================== */
+        /* =================================================
+           6. LOCALIZAÇÃO PADRONIZADA
+        ================================================= */
+
+        registro.endereco =
+            registro.endereco
+                ? registro.endereco.trim()
+                : "";
+
+
+        registro.bairro =
+            bairro
+                ? bairro.value.trim()
+                : "";
+
+
+        registro.cidade =
+            "Rio de Janeiro";
+
+
+        registro.uf =
+            "RJ";
+
+
+        registro.regiao =
+            regiao
+                ? regiao.value.trim()
+                : descobrirRegiao(
+                    registro.bairro
+                );
+
+
+        /*
+           Criei endereço completo.
+           Isso pode ser útil futuramente
+           no Power BI para geolocalização.
+        */
+
+        registro.enderecoCompleto =
+            montarEnderecoCompleto(
+                registro
+            );
+
+
+        /* =================================================
+           7. NOVOS CAMPOS COMERCIAIS
+        ================================================= */
+
+        registro.tipoContrato =
+            registro.tipoContrato ||
+            "";
+
+
+        registro.margemVenda =
+            registro.margemVenda ||
+            "";
+
+
+        registro.numeroProposta =
+            registro.numeroProposta ||
+            "";
+
+
+        /* =================================================
+           8. GERAR ID ÚNICO
+        ================================================= */
 
         registro.idVisita =
             gerarIdVisita();
 
-           /* ========================================
-   SALVAR CÓPIA LOCAL ANTES DO ENVIO
-======================================== */
 
-adicionarPendente(registro);
+        /* =================================================
+           9. DATA/HORA DO REGISTRO
+        ================================================= */
 
-const copiaSalva =
-    obterPendentes().some(
-        item =>
-            item.idVisita ===
-            registro.idVisita
-    );
-
-if (!copiaSalva) {
-
-    alert(
-        "Não foi possível criar a cópia de segurança deste registro. Não feche a página e tente novamente."
-    );
-
-    return;
-} 
+        registro.dataHoraRegistro =
+            new Date()
+                .toLocaleString(
+                    "pt-BR",
+                    {
+                        timeZone:
+                            "America/Sao_Paulo"
+                    }
+                );
 
 
+        /* =================================================
+           10. CÓPIA DE SEGURANÇA LOCAL
+        ================================================= */
 
-        /* ==================================
-           GUARDAR O REGISTRO
-        ================================== */
+        adicionarPendente(
+            registro
+        );
+
+
+        const copiaSalva =
+            obterPendentes()
+                .some(
+                    item =>
+                        item.idVisita ===
+                        registro.idVisita
+                );
+
+
+        if (
+            !copiaSalva
+        ) {
+
+            alert(
+                "Não foi possível criar a cópia de segurança deste registro.\n\n" +
+                "Não feche a página e tente novamente."
+            );
+
+            return;
+
+        }
+
+
+        /* =================================================
+           11. GUARDAR ÚLTIMO REGISTRO
+        ================================================= */
 
         ultimoRegistro = {
             ...registro
         };
 
 
-        /* ==================================
-           MOSTRAR ID NO MODAL
-        ================================== */
+        /* =================================================
+           12. MOSTRAR ID GERADO
+        ================================================= */
 
-        if (idVisitaGerado) {
+        if (
+            idVisitaGerado
+        ) {
 
-            idVisitaGerado.textContent =
+            idVisitaGerado
+                .textContent =
                 registro.idVisita;
 
         }
 
 
+        /* =================================================
+           13. CONFERÊNCIA NO CONSOLE
+        ================================================= */
+
         console.log(
-            "Dados da visita:",
+            "Registro que será enviado:",
             registro
         );
-  
-
-/* ========================================
-   ENVIAR REGISTRO PARA O GOOGLE SHEETS
-======================================== */
-
-try {
-
-    await enviarParaGoogleSheets(
-        registro
-    );
-
-} catch (erro) {
-
-    console.error(
-        "Falha no envio da visita:",
-        erro
-    );
 
 
-    if (
-        erro.message === "SEM_INTERNET"
-    ) {
+        console.log(
+            "Localização:",
+            {
+                endereco:
+                    registro.endereco,
 
-        alert(
-            "Você está sem internet.\n\n" +
-            "A visita foi salva com segurança neste aparelho, " +
-            "mas ainda não foi enviada para a planilha.\n\n" +
-            "Não limpe os dados do navegador."
+                bairro:
+                    registro.bairro,
+
+                cidade:
+                    registro.cidade,
+
+                uf:
+                    registro.uf,
+
+                regiao:
+                    registro.regiao,
+
+                enderecoCompleto:
+                    registro.enderecoCompleto
+            }
         );
 
-    } else {
 
-        alert(
-            "Não foi possível enviar a visita agora.\n\n" +
-            "Uma cópia foi salva neste aparelho para evitar a perda dos dados."
-        );
+        /* =================================================
+           14. ENVIAR PARA GOOGLE SHEETS
+        ================================================= */
 
-    }
+        try {
 
-    return;
-}
+            await enviarParaGoogleSheets(
+                registro
+            );
+
+        } catch (erro) {
+
+            console.error(
+                "Falha no envio para o Google Sheets:",
+                erro
+            );
 
 
-        /* ABRIR MODAL */
+            if (
+                erro.message ===
+                "SEM_INTERNET"
+            ) {
 
-        modalSucesso.classList.add(
-            "ativo"
-        );
+                alert(
+                    "Você está sem internet.\n\n" +
+                    "A visita foi salva com segurança neste aparelho, " +
+                    "mas ainda não foi enviada para a planilha.\n\n" +
+                    "Não limpe os dados do navegador."
+                );
+
+            } else {
+
+                alert(
+                    "Não foi possível enviar a visita agora.\n\n" +
+                    "Uma cópia foi salva neste aparelho para evitar " +
+                    "a perda dos dados."
+                );
+
+            }
+
+
+            return;
+
+        }
+
+
+        /* =================================================
+           15. ABRIR MODAL DE SUCESSO
+        ================================================= */
+
+        if (
+            modalSucesso
+        ) {
+
+            modalSucesso
+                .classList
+                .add(
+                    "ativo"
+                );
+
+        }
 
     }
 );
 
 
-/* ========================================
-   FECHAR MODAL + LIMPAR REGISTRO
-======================================== */
+/* =========================================================
+   FECHAR MODAL E LIMPAR FORMULÁRIO
+========================================================= */
 
 function fecharModalELimpar() {
 
-    // Fecha o modal
-    modalSucesso.classList.remove("ativo");
+    if (
+        modalSucesso
+    ) {
 
-    // Reseta todos os campos HTML
+        modalSucesso
+            .classList
+            .remove(
+                "ativo"
+            );
+
+    }
+
+
+    /* RESET */
+
     formulario.reset();
 
-    // Limpa manualmente inputs, selects e textareas
+
+    /* =====================================================
+       LIMPAR CAMPOS
+    ===================================================== */
+
     formulario
-        .querySelectorAll("input, select, textarea")
-        .forEach((campo) => {
+        .querySelectorAll(
+            "input, select, textarea"
+        )
+        .forEach(
+            campo => {
 
-            // Não mexer na data aqui
-            // porque ela será redefinida abaixo
-            if (campo === dataVisita) {
-                return;
+
+                /*
+                   DATA SERÁ DEFINIDA
+                   NOVAMENTE DEPOIS.
+                */
+
+                if (
+                    campo ===
+                    dataVisita
+                ) {
+
+                    return;
+
+                }
+
+
+                /*
+                   RADIO E CHECKBOX
+                */
+
+                if (
+                    campo.type ===
+                        "radio" ||
+                    campo.type ===
+                        "checkbox"
+                ) {
+
+                    campo.checked =
+                        false;
+
+                } else {
+
+                    campo.value =
+                        "";
+
+                }
+
             }
+        );
 
-            if (
-                campo.type === "radio" ||
-                campo.type === "checkbox"
-            ) {
-                campo.checked = false;
-            } else {
-                campo.value = "";
+
+    /* =====================================================
+       OBSERVAÇÕES
+    ===================================================== */
+
+    if (
+        observacoes
+    ) {
+
+        observacoes.value =
+            "";
+
+    }
+
+
+    if (
+        contadorCaracteres
+    ) {
+
+        contadorCaracteres
+            .textContent =
+            "0";
+
+    }
+
+
+    /* =====================================================
+       EMPRESA CONSERVADORA
+    ===================================================== */
+
+    if (
+        empresaConservadora
+    ) {
+
+        empresaConservadora
+            .selectedIndex =
+            0;
+
+    }
+
+
+    if (
+        outraConservadora
+    ) {
+
+        outraConservadora.value =
+            "";
+
+        outraConservadora.required =
+            false;
+
+    }
+
+
+    if (
+        campoOutraConservadora
+    ) {
+
+        campoOutraConservadora.hidden =
+            true;
+
+    }
+
+
+    /* =====================================================
+       APOIO
+    ===================================================== */
+
+    if (
+        campoApoios
+    ) {
+
+        campoApoios.hidden =
+            true;
+
+    }
+
+
+    checkboxesApoio
+        .forEach(
+            checkbox => {
+
+                checkbox.checked =
+                    false;
+
             }
-
-        });
-
-
-    // Zera observações
-    if (observacoes) {
-        observacoes.value = "";
-    }
-
-    if (contadorCaracteres) {
-        contadorCaracteres.textContent = "0";
-    }
+        );
 
 
-    // Reseta empresa conservadora
-    if (empresaConservadora) {
-        empresaConservadora.selectedIndex = 0;
-    }
+    /* =====================================================
+       LOCALIZAÇÃO
+    ===================================================== */
 
-    if (outraConservadora) {
-        outraConservadora.value = "";
-        outraConservadora.required = false;
-    }
+    if (
+        bairro
+    ) {
 
-    if (campoOutraConservadora) {
-        campoOutraConservadora.hidden = true;
+        bairro.value =
+            "";
+
     }
 
 
-    // Limpa mensagens de erro
-    limparErros();
+    if (
+        regiao
+    ) {
+
+        regiao.value =
+            "";
+
+    }
 
 
-    // Coloca novamente a data atual
+    /*
+       Cidade e UF voltam
+       automaticamente.
+    */
+
+    definirLocalizacaoPadrao();
+
+
+    /* =====================================================
+       DATA
+    ===================================================== */
+
     definirDataAtual();
 
 
-    // Apaga o registro temporário
-    ultimoRegistro = null;
+    /* =====================================================
+       ERROS
+    ===================================================== */
+
+    limparErros();
 
 
-    // Limpa o ID mostrado no modal
-    if (idVisitaGerado) {
-        idVisitaGerado.textContent = "—";
+    /* =====================================================
+       ÚLTIMO REGISTRO
+    ===================================================== */
+
+    ultimoRegistro =
+        null;
+
+
+    /* =====================================================
+       ID DO MODAL
+    ===================================================== */
+
+    if (
+        idVisitaGerado
+    ) {
+
+        idVisitaGerado
+            .textContent =
+            "—";
+
     }
 
 
-    // Volta ao início da página
+    /* =====================================================
+       VOLTAR AO TOPO
+    ===================================================== */
+
     window.scrollTo({
         top: 0,
         behavior: "smooth"
@@ -1399,121 +2735,113 @@ function fecharModalELimpar() {
 }
 
 
-/* ========================================
-   BOTÃO X
-======================================== */
+/* =========================================================
+   X DO MODAL
+========================================================= */
 
-fecharModal.addEventListener(
-    "click",
-    function (event) {
+if (
+    fecharModal
+) {
 
-        event.preventDefault();
-        event.stopPropagation();
+    fecharModal.addEventListener(
+        "click",
+        function (event) {
 
-        fecharModalELimpar();
+            event.preventDefault();
 
-    }
-);
-
-
-/* ========================================
-   TOCAR FORA DO MODAL
-======================================== */
-
-modalSucesso.addEventListener(
-    "click",
-    function (event) {
-
-        if (event.target === modalSucesso) {
+            event.stopPropagation();
 
             fecharModalELimpar();
 
         }
-
-    }
-);
-
-
-/* ========================================
-   REGISTRAR NOVA VISITA
-======================================== */
-
-novaVisita.addEventListener(
-    "click",
-    function () {
-
-        limparFormulario();
-
-
-        ultimoRegistro = null;
-
-
-        if (idVisitaGerado) {
-
-            idVisitaGerado.textContent =
-                "—";
-
-        }
-
-
-        modalSucesso.classList.remove(
-            "ativo"
-        );
-
-
-        window.scrollTo({
-            top: 0,
-            behavior: "smooth"
-        });
-
-    }
-);
-
-
-/* ========================================
-   REMOVER ERRO DO CAMPO
-======================================== */
-
-function removerErroDoCampo(
-    elemento
-) {
-
-    const campo =
-        elemento.closest(
-            ".campo"
-        );
-
-
-    if (!campo) {
-
-        return;
-
-    }
-
-
-    campo.classList.remove(
-        "campo-erro"
     );
-
-
-    const erro =
-        campo.querySelector(
-            ".erro-mensagem"
-        );
-
-
-    if (erro) {
-
-        erro.remove();
-
-    }
 
 }
 
 
-/* ========================================
-   AO DIGITAR
-======================================== */
+/* =========================================================
+   CLICAR FORA DO MODAL
+========================================================= */
+
+if (
+    modalSucesso
+) {
+
+    modalSucesso.addEventListener(
+        "click",
+        function (event) {
+
+            if (
+                event.target ===
+                modalSucesso
+            ) {
+
+                fecharModalELimpar();
+
+            }
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   BOTÃO NOVA VISITA
+========================================================= */
+
+if (
+    novaVisita
+) {
+
+    novaVisita.addEventListener(
+        "click",
+        function () {
+
+            limparFormulario();
+
+
+            ultimoRegistro =
+                null;
+
+
+            if (
+                idVisitaGerado
+            ) {
+
+                idVisitaGerado
+                    .textContent =
+                    "—";
+
+            }
+
+
+            if (
+                modalSucesso
+            ) {
+
+                modalSucesso
+                    .classList
+                    .remove(
+                        "ativo"
+                    );
+
+            }
+
+
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+
+        }
+    );
+
+}
+
+/* =========================================================
+   REMOVER ERRO AO DIGITAR
+========================================================= */
 
 formulario.addEventListener(
     "input",
@@ -1527,9 +2855,9 @@ formulario.addEventListener(
 );
 
 
-/* ========================================
-   AO ALTERAR SELECT / RADIO
-======================================== */
+/* =========================================================
+   REMOVER ERRO AO ALTERAR
+========================================================= */
 
 formulario.addEventListener(
     "change",
@@ -1540,5 +2868,782 @@ formulario.addEventListener(
         );
 
     }
-   
 );
+
+
+/* =========================================================
+   CAMPO DE BAIRRO PESQUISÁVEL
+========================================================= */
+
+function normalizarTexto(texto) {
+
+    return String(texto || "")
+        .normalize("NFD")
+        .replace(
+            /[\u0300-\u036f]/g,
+            ""
+        )
+        .toLowerCase()
+        .trim();
+
+}
+
+
+/* =========================================================
+   CRIAR LISTA VISUAL DOS BAIRROS
+========================================================= */
+
+function criarSeletorBairros() {
+
+    if (!bairro) {
+        return;
+    }
+
+
+    /* -----------------------------------------
+       CONTAINER DO CAMPO
+    ----------------------------------------- */
+
+    const campoContainer =
+        bairro.closest(
+            ".campo"
+        );
+
+
+    if (!campoContainer) {
+        return;
+    }
+
+
+    /* -----------------------------------------
+       EVITAR CRIAR DUAS VEZES
+    ----------------------------------------- */
+
+    const listaExistente =
+        campoContainer.querySelector(
+            ".lista-bairros"
+        );
+
+
+    if (listaExistente) {
+
+        listaExistente.remove();
+
+    }
+
+
+    /* -----------------------------------------
+       CONFIGURAR INPUT
+    ----------------------------------------- */
+
+    bairro.setAttribute(
+        "autocomplete",
+        "off"
+    );
+
+
+    bairro.setAttribute(
+        "placeholder",
+        "Digite ou selecione o bairro..."
+    );
+
+
+    /* -----------------------------------------
+       CRIAR LISTA
+    ----------------------------------------- */
+
+    const lista =
+        document.createElement(
+            "div"
+        );
+
+
+    lista.className =
+        "lista-bairros";
+
+
+    lista.hidden =
+        true;
+
+
+    campoContainer.style.position =
+        "relative";
+
+
+    campoContainer.appendChild(
+        lista
+    );
+
+
+    /* =====================================================
+       MOSTRAR BAIRROS
+    ===================================================== */
+
+    function mostrarBairros(
+        filtro = ""
+    ) {
+
+        lista.innerHTML =
+            "";
+
+
+        const textoFiltro =
+            normalizarTexto(
+                filtro
+            );
+
+
+        const resultados =
+            listaBairros.filter(
+                nomeBairro => {
+
+                    const nomeNormalizado =
+                        normalizarTexto(
+                            nomeBairro
+                        );
+
+
+                    return (
+                        nomeNormalizado.includes(
+                            textoFiltro
+                        )
+                    );
+
+                }
+            );
+
+
+        /* -----------------------------------------
+           NENHUM RESULTADO
+        ----------------------------------------- */
+
+        if (
+            resultados.length === 0
+        ) {
+
+            const vazio =
+                document.createElement(
+                    "div"
+                );
+
+
+            vazio.className =
+                "bairro-sem-resultado";
+
+
+            vazio.textContent =
+                "Nenhum bairro encontrado";
+
+
+            lista.appendChild(
+                vazio
+            );
+
+
+            lista.hidden =
+                false;
+
+
+            return;
+
+        }
+
+
+        /* -----------------------------------------
+           CRIAR OPÇÕES
+        ----------------------------------------- */
+
+        resultados.forEach(
+            nomeBairro => {
+
+                const opcao =
+                    document.createElement(
+                        "button"
+                    );
+
+
+                opcao.type =
+                    "button";
+
+
+                opcao.className =
+                    "opcao-bairro";
+
+
+                opcao.textContent =
+                    nomeBairro;
+
+
+                opcao.addEventListener(
+                    "mousedown",
+                    function (event) {
+
+                        /*
+                           Evita que o input perca
+                           o foco antes da seleção.
+                        */
+
+                        event.preventDefault();
+
+                    }
+                );
+
+
+                opcao.addEventListener(
+                    "click",
+                    function () {
+
+                        bairro.value =
+                            nomeBairro;
+
+
+                        lista.hidden =
+                            true;
+
+
+                        atualizarRegiaoPorBairro();
+
+
+                        removerErroDoCampo(
+                            bairro
+                        );
+
+
+                        /*
+                           Dispara evento change
+                           para manter o restante
+                           do formulário sincronizado.
+                        */
+
+                        bairro.dispatchEvent(
+                            new Event(
+                                "change",
+                                {
+                                    bubbles: true
+                                }
+                            )
+                        );
+
+                    }
+                );
+
+
+                lista.appendChild(
+                    opcao
+                );
+
+            }
+        );
+
+
+        lista.hidden =
+            false;
+
+    }
+
+
+    /* =====================================================
+       AO CLICAR NO CAMPO
+    ===================================================== */
+
+    bairro.addEventListener(
+        "focus",
+        function () {
+
+            mostrarBairros(
+                this.value
+            );
+
+        }
+    );
+
+
+    /* =====================================================
+       AO DIGITAR
+    ===================================================== */
+
+    bairro.addEventListener(
+        "input",
+        function () {
+
+            /*
+               Enquanto estiver digitando,
+               a região fica vazia até
+               encontrarmos um bairro válido.
+            */
+
+            const textoDigitado =
+                this.value.trim();
+
+
+            const bairroExato =
+                listaBairros.find(
+                    item =>
+                        normalizarTexto(
+                            item
+                        ) ===
+                        normalizarTexto(
+                            textoDigitado
+                        )
+                );
+
+
+            if (
+                bairroExato
+            ) {
+
+                this.value =
+                    bairroExato;
+
+
+                atualizarRegiaoPorBairro();
+
+            } else {
+
+                if (
+                    regiao
+                ) {
+
+                    regiao.value =
+                        "";
+
+                }
+
+            }
+
+
+            mostrarBairros(
+                textoDigitado
+            );
+
+        }
+    );
+
+
+    /* =====================================================
+       SETA PARA BAIXO
+    ===================================================== */
+
+    bairro.addEventListener(
+        "keydown",
+        function (event) {
+
+            const opcoes =
+                Array.from(
+                    lista.querySelectorAll(
+                        ".opcao-bairro"
+                    )
+                );
+
+
+            if (
+                opcoes.length === 0
+            ) {
+
+                return;
+
+            }
+
+
+            let indiceAtual =
+                opcoes.findIndex(
+                    opcao =>
+                        opcao.classList.contains(
+                            "ativo"
+                        )
+                );
+
+
+            /* -----------------------------------------
+               SETA PARA BAIXO
+            ----------------------------------------- */
+
+            if (
+                event.key ===
+                "ArrowDown"
+            ) {
+
+                event.preventDefault();
+
+
+                indiceAtual++;
+
+
+                if (
+                    indiceAtual >=
+                    opcoes.length
+                ) {
+
+                    indiceAtual =
+                        0;
+
+                }
+
+
+                destacarOpcao(
+                    opcoes,
+                    indiceAtual
+                );
+
+            }
+
+
+            /* -----------------------------------------
+               SETA PARA CIMA
+            ----------------------------------------- */
+
+            if (
+                event.key ===
+                "ArrowUp"
+            ) {
+
+                event.preventDefault();
+
+
+                indiceAtual--;
+
+
+                if (
+                    indiceAtual < 0
+                ) {
+
+                    indiceAtual =
+                        opcoes.length - 1;
+
+                }
+
+
+                destacarOpcao(
+                    opcoes,
+                    indiceAtual
+                );
+
+            }
+
+
+            /* -----------------------------------------
+               ENTER
+            ----------------------------------------- */
+
+            if (
+                event.key ===
+                "Enter"
+            ) {
+
+                const ativa =
+                    lista.querySelector(
+                        ".opcao-bairro.ativo"
+                    );
+
+
+                if (
+                    ativa &&
+                    !lista.hidden
+                ) {
+
+                    event.preventDefault();
+
+                    ativa.click();
+
+                }
+
+            }
+
+
+            /* -----------------------------------------
+               ESC
+            ----------------------------------------- */
+
+            if (
+                event.key ===
+                "Escape"
+            ) {
+
+                lista.hidden =
+                    true;
+
+            }
+
+        }
+    );
+
+
+    /* =====================================================
+       DESTACAR OPÇÃO COM TECLADO
+    ===================================================== */
+
+    function destacarOpcao(
+        opcoes,
+        indice
+    ) {
+
+        opcoes.forEach(
+            opcao =>
+                opcao.classList.remove(
+                    "ativo"
+                )
+        );
+
+
+        const selecionada =
+            opcoes[indice];
+
+
+        if (
+            selecionada
+        ) {
+
+            selecionada.classList.add(
+                "ativo"
+            );
+
+
+            selecionada.scrollIntoView({
+                block: "nearest"
+            });
+
+        }
+
+    }
+
+
+    /* =====================================================
+       FECHAR LISTA AO CLICAR FORA
+    ===================================================== */
+
+    document.addEventListener(
+        "click",
+        function (event) {
+
+            if (
+                !campoContainer.contains(
+                    event.target
+                )
+            ) {
+
+                lista.hidden =
+                    true;
+
+            }
+
+        }
+    );
+
+
+    /* =====================================================
+       AO SAIR DO CAMPO
+    ===================================================== */
+
+    bairro.addEventListener(
+        "blur",
+        function () {
+
+            const textoDigitado =
+                this.value.trim();
+
+
+            if (
+                !textoDigitado
+            ) {
+
+                if (
+                    regiao
+                ) {
+
+                    regiao.value =
+                        "";
+
+                }
+
+
+                return;
+
+            }
+
+
+            /*
+               Procura ignorando
+               maiúsculas e acentos.
+            */
+
+            const encontrado =
+                listaBairros.find(
+                    item =>
+                        normalizarTexto(
+                            item
+                        ) ===
+                        normalizarTexto(
+                            textoDigitado
+                        )
+                );
+
+
+            if (
+                encontrado
+            ) {
+
+                /*
+                   Padroniza o nome.
+                   Exemplo:
+                   "OLARIA" vira "Olaria".
+                */
+
+                this.value =
+                    encontrado;
+
+
+                atualizarRegiaoPorBairro();
+
+            }
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   GARANTIR LOCALIZAÇÃO ANTES DO ENVIO
+========================================================= */
+
+function garantirLocalizacaoPadronizada() {
+
+    definirLocalizacaoPadrao();
+
+
+    if (
+        bairro &&
+        bairro.value
+    ) {
+
+        const encontrado =
+            listaBairros.find(
+                item =>
+                    normalizarTexto(
+                        item
+                    ) ===
+                    normalizarTexto(
+                        bairro.value
+                    )
+            );
+
+
+        if (
+            encontrado
+        ) {
+
+            bairro.value =
+                encontrado;
+
+        }
+
+    }
+
+
+    atualizarRegiaoPorBairro();
+
+}
+
+
+/* =========================================================
+   CORRIGIR CIDADE E UF SE FOREM ALTERADOS
+========================================================= */
+
+if (
+    cidade
+) {
+
+    cidade.addEventListener(
+        "input",
+        function () {
+
+            this.value =
+                "Rio de Janeiro";
+
+        }
+    );
+
+}
+
+
+if (
+    uf
+) {
+
+    uf.addEventListener(
+        "input",
+        function () {
+
+            this.value =
+                "RJ";
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   INICIALIZAÇÃO DO SISTEMA
+========================================================= */
+
+function inicializarFormulario() {
+
+    /* DATA */
+
+    definirDataAtual();
+
+
+    /* LOCALIZAÇÃO */
+
+    definirLocalizacaoPadrao();
+
+
+    if (
+        regiao &&
+        !bairro?.value
+    ) {
+
+        regiao.value =
+            "";
+
+    }
+
+
+    /* CONSERVADORA */
+
+    atualizarCampoOutraConservadora();
+
+
+    /* APOIO */
+
+    atualizarCampoApoio();
+
+
+    /* BAIRROS */
+
+    criarSeletorBairros();
+
+
+    console.log(
+        "RJCAP - Formulário inicializado."
+    );
+
+
+    console.log(
+        `Bairros disponíveis: ${listaBairros.length}`
+    );
+
+}
+
+
+/* =========================================================
+   EXECUTAR INICIALIZAÇÃO
+========================================================= */
+
+inicializarFormulario();
+
+
+/* =========================================================
+   FIM DO SCRIPT
+========================================================= */
