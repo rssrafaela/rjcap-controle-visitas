@@ -2196,30 +2196,21 @@ formulario.addEventListener(
            4. APOIOS SELECIONADOS
         ================================================= */
 
-        const apoiosSelecionados =
-            dados.getAll(
-                "apoio"
-            );
+       const apoiosSelecionados = dados.getAll("apoio");
 
+        const precisaApoioSelecionado =
+            document.querySelector('input[name="precisaApoio"]:checked');
 
-        if (
-            registro.precisaApoio ===
-            "Sim"
-        ) {
+        registro.precisaApoio =
+            precisaApoioSelecionado
+                ? precisaApoioSelecionado.value
+                : "";
 
-            registro.apoio =
-                apoiosSelecionados
-                    .join(
-                        ", "
-                    );
-
+        if (registro.precisaApoio === "Sim") {
+            registro.apoio = apoiosSelecionados.join(", ");
         } else {
-
-            registro.apoio =
-                "Não necessita";
-
+            registro.apoio = "Não necessita";
         }
-
 
         /* =================================================
            5. EMPRESA CONSERVADORA
@@ -2271,13 +2262,11 @@ formulario.addEventListener(
         registro.uf =
             "RJ";
 
+        registro.regiao = descobrirRegiao(registro.bairro);
 
-        registro.regiao =
-            regiao
-                ? regiao.value.trim()
-                : descobrirRegiao(
-                    registro.bairro
-                );
+            if (regiao) {
+                regiao.value = registro.regiao;
+            }
 
 
         /*
