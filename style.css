@@ -1983,3 +1983,131 @@ input[readonly] {
         font-size: 12px;
     }
 }
+
+/* =========================================================
+   CAMPOS CONDICIONAIS - PROPOSTA / RESULTADO DA VISITA
+========================================================= */
+
+.painel-condicional {
+    margin-top: 18px;
+    padding: 22px;
+    border: 1px solid rgba(105, 0, 216, 0.13);
+    border-radius: 14px;
+    background: linear-gradient(
+        135deg,
+        rgba(105, 0, 216, 0.035),
+        rgba(255, 101, 0, 0.025)
+    );
+}
+
+.painel-condicional[hidden] {
+    display: none !important;
+}
+
+.cabecalho-condicional {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.cabecalho-condicional strong {
+    font-size: 14px;
+    color: var(--texto);
+}
+
+.cabecalho-condicional small {
+    font-size: 12px;
+    color: var(--texto-secundario);
+    line-height: 1.5;
+}
+
+.grid-condicional {
+    gap: 22px 20px;
+}
+
+.ajuda-campo {
+    margin-top: 9px;
+    color: var(--texto-secundario);
+    font-size: 12px;
+    line-height: 1.55;
+}
+
+.ajuda-campo strong {
+    color: var(--roxo);
+}
+
+.opcoes-proposta {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.opcoes-resultado {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.opcoes-destino {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+@media (max-width: 850px) {
+    .opcoes-resultado,
+    .opcoes-destino {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .painel-condicional {
+        padding: 17px;
+    }
+
+    .opcoes-proposta {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .grid-condicional {
+        grid-template-columns: 1fr;
+    }
+
+    .grid-condicional .campo-grande {
+        grid-column: auto;
+    }
+}
+
+/* =========================================================
+   OPORTUNIDADE / STATUS COMERCIAL
+========================================================= */
+
+.opcoes-tipo-registro,
+.opcoes-tipo-cliente {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+#campoOportunidadeExistente,
+#campoMotivoPerda {
+    margin-top: 18px;
+}
+
+#campoPrevisaoFechamento[hidden] {
+    display: none !important;
+}
+
+#campoMotivoPerda select {
+    margin-bottom: 4px;
+}
+
+#obsMotivo {
+    min-height: 105px;
+}
+
+.registro-id-box + .registro-id-box {
+    margin-top: 10px;
+}
+
+@media (max-width: 700px) {
+    .opcoes-tipo-registro,
+    .opcoes-tipo-cliente {
+        grid-template-columns: 1fr;
+    }
+}
+
