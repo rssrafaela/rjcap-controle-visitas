@@ -64,6 +64,141 @@ const margemVenda =
 const numeroProposta =
     document.getElementById("numeroProposta");
 
+const dadosProposta =
+    document.getElementById("dadosProposta");
+
+const radiosTemProposta =
+    document.querySelectorAll(
+        'input[name="temProposta"]'
+    );
+
+const radiosTipoRegistro =
+    document.querySelectorAll(
+        'input[name="tipoRegistro"]'
+    );
+
+const campoOportunidadeExistente =
+    document.getElementById("campoOportunidadeExistente");
+
+const idOportunidadeExistente =
+    document.getElementById("idOportunidadeExistente");
+
+    /* =========================================================
+   CONSULTAR AO SAIR DO CAMPO DE ID
+========================================================= */
+
+if (
+    idOportunidadeExistente
+) {
+
+    idOportunidadeExistente.addEventListener(
+        "blur",
+        async function () {
+
+            const id =
+                this.value.trim();
+
+
+            if (!id) {
+
+                return;
+
+            }
+
+
+            const valorOriginal =
+                this.value;
+
+
+            this.disabled =
+                true;
+
+
+            try {
+
+                const oportunidade =
+                    await buscarOportunidadeExistente(
+                        id
+                    );
+
+
+                if (!oportunidade) {
+
+                    alert(
+                        "Oportunidade não encontrada.\n\n" +
+                        "Confira o ID informado."
+                    );
+
+
+                    return;
+
+                }
+
+
+                preencherDadosOportunidade(
+                    oportunidade
+                );
+
+
+            } catch (erro) {
+
+                console.error(
+                    "Erro ao buscar oportunidade:",
+                    erro
+                );
+
+
+                alert(
+                    "Não foi possível buscar os dados da oportunidade.\n\n" +
+                    "Verifique se a nova versão do Apps Script foi implantada."
+                );
+
+
+            } finally {
+
+                this.disabled =
+                    false;
+
+
+                this.value =
+                    valorOriginal;
+
+            }
+
+        }
+    );
+
+}
+
+const idOportunidadeGerado =
+    document.getElementById("idOportunidadeGerado");
+
+const statusComercial =
+    document.getElementById("statusComercial");
+
+const campoMotivoPerda =
+    document.getElementById("campoMotivoPerda");
+
+const motivoPerda =
+    document.getElementById("motivoPerda");
+
+const campoDestinoDeclinio =
+    document.getElementById("campoDestinoDeclinio");
+
+const radiosDestinoDeclinio =
+    document.querySelectorAll(
+        'input[name="destinoDeclinio"]'
+    );
+
+const campoPrevisaoFechamento =
+    document.getElementById("campoPrevisaoFechamento");
+
+const previsaoFechamento =
+    document.getElementById("previsaoFechamento");
+
+const obsMotivo =
+    document.getElementById("obsMotivo");
+
 const bairro =
     document.getElementById("bairro");
 
@@ -91,6 +226,390 @@ let ultimoRegistro = null;
 const URL_GOOGLE_SHEETS =
     "https://script.google.com/macros/s/AKfycbzuILbvHjE_eZGbU-uMKm5xrg5Dgj0Fe2AMruSqeJ8-zSi1CfGss25yirURW8i1gu7FMg/exec";
 
+/* =========================================================
+   BUSCAR OPORTUNIDADE EXISTENTE
+========================================================= */
+
+async function buscarOportunidadeExistente(
+    idOportunidade
+) {
+
+    const id =
+        String(
+            idOportunidade || ""
+        ).trim();
+
+
+    if (!id) {
+
+        return null;
+
+    }
+
+
+    const url =
+        `${URL_GOOGLE_SHEETS}` +
+        `?acao=buscarOportunidade` +
+        `&idOportunidade=${encodeURIComponent(id)}`;
+
+
+    const resposta =
+        await fetch(
+            url,
+            {
+                method: "GET",
+                cache: "no-store"
+            }
+        );
+
+
+    if (!resposta.ok) {
+
+        throw new Error(
+            "Não foi possível consultar a oportunidade."
+        );
+
+    }
+
+
+    const dados =
+        await resposta.json();
+
+
+    if (
+        !dados.sucesso ||
+        !dados.encontrado ||
+        !dados.oportunidade
+    ) {
+
+        return null;
+
+    }
+
+
+    return dados.oportunidade;
+
+}
+
+/* =========================================================
+   MARCAR RADIO AUTOMATICAMENTE
+========================================================= */
+
+function selecionarRadio(
+    nome,
+    valor
+) {
+
+    if (!valor) {
+
+        return;
+
+    }
+
+
+    const radios =
+        document.querySelectorAll(
+            `input[name="${nome}"]`
+        );
+
+
+    radios.forEach(
+        radio => {
+
+            radio.checked =
+                radio.value ===
+                String(valor);
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   PREENCHER CAMPO
+========================================================= */
+
+function preencherCampo(
+    id,
+    valor
+) {
+
+    const campo =
+        document.getElementById(
+            id
+        );
+
+
+    if (!campo) {
+
+        return;
+
+    }
+
+
+    campo.value =
+        valor === undefined ||
+        valor === null
+            ? ""
+            : valor;
+
+
+    campo.dispatchEvent(
+        new Event(
+            "change",
+            {
+                bubbles: true
+            }
+        )
+    );
+
+}
+
+/* =========================================================
+   PREENCHER DADOS DA OPORTUNIDADE
+========================================================= */
+
+function preencherDadosOportunidade(
+    oportunidade
+) {
+
+    if (!oportunidade) {
+
+        return;
+
+    }
+
+
+    /* CONSULTOR */
+
+    preencherCampo(
+        "consultor",
+        oportunidade.consultor
+    );
+
+
+    /* MODALIDADE */
+
+    selecionarRadio(
+        "modalidade",
+        oportunidade.modalidade
+    );
+
+
+    /* TIPO RESIDENCIAL / COMERCIAL */
+
+    selecionarRadio(
+        "tipoCliente",
+        oportunidade.tipoCliente
+    );
+
+
+    /* EQUIPAMENTOS */
+
+    preencherCampo(
+        "quantidadeEquipamentos",
+        oportunidade.quantidadeEquipamentos
+    );
+
+
+    preencherCampo(
+        "quantidadeParadas",
+        oportunidade.quantidadeParadas
+    );
+
+
+    selecionarRadio(
+        "marca",
+        oportunidade.marca
+    );
+
+
+    selecionarRadio(
+        "tipoEquipamento",
+        oportunidade.tipoEquipamento
+    );
+
+
+    /* CONSERVADORA */
+
+    preencherCampo(
+        "empresaConservadora",
+        oportunidade.empresaConservadora
+    );
+
+
+    atualizarCampoOutraConservadora();
+
+
+    /* CONDOMÍNIO */
+
+    preencherCampo(
+        "nomeCondominio",
+        oportunidade.nomeCondominio
+    );
+
+
+    preencherCampo(
+        "endereco",
+        oportunidade.endereco
+    );
+
+
+    preencherCampo(
+        "bairro",
+        oportunidade.bairro
+    );
+
+
+    preencherCampo(
+        "cidade",
+        oportunidade.cidade ||
+        "Rio de Janeiro"
+    );
+
+
+    preencherCampo(
+        "uf",
+        oportunidade.uf ||
+        "RJ"
+    );
+
+
+    preencherCampo(
+        "regiao",
+        oportunidade.regiao
+    );
+
+
+    /* CONTATO */
+
+    preencherCampo(
+        "nomeContato",
+        oportunidade.nomeContato
+    );
+
+
+    preencherCampo(
+        "telefone",
+        oportunidade.telefone
+    );
+
+
+    preencherCampo(
+        "email",
+        oportunidade.email
+    );
+
+
+    /* DADOS DA PROPOSTA */
+
+    const possuiProposta =
+        oportunidade.numeroProposta &&
+        oportunidade.numeroProposta !==
+            "Sem Proposta";
+
+
+    selecionarRadio(
+        "temProposta",
+        possuiProposta
+            ? "Sim"
+            : "Não"
+    );
+
+
+    atualizarCamposProposta();
+
+
+    if (possuiProposta) {
+
+        preencherCampo(
+            "numeroProposta",
+            oportunidade.numeroProposta
+        );
+
+
+        preencherCampo(
+            "tipoContrato",
+            oportunidade.tipoContrato
+        );
+
+
+        if (
+            oportunidade.valorContrato !==
+            ""
+        ) {
+
+            const valor =
+                Number(
+                    oportunidade.valorContrato
+                );
+
+
+            if (
+                !isNaN(valor)
+            ) {
+
+                preencherCampo(
+                    "valorContrato",
+                    valor.toLocaleString(
+                        "pt-BR",
+                        {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        }
+                    )
+                );
+
+            }
+
+        }
+
+
+        preencherCampo(
+            "margemVenda",
+            oportunidade.margemVenda
+        );
+
+    }
+
+
+    /* STATUS ATUAL */
+
+    preencherCampo(
+        "statusComercial",
+        oportunidade.statusComercial
+    );
+
+
+    atualizarStatusComercial();
+
+
+    /* PREVISÃO */
+
+    if (
+        oportunidade.previsaoFechamento
+    ) {
+
+        preencherCampo(
+            "previsaoFechamento",
+            oportunidade.previsaoFechamento
+        );
+
+    }
+
+
+    /* REGIÃO */
+
+    atualizarRegiaoPorBairro();
+
+
+    console.log(
+        "Oportunidade carregada:",
+        oportunidade
+    );
+
+}
 
 async function enviarParaGoogleSheets(registro) {
 
@@ -492,13 +1011,304 @@ if (empresaConservadora) {
 
 
 /* =========================================================
+   JÁ EXISTE PROPOSTA?
+========================================================= */
+
+function atualizarCamposProposta() {
+
+    const escolha =
+        document.querySelector(
+            'input[name="temProposta"]:checked'
+        );
+
+    const temProposta =
+        escolha &&
+        escolha.value === "Sim";
+
+    if (dadosProposta) {
+
+        dadosProposta.hidden =
+            !temProposta;
+
+    }
+
+    [
+        tipoContrato,
+        valorContrato,
+        margemVenda,
+        numeroProposta
+    ].forEach(
+        campo => {
+
+            if (!campo) {
+                return;
+            }
+
+            campo.required =
+                Boolean(temProposta);
+
+            if (!temProposta) {
+
+                if (
+                    campo.tagName ===
+                    "SELECT"
+                ) {
+
+                    campo.selectedIndex = 0;
+
+                } else {
+
+                    campo.value = "";
+
+                }
+
+                removerErroDoCampo(campo);
+
+            }
+
+        }
+    );
+
+}
+
+
+radiosTemProposta
+    .forEach(
+        radio => {
+
+            radio.addEventListener(
+                "change",
+                atualizarCamposProposta
+            );
+
+        }
+    );
+
+
+atualizarCamposProposta();
+
+/* =========================================================
+   TIPO DE REGISTRO / OPORTUNIDADE
+========================================================= */
+
+function atualizarTipoRegistro() {
+
+    const escolha =
+        document.querySelector(
+            'input[name="tipoRegistro"]:checked'
+        );
+
+    const acompanhamento =
+        escolha &&
+        escolha.value ===
+            "Acompanhamento de oportunidade existente";
+
+    if (campoOportunidadeExistente) {
+
+        campoOportunidadeExistente.hidden =
+            !acompanhamento;
+
+    }
+
+    if (idOportunidadeExistente) {
+
+        idOportunidadeExistente.required =
+            Boolean(acompanhamento);
+
+        if (!acompanhamento) {
+
+            idOportunidadeExistente.value =
+                "";
+
+            removerErroDoCampo(
+                idOportunidadeExistente
+            );
+
+        }
+
+    }
+
+}
+
+
+radiosTipoRegistro
+    .forEach(
+        radio => {
+
+            radio.addEventListener(
+                "change",
+                atualizarTipoRegistro
+            );
+
+        }
+    );
+
+
+atualizarTipoRegistro();
+
+
+/* =========================================================
+   STATUS COMERCIAL / PERDA
+========================================================= */
+
+function atualizarMotivoPerda() {
+
+    const semSuporte =
+        motivoPerda &&
+        motivoPerda.value ===
+            "Sem suporte técnico";
+
+    if (campoDestinoDeclinio) {
+
+        campoDestinoDeclinio.hidden =
+            !semSuporte;
+
+    }
+
+    radiosDestinoDeclinio
+        .forEach(
+            radio => {
+
+                radio.required =
+                    Boolean(semSuporte);
+
+                if (!semSuporte) {
+
+                    radio.checked =
+                        false;
+
+                    removerErroDoCampo(
+                        radio
+                    );
+
+                }
+
+            }
+        );
+
+}
+
+
+function atualizarStatusComercial() {
+
+    const status =
+        statusComercial
+            ? statusComercial.value
+            : "";
+
+    const perda =
+        status ===
+        "Perda";
+
+
+    /* MOSTRAR / ESCONDER MOTIVO DA PERDA */
+
+    if (campoMotivoPerda) {
+
+        campoMotivoPerda.hidden =
+            !perda;
+
+    }
+
+
+    if (motivoPerda) {
+
+        motivoPerda.required =
+            Boolean(perda);
+
+        if (!perda) {
+
+            motivoPerda.selectedIndex =
+                0;
+
+            removerErroDoCampo(
+                motivoPerda
+            );
+
+        }
+
+    }
+
+
+    /* PREVISÃO DE FECHAMENTO */
+
+    if (
+        campoPrevisaoFechamento
+    ) {
+
+        campoPrevisaoFechamento.hidden =
+            status === "Assinado" ||
+            status === "Perda";
+
+    }
+
+
+    if (
+        previsaoFechamento &&
+        (
+            status === "Assinado" ||
+            status === "Perda"
+        )
+    ) {
+
+        previsaoFechamento.value =
+            "";
+
+        removerErroDoCampo(
+            previsaoFechamento
+        );
+
+    }
+
+
+    /*
+       SE FOR PERDA POR
+       SEM SUPORTE TÉCNICO,
+       ABRE DESTINO DO CASO.
+    */
+
+    atualizarMotivoPerda();
+
+}
+
+
+if (
+    statusComercial
+) {
+
+    statusComercial.addEventListener(
+        "change",
+        atualizarStatusComercial
+    );
+
+}
+
+
+if (
+    motivoPerda
+) {
+
+    motivoPerda.addEventListener(
+        "change",
+        atualizarMotivoPerda
+    );
+
+}
+
+
+atualizarStatusComercial();
+
+
+/* =========================================================
    PRECISA DE APOIO?
 ========================================================= */
 
 function atualizarCampoApoio() {
 
     if (!campoApoios) {
+
         return;
+
     }
 
     const escolha =
@@ -542,7 +1352,9 @@ radiosPrecisaApoio
         }
     );
 
+
 atualizarCampoApoio();
+
 
 /* =========================================================
    BAIRROS DO RIO DE JANEIRO
@@ -552,6 +1364,7 @@ atualizarCampoApoio();
 const bairrosPorRegiao = {
 
     "Centro": [
+
         "Benfica",
         "Caju",
         "Catumbi",
@@ -569,9 +1382,12 @@ const bairrosPorRegiao = {
         "Saúde",
         "São Cristóvão",
         "Vasco da Gama"
+
     ],
 
+
     "Zona Sul": [
+
         "Botafogo",
         "Catete",
         "Copacabana",
@@ -589,9 +1405,12 @@ const bairrosPorRegiao = {
         "São Conrado",
         "Urca",
         "Vidigal"
+
     ],
 
+
     "Zona Norte": [
+
         "Abolição",
         "Acari",
         "Água Santa",
@@ -675,9 +1494,12 @@ const bairrosPorRegiao = {
         "Vila Kosmos",
         "Vista Alegre",
         "Zumbi"
+
     ],
 
+
     "Zona Oeste": [
+
         "Anil",
         "Bangu",
         "Barra da Tijuca",
@@ -719,6 +1541,7 @@ const bairrosPorRegiao = {
         "Vargem Pequena",
         "Vila Kennedy",
         "Vila Militar"
+
     ]
 
 };
@@ -728,31 +1551,40 @@ const bairrosPorRegiao = {
    LISTA GERAL DE BAIRROS
 ========================================================= */
 
-const listaBairros = Object
-    .values(bairrosPorRegiao)
-    .flat()
-    .sort(
-        (a, b) =>
-            a.localeCompare(
-                b,
-                "pt-BR"
-            )
-    );
+const listaBairros =
+    Object
+        .values(
+            bairrosPorRegiao
+        )
+        .flat()
+        .sort(
+            (a, b) =>
+                a.localeCompare(
+                    b,
+                    "pt-BR"
+                )
+        );
 
 
 /* =========================================================
    DESCOBRIR REGIÃO PELO BAIRRO
 ========================================================= */
 
-function descobrirRegiao(bairroSelecionado) {
+function descobrirRegiao(
+    bairroSelecionado
+) {
 
     if (!bairroSelecionado) {
+
         return "";
+
     }
 
     for (
         const [nomeRegiao, bairros]
-        of Object.entries(bairrosPorRegiao)
+        of Object.entries(
+            bairrosPorRegiao
+        )
     ) {
 
         if (
@@ -782,7 +1614,9 @@ function atualizarRegiaoPorBairro() {
         !bairro ||
         !regiao
     ) {
+
         return;
+
     }
 
     const bairroSelecionado =
@@ -799,7 +1633,9 @@ function atualizarRegiaoPorBairro() {
 }
 
 
-if (bairro) {
+if (
+    bairro
+) {
 
     bairro.addEventListener(
         "change",
@@ -820,14 +1656,18 @@ if (bairro) {
 
 function definirLocalizacaoPadrao() {
 
-    if (cidade) {
+    if (
+        cidade
+    ) {
 
         cidade.value =
             "Rio de Janeiro";
 
     }
 
-    if (uf) {
+    if (
+        uf
+    ) {
 
         uf.value =
             "RJ";
@@ -838,7 +1678,6 @@ function definirLocalizacaoPadrao() {
 
 
 definirLocalizacaoPadrao();
-
 
 /* =========================================================
    ERROS DO FORMULÁRIO
@@ -1036,14 +1875,6 @@ function validarBairro() {
 
     }
 
-    /*
-       PADRONIZA A ESCRITA.
-
-       Exemplo:
-       se alguém digitar "olaria",
-       o sistema transforma em "Olaria".
-    */
-
     const nomePadronizado =
         listaBairros.find(
             item =>
@@ -1110,6 +1941,64 @@ function validarFormulario() {
     );
 
 
+    /* TIPO DE REGISTRO */
+
+    if (
+        !validarRadio(
+            "tipoRegistro",
+            "Informe se é uma nova oportunidade ou acompanhamento."
+        )
+    ) {
+
+        valido =
+            false;
+
+    }
+
+
+    /* TIPO RESIDENCIAL / COMERCIAL */
+
+    if (
+        !validarRadio(
+            "tipoCliente",
+            "Informe se o cliente é Residencial ou Comercial."
+        )
+    ) {
+
+        valido =
+            false;
+
+    }
+
+
+    /* OPORTUNIDADE EXISTENTE */
+
+    const tipoRegistroSelecionado =
+        document.querySelector(
+            'input[name="tipoRegistro"]:checked'
+        );
+
+    if (
+        tipoRegistroSelecionado &&
+        tipoRegistroSelecionado.value ===
+            "Acompanhamento de oportunidade existente" &&
+        (
+            !idOportunidadeExistente ||
+            !idOportunidadeExistente.value.trim()
+        )
+    ) {
+
+        mostrarErro(
+            idOportunidadeExistente,
+            "Informe o ID da oportunidade existente."
+        );
+
+        valido =
+            false;
+
+    }
+
+
     /* MODALIDADE DE NEGÓCIOS */
 
     if (
@@ -1131,6 +2020,88 @@ function validarFormulario() {
         !validarRadio(
             "natureza",
             "Selecione a natureza da visita."
+        )
+    ) {
+
+        valido =
+            false;
+
+    }
+
+
+    /* STATUS COMERCIAL */
+
+    if (
+        !statusComercial ||
+        !statusComercial.value
+    ) {
+
+        mostrarErro(
+            statusComercial,
+            "Selecione o status comercial."
+        );
+
+        valido =
+            false;
+
+    }
+
+
+    /* PERDA */
+
+    if (
+        statusComercial &&
+        statusComercial.value ===
+            "Perda"
+    ) {
+
+        if (
+            !motivoPerda ||
+            !motivoPerda.value
+        ) {
+
+            mostrarErro(
+                motivoPerda,
+                "Informe o motivo da perda."
+            );
+
+            valido =
+                false;
+
+        }
+
+
+        /* SEM SUPORTE TÉCNICO */
+
+        if (
+            motivoPerda &&
+            motivoPerda.value ===
+                "Sem suporte técnico"
+        ) {
+
+            if (
+                !validarRadio(
+                    "destinoDeclinio",
+                    "Informe o destino dado ao caso."
+                )
+            ) {
+
+                valido =
+                    false;
+
+            }
+
+        }
+
+    }
+
+
+    /* JÁ EXISTE PROPOSTA? */
+
+    if (
+        !validarRadio(
+            "temProposta",
+            "Informe se já existe proposta."
         )
     ) {
 
@@ -1164,7 +2135,8 @@ function validarFormulario() {
 
     if (
         precisaApoio &&
-        precisaApoio.value === "Sim"
+        precisaApoio.value ===
+            "Sim"
     ) {
 
         const apoioSelecionado =
@@ -1302,8 +2274,9 @@ function validarFormulario() {
 
     if (
         valorContrato &&
+        valorContrato.required &&
         valorContrato.value ===
-        "0,00"
+            "0,00"
     ) {
 
         mostrarErro(
@@ -1346,6 +2319,80 @@ function validarFormulario() {
     return valido;
 
 }
+
+
+/* =========================================================
+   GERAR ID DA OPORTUNIDADE
+========================================================= */
+
+function gerarIdOportunidade() {
+
+    const agora =
+        new Date();
+
+    const data =
+        [
+            agora.getFullYear(),
+
+            String(
+                agora.getMonth() + 1
+            ).padStart(
+                2,
+                "0"
+            ),
+
+            String(
+                agora.getDate()
+            ).padStart(
+                2,
+                "0"
+            )
+
+        ].join("");
+
+
+    const hora =
+        [
+            String(
+                agora.getHours()
+            ).padStart(
+                2,
+                "0"
+            ),
+
+            String(
+                agora.getMinutes()
+            ).padStart(
+                2,
+                "0"
+            ),
+
+            String(
+                agora.getSeconds()
+            ).padStart(
+                2,
+                "0"
+            )
+
+        ].join("");
+
+
+    const aleatorio =
+        Math.random()
+            .toString(36)
+            .substring(
+                2,
+                6
+            )
+            .toUpperCase();
+
+
+    return (
+        `OPP-${data}-${hora}-${aleatorio}`
+    );
+
+}
+
 
 /* =========================================================
    GERAR ID DA VISITA
@@ -1424,9 +2471,13 @@ function gerarIdVisita() {
    FORMATAR ENDEREÇO COMPLETO
 ========================================================= */
 
-function montarEnderecoCompleto(registro) {
+function montarEnderecoCompleto(
+    registro
+) {
 
-    const partes = [];
+    const partes =
+        [];
+
 
     if (
         registro.endereco
@@ -1438,6 +2489,7 @@ function montarEnderecoCompleto(registro) {
 
     }
 
+
     if (
         registro.bairro
     ) {
@@ -1447,6 +2499,7 @@ function montarEnderecoCompleto(registro) {
         );
 
     }
+
 
     if (
         registro.cidade
@@ -1460,7 +2513,9 @@ function montarEnderecoCompleto(registro) {
 
 
     let enderecoCompleto =
-        partes.join(", ");
+        partes.join(
+            ", "
+        );
 
 
     if (
@@ -1477,7 +2532,6 @@ function montarEnderecoCompleto(registro) {
 
 }
 
-
 /* =========================================================
    RÓTULOS DO REGISTRO
    USADOS NO PDF E EXCEL
@@ -1489,8 +2543,14 @@ function rotulosRegistro(
 
     return {
 
+        "ID da Oportunidade":
+            registro.idOportunidade,
+
         "ID da Visita":
             registro.idVisita,
+
+        "Tipo de Registro":
+            registro.tipoRegistro,
 
         "Data da Visita":
             registro.dataVisita,
@@ -1501,8 +2561,29 @@ function rotulosRegistro(
         "Modalidade de Negócios":
             registro.modalidade,
 
+        "Tipo":
+            registro.tipoCliente,
+
         "Natureza da Visita":
             registro.natureza,
+
+        "Status Comercial":
+            registro.statusComercial,
+
+        "Motivo da Perda":
+            registro.motivoPerda,
+
+        "Destino do caso":
+            registro.destinoDeclinio,
+
+        "Previsão de Fechamento":
+            registro.previsaoFechamento,
+
+        "Obs./Motivo":
+            registro.obsMotivo,
+
+        "Já existe proposta?":
+            registro.temProposta,
 
         "Precisa de Apoio":
             registro.precisaApoio,
@@ -1514,7 +2595,9 @@ function rotulosRegistro(
             registro.tipoContrato,
 
         "Valor do Contrato":
-            `R$ ${registro.valorContrato}`,
+            registro.valorContrato
+                ? `R$ ${registro.valorContrato}`
+                : "",
 
         "Margem de Venda (%)":
             registro.margemVenda
@@ -1571,7 +2654,7 @@ function rotulosRegistro(
         "E-mail":
             registro.email,
 
-        "Observações":
+        "Observações Gerais":
             registro.observacoes
 
     };
@@ -1961,6 +3044,12 @@ function limparFormulario() {
 
     atualizarCampoApoio();
 
+    atualizarCamposProposta();
+
+    atualizarTipoRegistro();
+
+    atualizarStatusComercial();
+
 }
 
 
@@ -2196,21 +3285,41 @@ formulario.addEventListener(
            4. APOIOS SELECIONADOS
         ================================================= */
 
-       const apoiosSelecionados = dados.getAll("apoio");
+        const apoiosSelecionados =
+            dados.getAll(
+                "apoio"
+            );
+
 
         const precisaApoioSelecionado =
-            document.querySelector('input[name="precisaApoio"]:checked');
+            document.querySelector(
+                'input[name="precisaApoio"]:checked'
+            );
+
 
         registro.precisaApoio =
             precisaApoioSelecionado
                 ? precisaApoioSelecionado.value
                 : "";
 
-        if (registro.precisaApoio === "Sim") {
-            registro.apoio = apoiosSelecionados.join(", ");
+
+        if (
+            registro.precisaApoio ===
+            "Sim"
+        ) {
+
+            registro.apoio =
+                apoiosSelecionados.join(
+                    ", "
+                );
+
         } else {
-            registro.apoio = "Não necessita";
+
+            registro.apoio =
+                "Não necessita";
+
         }
+
 
         /* =================================================
            5. EMPRESA CONSERVADORA
@@ -2262,17 +3371,27 @@ formulario.addEventListener(
         registro.uf =
             "RJ";
 
-        registro.regiao = descobrirRegiao(registro.bairro);
 
-            if (regiao) {
-                regiao.value = registro.regiao;
-            }
+        registro.regiao =
+            descobrirRegiao(
+                registro.bairro
+            );
+
+
+        if (
+            regiao
+        ) {
+
+            regiao.value =
+                registro.regiao;
+
+        }
 
 
         /*
-           Criei endereço completo.
-           Isso pode ser útil futuramente
-           no Power BI para geolocalização.
+           Endereço completo.
+           Pode ser usado futuramente
+           para geolocalização.
         */
 
         registro.enderecoCompleto =
@@ -2285,23 +3404,178 @@ formulario.addEventListener(
            7. NOVOS CAMPOS COMERCIAIS
         ================================================= */
 
-        registro.tipoContrato =
-            registro.tipoContrato ||
+        registro.temProposta =
+            registro.temProposta ||
             "";
 
 
-        registro.margemVenda =
-            registro.margemVenda ||
+        /*
+           SE JÁ EXISTE PROPOSTA
+        */
+
+        if (
+            registro.temProposta ===
+            "Sim"
+        ) {
+
+            registro.tipoContrato =
+                registro.tipoContrato ||
+                "";
+
+            registro.valorContrato =
+                registro.valorContrato ||
+                "";
+
+            registro.margemVenda =
+                registro.margemVenda ||
+                "";
+
+            registro.numeroProposta =
+                registro.numeroProposta ||
+                "";
+
+        } else {
+
+            /*
+               SE NÃO EXISTE PROPOSTA,
+               SALVA AUTOMATICAMENTE
+               "Sem Proposta".
+            */
+
+            registro.tipoContrato =
+                "";
+
+            registro.valorContrato =
+                "";
+
+            registro.margemVenda =
+                "";
+
+            registro.numeroProposta =
+                "Sem Proposta";
+
+        }
+
+
+        /*
+           OPORTUNIDADE
+        */
+
+        if (
+            registro.tipoRegistro ===
+            "Acompanhamento de oportunidade existente"
+        ) {
+
+            registro.idOportunidade =
+                (
+                    registro.idOportunidadeExistente ||
+                    ""
+                ).trim();
+
+        } else {
+
+            registro.idOportunidade =
+                gerarIdOportunidade();
+
+        }
+
+
+        /*
+           O campo usado só para selecionar
+           uma oportunidade existente não
+           precisa virar coluna separada.
+        */
+
+        delete registro
+            .idOportunidadeExistente;
+
+
+        /*
+           STATUS COMERCIAL
+        */
+
+        registro.statusComercial =
+            registro.statusComercial ||
             "";
 
 
-        registro.numeroProposta =
-            registro.numeroProposta ||
+        /*
+           MOTIVO DA PERDA
+
+           Se o status não for Perda,
+           salva "Não se aplica".
+        */
+
+        registro.motivoPerda =
+            registro.statusComercial ===
+            "Perda"
+                ? (
+                    registro.motivoPerda ||
+                    ""
+                )
+                : "Não se aplica";
+
+
+        /*
+           DESTINO DO CASO
+
+           Só faz sentido quando:
+           Status = Perda
+           Motivo = Sem suporte técnico
+        */
+
+        if (
+            registro.statusComercial ===
+                "Perda" &&
+            registro.motivoPerda ===
+                "Sem suporte técnico"
+        ) {
+
+            registro.destinoDeclinio =
+                registro.destinoDeclinio ||
+                "";
+
+        } else {
+
+            registro.destinoDeclinio =
+                "Não se aplica";
+
+        }
+
+
+        /*
+           PREVISÃO DE FECHAMENTO
+
+           Quando já foi Assinado ou
+           houve Perda, não existe mais
+           previsão futura.
+        */
+
+        registro.previsaoFechamento =
+            (
+                registro.statusComercial ===
+                    "Assinado" ||
+                registro.statusComercial ===
+                    "Perda"
+            )
+                ? ""
+                : (
+                    registro.previsaoFechamento ||
+                    ""
+                );
+
+
+        /*
+           OBS / MOTIVO COMERCIAL
+        */
+
+        registro.obsMotivo =
+            registro.obsMotivo ||
             "";
 
 
         /* =================================================
-           8. GERAR ID ÚNICO
+           8. GERAR ID ÚNICO DA VISITA
         ================================================= */
 
         registro.idVisita =
@@ -2365,7 +3639,7 @@ formulario.addEventListener(
 
 
         /* =================================================
-           12. MOSTRAR ID GERADO
+           12. MOSTRAR IDS GERADOS
         ================================================= */
 
         if (
@@ -2375,6 +3649,17 @@ formulario.addEventListener(
             idVisitaGerado
                 .textContent =
                 registro.idVisita;
+
+        }
+
+
+        if (
+            idOportunidadeGerado
+        ) {
+
+            idOportunidadeGerado
+                .textContent =
+                registro.idOportunidade;
 
         }
 
@@ -2514,7 +3799,6 @@ function fecharModalELimpar() {
         .forEach(
             campo => {
 
-
                 /*
                    DATA SERÁ DEFINIDA
                    NOVAMENTE DEPOIS.
@@ -2554,8 +3838,7 @@ function fecharModalELimpar() {
             }
         );
 
-
-    /* =====================================================
+            /* =====================================================
        OBSERVAÇÕES
     ===================================================== */
 
@@ -2576,6 +3859,20 @@ function fecharModalELimpar() {
         contadorCaracteres
             .textContent =
             "0";
+
+    }
+
+
+    /* =====================================================
+       OBS / MOTIVO COMERCIAL
+    ===================================================== */
+
+    if (
+        obsMotivo
+    ) {
+
+        obsMotivo.value =
+            "";
 
     }
 
@@ -2644,6 +3941,203 @@ function fecharModalELimpar() {
 
 
     /* =====================================================
+       PROPOSTA
+    ===================================================== */
+
+    if (
+        dadosProposta
+    ) {
+
+        dadosProposta.hidden =
+            true;
+
+    }
+
+
+    if (
+        tipoContrato
+    ) {
+
+        tipoContrato.selectedIndex =
+            0;
+
+        tipoContrato.required =
+            false;
+
+    }
+
+
+    if (
+        valorContrato
+    ) {
+
+        valorContrato.value =
+            "";
+
+        valorContrato.required =
+            false;
+
+    }
+
+
+    if (
+        margemVenda
+    ) {
+
+        margemVenda.value =
+            "";
+
+        margemVenda.required =
+            false;
+
+    }
+
+
+    if (
+        numeroProposta
+    ) {
+
+        numeroProposta.value =
+            "";
+
+        numeroProposta.required =
+            false;
+
+    }
+
+
+    /* =====================================================
+       OPORTUNIDADE EXISTENTE
+    ===================================================== */
+
+    if (
+        campoOportunidadeExistente
+    ) {
+
+        campoOportunidadeExistente.hidden =
+            true;
+
+    }
+
+
+    if (
+        idOportunidadeExistente
+    ) {
+
+        idOportunidadeExistente.value =
+            "";
+
+        idOportunidadeExistente.required =
+            false;
+
+    }
+
+
+    /* =====================================================
+       STATUS COMERCIAL
+    ===================================================== */
+
+    if (
+        statusComercial
+    ) {
+
+        statusComercial.selectedIndex =
+            0;
+
+    }
+
+
+    if (
+        campoMotivoPerda
+    ) {
+
+        campoMotivoPerda.hidden =
+            true;
+
+    }
+
+
+    if (
+        motivoPerda
+    ) {
+
+        motivoPerda.selectedIndex =
+            0;
+
+        motivoPerda.required =
+            false;
+
+    }
+
+
+    /* =====================================================
+       DESTINO DO CASO
+    ===================================================== */
+
+    if (
+        campoDestinoDeclinio
+    ) {
+
+        campoDestinoDeclinio.hidden =
+            true;
+
+    }
+
+
+    radiosDestinoDeclinio
+        .forEach(
+            radio => {
+
+                radio.checked =
+                    false;
+
+                radio.required =
+                    false;
+
+            }
+        );
+
+
+    /* =====================================================
+       PREVISÃO DE FECHAMENTO
+    ===================================================== */
+
+    if (
+        campoPrevisaoFechamento
+    ) {
+
+        campoPrevisaoFechamento.hidden =
+            false;
+
+    }
+
+
+    if (
+        previsaoFechamento
+    ) {
+
+        previsaoFechamento.value =
+            "";
+
+    }
+
+
+    /* =====================================================
+       ATUALIZAR CAMPOS CONDICIONAIS
+    ===================================================== */
+
+    atualizarCampoOutraConservadora();
+
+    atualizarCampoApoio();
+
+    atualizarCamposProposta();
+
+    atualizarTipoRegistro();
+
+    atualizarStatusComercial();
+
+
+    /* =====================================================
        LOCALIZAÇÃO
     ===================================================== */
 
@@ -2666,11 +4160,6 @@ function fecharModalELimpar() {
 
     }
 
-
-    /*
-       Cidade e UF voltam
-       automaticamente.
-    */
 
     definirLocalizacaoPadrao();
 
@@ -2698,7 +4187,7 @@ function fecharModalELimpar() {
 
 
     /* =====================================================
-       ID DO MODAL
+       IDs DO MODAL
     ===================================================== */
 
     if (
@@ -2706,6 +4195,17 @@ function fecharModalELimpar() {
     ) {
 
         idVisitaGerado
+            .textContent =
+            "—";
+
+    }
+
+
+    if (
+        idOportunidadeGerado
+    ) {
+
+        idOportunidadeGerado
             .textContent =
             "—";
 
@@ -2806,6 +4306,17 @@ if (
 
 
             if (
+                idOportunidadeGerado
+            ) {
+
+                idOportunidadeGerado
+                    .textContent =
+                    "—";
+
+            }
+
+
+            if (
                 modalSucesso
             ) {
 
@@ -2827,6 +4338,7 @@ if (
     );
 
 }
+
 
 /* =========================================================
    REMOVER ERRO AO DIGITAR
@@ -2864,10 +4376,16 @@ formulario.addEventListener(
    CAMPO DE BAIRRO PESQUISÁVEL
 ========================================================= */
 
-function normalizarTexto(texto) {
+function normalizarTexto(
+    texto
+) {
 
-    return String(texto || "")
-        .normalize("NFD")
+    return String(
+        texto || ""
+    )
+        .normalize(
+            "NFD"
+        )
         .replace(
             /[\u0300-\u036f]/g,
             ""
@@ -2884,14 +4402,14 @@ function normalizarTexto(texto) {
 
 function criarSeletorBairros() {
 
-    if (!bairro) {
+    if (
+        !bairro
+    ) {
+
         return;
+
     }
 
-
-    /* -----------------------------------------
-       CONTAINER DO CAMPO
-    ----------------------------------------- */
 
     const campoContainer =
         bairro.closest(
@@ -2899,47 +4417,25 @@ function criarSeletorBairros() {
         );
 
 
-    if (!campoContainer) {
+    if (
+        !campoContainer
+    ) {
+
         return;
-    }
-
-
-    /* -----------------------------------------
-       EVITAR CRIAR DUAS VEZES
-    ----------------------------------------- */
-
-    const listaExistente =
-        campoContainer.querySelector(
-            ".lista-bairros"
-        );
-
-
-    if (listaExistente) {
-
-        listaExistente.remove();
 
     }
 
 
-    /* -----------------------------------------
-       CONFIGURAR INPUT
-    ----------------------------------------- */
+    if (
+        document.getElementById(
+            "listaBairrosPersonalizada"
+        )
+    ) {
 
-    bairro.setAttribute(
-        "autocomplete",
-        "off"
-    );
+        return;
 
+    }
 
-    bairro.setAttribute(
-        "placeholder",
-        "Digite ou selecione o bairro..."
-    );
-
-
-    /* -----------------------------------------
-       CRIAR LISTA
-    ----------------------------------------- */
 
     const lista =
         document.createElement(
@@ -2947,26 +4443,22 @@ function criarSeletorBairros() {
         );
 
 
+    lista.id =
+        "listaBairrosPersonalizada";
+
+
     lista.className =
-        "lista-bairros";
+        "lista-bairros-personalizada";
 
 
     lista.hidden =
         true;
 
 
-    campoContainer.style.position =
-        "relative";
-
-
     campoContainer.appendChild(
         lista
     );
 
-
-    /* =====================================================
-       MOSTRAR BAIRROS
-    ===================================================== */
 
     function mostrarBairros(
         filtro = ""
@@ -2982,32 +4474,23 @@ function criarSeletorBairros() {
             );
 
 
-        const resultados =
+        const bairrosFiltrados =
             listaBairros.filter(
                 nomeBairro => {
 
-                    const nomeNormalizado =
-                        normalizarTexto(
-                            nomeBairro
-                        );
-
-
-                    return (
-                        nomeNormalizado.includes(
-                            textoFiltro
-                        )
+                    return normalizarTexto(
+                        nomeBairro
+                    ).includes(
+                        textoFiltro
                     );
 
                 }
             );
 
 
-        /* -----------------------------------------
-           NENHUM RESULTADO
-        ----------------------------------------- */
-
         if (
-            resultados.length === 0
+            bairrosFiltrados.length ===
+            0
         ) {
 
             const vazio =
@@ -3038,91 +4521,67 @@ function criarSeletorBairros() {
         }
 
 
-        /* -----------------------------------------
-           CRIAR OPÇÕES
-        ----------------------------------------- */
+        bairrosFiltrados
+            .forEach(
+                nomeBairro => {
 
-        resultados.forEach(
-            nomeBairro => {
+                    const item =
+                        document.createElement(
+                            "button"
+                        );
 
-                const opcao =
-                    document.createElement(
-                        "button"
+
+                    item.type =
+                        "button";
+
+
+                    item.className =
+                        "item-bairro";
+
+
+                    item.textContent =
+                        nomeBairro;
+
+
+                    item.addEventListener(
+                        "click",
+                        function () {
+
+                            bairro.value =
+                                nomeBairro;
+
+
+                            lista.hidden =
+                                true;
+
+
+                            atualizarRegiaoPorBairro();
+
+
+                            removerErroDoCampo(
+                                bairro
+                            );
+
+
+                            bairro.dispatchEvent(
+                                new Event(
+                                    "change",
+                                    {
+                                        bubbles: true
+                                    }
+                                )
+                            );
+
+                        }
                     );
 
 
-                opcao.type =
-                    "button";
+                    lista.appendChild(
+                        item
+                    );
 
-
-                opcao.className =
-                    "opcao-bairro";
-
-
-                opcao.textContent =
-                    nomeBairro;
-
-
-                opcao.addEventListener(
-                    "mousedown",
-                    function (event) {
-
-                        /*
-                           Evita que o input perca
-                           o foco antes da seleção.
-                        */
-
-                        event.preventDefault();
-
-                    }
-                );
-
-
-                opcao.addEventListener(
-                    "click",
-                    function () {
-
-                        bairro.value =
-                            nomeBairro;
-
-
-                        lista.hidden =
-                            true;
-
-
-                        atualizarRegiaoPorBairro();
-
-
-                        removerErroDoCampo(
-                            bairro
-                        );
-
-
-                        /*
-                           Dispara evento change
-                           para manter o restante
-                           do formulário sincronizado.
-                        */
-
-                        bairro.dispatchEvent(
-                            new Event(
-                                "change",
-                                {
-                                    bubbles: true
-                                }
-                            )
-                        );
-
-                    }
-                );
-
-
-                lista.appendChild(
-                    opcao
-                );
-
-            }
-        );
+                }
+            );
 
 
         lista.hidden =
@@ -3130,10 +4589,6 @@ function criarSeletorBairros() {
 
     }
 
-
-    /* =====================================================
-       AO CLICAR NO CAMPO
-    ===================================================== */
 
     bairro.addEventListener(
         "focus",
@@ -3147,258 +4602,20 @@ function criarSeletorBairros() {
     );
 
 
-    /* =====================================================
-       AO DIGITAR
-    ===================================================== */
-
     bairro.addEventListener(
         "input",
         function () {
 
-            /*
-               Enquanto estiver digitando,
-               a região fica vazia até
-               encontrarmos um bairro válido.
-            */
-
-            const textoDigitado =
-                this.value.trim();
-
-
-            const bairroExato =
-                listaBairros.find(
-                    item =>
-                        normalizarTexto(
-                            item
-                        ) ===
-                        normalizarTexto(
-                            textoDigitado
-                        )
-                );
-
-
-            if (
-                bairroExato
-            ) {
-
-                this.value =
-                    bairroExato;
-
-
-                atualizarRegiaoPorBairro();
-
-            } else {
-
-                if (
-                    regiao
-                ) {
-
-                    regiao.value =
-                        "";
-
-                }
-
-            }
-
-
             mostrarBairros(
-                textoDigitado
+                this.value
             );
+
+
+            atualizarRegiaoPorBairro();
 
         }
     );
 
-
-    /* =====================================================
-       SETA PARA BAIXO
-    ===================================================== */
-
-    bairro.addEventListener(
-        "keydown",
-        function (event) {
-
-            const opcoes =
-                Array.from(
-                    lista.querySelectorAll(
-                        ".opcao-bairro"
-                    )
-                );
-
-
-            if (
-                opcoes.length === 0
-            ) {
-
-                return;
-
-            }
-
-
-            let indiceAtual =
-                opcoes.findIndex(
-                    opcao =>
-                        opcao.classList.contains(
-                            "ativo"
-                        )
-                );
-
-
-            /* -----------------------------------------
-               SETA PARA BAIXO
-            ----------------------------------------- */
-
-            if (
-                event.key ===
-                "ArrowDown"
-            ) {
-
-                event.preventDefault();
-
-
-                indiceAtual++;
-
-
-                if (
-                    indiceAtual >=
-                    opcoes.length
-                ) {
-
-                    indiceAtual =
-                        0;
-
-                }
-
-
-                destacarOpcao(
-                    opcoes,
-                    indiceAtual
-                );
-
-            }
-
-
-            /* -----------------------------------------
-               SETA PARA CIMA
-            ----------------------------------------- */
-
-            if (
-                event.key ===
-                "ArrowUp"
-            ) {
-
-                event.preventDefault();
-
-
-                indiceAtual--;
-
-
-                if (
-                    indiceAtual < 0
-                ) {
-
-                    indiceAtual =
-                        opcoes.length - 1;
-
-                }
-
-
-                destacarOpcao(
-                    opcoes,
-                    indiceAtual
-                );
-
-            }
-
-
-            /* -----------------------------------------
-               ENTER
-            ----------------------------------------- */
-
-            if (
-                event.key ===
-                "Enter"
-            ) {
-
-                const ativa =
-                    lista.querySelector(
-                        ".opcao-bairro.ativo"
-                    );
-
-
-                if (
-                    ativa &&
-                    !lista.hidden
-                ) {
-
-                    event.preventDefault();
-
-                    ativa.click();
-
-                }
-
-            }
-
-
-            /* -----------------------------------------
-               ESC
-            ----------------------------------------- */
-
-            if (
-                event.key ===
-                "Escape"
-            ) {
-
-                lista.hidden =
-                    true;
-
-            }
-
-        }
-    );
-
-
-    /* =====================================================
-       DESTACAR OPÇÃO COM TECLADO
-    ===================================================== */
-
-    function destacarOpcao(
-        opcoes,
-        indice
-    ) {
-
-        opcoes.forEach(
-            opcao =>
-                opcao.classList.remove(
-                    "ativo"
-                )
-        );
-
-
-        const selecionada =
-            opcoes[indice];
-
-
-        if (
-            selecionada
-        ) {
-
-            selecionada.classList.add(
-                "ativo"
-            );
-
-
-            selecionada.scrollIntoView({
-                block: "nearest"
-            });
-
-        }
-
-    }
-
-
-    /* =====================================================
-       FECHAR LISTA AO CLICAR FORA
-    ===================================================== */
 
     document.addEventListener(
         "click",
@@ -3418,81 +4635,17 @@ function criarSeletorBairros() {
         }
     );
 
-
-    /* =====================================================
-       AO SAIR DO CAMPO
-    ===================================================== */
-
-    bairro.addEventListener(
-        "blur",
-        function () {
-
-            const textoDigitado =
-                this.value.trim();
-
-
-            if (
-                !textoDigitado
-            ) {
-
-                if (
-                    regiao
-                ) {
-
-                    regiao.value =
-                        "";
-
-                }
-
-
-                return;
-
-            }
-
-
-            /*
-               Procura ignorando
-               maiúsculas e acentos.
-            */
-
-            const encontrado =
-                listaBairros.find(
-                    item =>
-                        normalizarTexto(
-                            item
-                        ) ===
-                        normalizarTexto(
-                            textoDigitado
-                        )
-                );
-
-
-            if (
-                encontrado
-            ) {
-
-                /*
-                   Padroniza o nome.
-                   Exemplo:
-                   "OLARIA" vira "Olaria".
-                */
-
-                this.value =
-                    encontrado;
-
-
-                atualizarRegiaoPorBairro();
-
-            }
-
-        }
-    );
-
 }
 
 
 /* =========================================================
-   GARANTIR LOCALIZAÇÃO ANTES DO ENVIO
+   INICIAR SELETOR DE BAIRROS
+========================================================= */
+
+criarSeletorBairros();
+
+/* =========================================================
+   GARANTIR LOCALIZAÇÃO PADRONIZADA
 ========================================================= */
 
 function garantirLocalizacaoPadronizada() {
@@ -3609,9 +4762,19 @@ function inicializarFormulario() {
     atualizarCampoApoio();
 
 
-    /* BAIRROS */
+    /* PROPOSTA */
 
-    criarSeletorBairros();
+    atualizarCamposProposta();
+
+
+    /* TIPO DE REGISTRO */
+
+    atualizarTipoRegistro();
+
+
+    /* STATUS COMERCIAL */
+
+    atualizarStatusComercial();
 
 
     console.log(
