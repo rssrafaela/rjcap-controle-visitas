@@ -136,7 +136,10 @@
             <div>
               <h2>Informações da visita</h2>
 
-              <p>Todos os campos abaixo são obrigatórios.</p>
+              <p>
+                Preencha os campos obrigatórios. Alguns campos serão exibidos
+                conforme as respostas.
+              </p>
             </div>
           </div>
 
@@ -162,6 +165,68 @@
             </div>
 
             <div class="grid">
+              <!-- TIPO DE REGISTRO -->
+
+              <div class="campo campo-grande">
+                <label>
+                  Tipo de Registro
+                  <span>*</span>
+                </label>
+
+                <div class="opcoes opcoes-tipo-registro">
+                  <label class="opcao-card">
+                    <input
+                      type="radio"
+                      name="tipoRegistro"
+                      value="Nova oportunidade"
+                      required
+                    />
+                    <span class="radio-personalizado"></span>
+                    <span>Nova oportunidade</span>
+                  </label>
+
+                  <label class="opcao-card">
+                    <input
+                      type="radio"
+                      name="tipoRegistro"
+                      value="Acompanhamento de oportunidade existente"
+                    />
+                    <span class="radio-personalizado"></span>
+                    <span>Acompanhamento de oportunidade existente</span>
+                  </label>
+                </div>
+
+                <p class="ajuda-campo">
+                  Se for uma nova ida ao mesmo cliente pela mesma oportunidade,
+                  selecione acompanhamento para manter o histórico no mesmo
+                  processo comercial.
+                </p>
+
+                <div
+                  id="campoOportunidadeExistente"
+                  class="campo-condicional painel-condicional"
+                  hidden
+                >
+                  <label for="idOportunidadeExistente">
+                    ID da Oportunidade
+                    <span>*</span>
+                  </label>
+
+                  <input
+                    type="text"
+                    id="idOportunidadeExistente"
+                    name="idOportunidadeExistente"
+                    placeholder="Ex.: OPP-20260827-..."
+                  />
+
+                  <p class="ajuda-campo">
+                    Nesta etapa o ID será informado manualmente. A busca
+                    automática por condomínio/proposta será conectada ao banco
+                    depois.
+                  </p>
+                </div>
+              </div>
+
               <!-- CONSULTOR -->
 
               <div class="campo campo-grande">
@@ -213,6 +278,34 @@
                     <span class="radio-personalizado"></span>
 
                     <span>Captação</span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- TIPO - RESIDENCIAL / COMERCIAL -->
+
+              <div class="campo campo-grande">
+                <label>
+                  Tipo
+                  <span>*</span>
+                </label>
+
+                <div class="opcoes opcoes-tipo-cliente">
+                  <label class="opcao-card">
+                    <input
+                      type="radio"
+                      name="tipoCliente"
+                      value="Residencial"
+                      required
+                    />
+                    <span class="radio-personalizado"></span>
+                    <span>Residencial</span>
+                  </label>
+
+                  <label class="opcao-card">
+                    <input type="radio" name="tipoCliente" value="Comercial" />
+                    <span class="radio-personalizado"></span>
+                    <span>Comercial</span>
                   </label>
                 </div>
               </div>
@@ -278,7 +371,160 @@
 
                     <span>Fechamento</span>
                   </label>
+
+                  <label class="opcao-card">
+                    <input
+                      type="radio"
+                      name="natureza"
+                      value="Relacionamento"
+                    />
+
+                    <span class="radio-personalizado"></span>
+
+                    <span>Relacionamento</span>
+                  </label>
                 </div>
+              </div>
+
+              <!-- STATUS COMERCIAL -->
+
+              <div class="campo campo-grande">
+                <label for="statusComercial">
+                  Status Comercial
+                  <span>*</span>
+                </label>
+
+                <select id="statusComercial" name="statusComercial" required>
+                  <option value="" selected disabled>
+                    Selecione o status atual
+                  </option>
+                  <option value="Em prospecção">Em prospecção</option>
+                  <option value="Aguardando vistoria">
+                    Aguardando vistoria
+                  </option>
+                  <option value="Aguardando proposta">
+                    Aguardando proposta
+                  </option>
+                  <option value="Em negociação">Em negociação</option>
+                  <option value="Aguardando retorno do cliente">
+                    Aguardando retorno do cliente
+                  </option>
+                  <option value="Assinado">Assinado</option>
+                  <option value="Perda">Perda</option>
+                </select>
+
+                <p class="ajuda-campo">
+                  Declínio passa a ser tratado como <strong>Perda</strong>,
+                  evitando duplicidade de conceitos no histórico comercial.
+                </p>
+
+                <div
+                  id="campoMotivoPerda"
+                  class="campo-condicional painel-condicional"
+                  hidden
+                >
+                  <label for="motivoPerda">
+                    Motivo da Perda
+                    <span>*</span>
+                  </label>
+
+                  <select id="motivoPerda" name="motivoPerda">
+                    <option value="" selected disabled>
+                      Selecione o motivo
+                    </option>
+                    <option value="Sem suporte técnico">
+                      Sem suporte técnico
+                    </option>
+                    <option value="Preço">Preço</option>
+                    <option value="Concorrência">Concorrência</option>
+                    <option value="Cliente desistiu">Cliente desistiu</option>
+                    <option value="Pendência financeira">
+                      Pendência financeira
+                    </option>
+                    <option value="Fora do escopo">Fora do escopo</option>
+                    <option value="Modernização">Modernização</option>
+                    <option value="Outro">Outro</option>
+                  </select>
+
+                  <div
+                    id="campoDestinoDeclinio"
+                    class="campo-condicional"
+                    hidden
+                  >
+                    <label>
+                      Destino do caso
+                      <span>*</span>
+                    </label>
+
+                    <p class="ajuda-campo">
+                      Para perda por falta de suporte técnico, informe se o caso
+                      seguiu para Modernização.
+                    </p>
+
+                    <div class="opcoes opcoes-destino">
+                      <label class="opcao-card">
+                        <input
+                          type="radio"
+                          name="destinoDeclinio"
+                          value="Encaminhado para Modernização"
+                        />
+                        <span class="radio-personalizado"></span>
+                        <span>Encaminhado para Modernização</span>
+                      </label>
+
+                      <label class="opcao-card">
+                        <input
+                          type="radio"
+                          name="destinoDeclinio"
+                          value="Sem condições para Modernização"
+                        />
+                        <span class="radio-personalizado"></span>
+                        <span>Sem condições para Modernização</span>
+                      </label>
+
+                      <label class="opcao-card">
+                        <input
+                          type="radio"
+                          name="destinoDeclinio"
+                          value="Não encaminhado para Modernização"
+                        />
+                        <span class="radio-personalizado"></span>
+                        <span>Não encaminhado para Modernização</span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- PREVISÃO DE FECHAMENTO -->
+
+              <div id="campoPrevisaoFechamento" class="campo campo-grande">
+                <label for="previsaoFechamento"> Previsão de Fechamento </label>
+
+                <input
+                  type="date"
+                  id="previsaoFechamento"
+                  name="previsaoFechamento"
+                />
+
+                <p class="ajuda-campo">
+                  Informe a data prevista de fechamento. O campo será ocultado
+                  automaticamente quando o status for Assinado ou Perda.
+                </p>
+              </div>
+
+              <!-- OBS / MOTIVO COMERCIAL -->
+
+              <div class="campo campo-grande">
+                <label for="obsMotivo"> Obs./Motivo </label>
+
+                <textarea
+                  id="obsMotivo"
+                  name="obsMotivo"
+                  rows="4"
+                  maxlength="700"
+                  placeholder="Ex.: aguardando assinatura, cliente fechou com concorrente, pendência financeira..."
+                ></textarea>
               </div>
 
               <!-- PRECISA DE APOIO? -->
@@ -286,69 +532,229 @@
               <div class="campo campo-grande">
                 <label>Precisa de Apoio? <span>*</span></label>
                 <div class="opcoes">
-                  <label class="opcao-card"><input type="radio" name="precisaApoio" value="Não" required /><span class="radio-personalizado"></span><span>Não</span></label>
-                  <label class="opcao-card"><input type="radio" name="precisaApoio" value="Sim" /><span class="radio-personalizado"></span><span>Sim</span></label>
+                  <label class="opcao-card"
+                    ><input
+                      type="radio"
+                      name="precisaApoio"
+                      value="Não"
+                      required
+                    /><span class="radio-personalizado"></span
+                    ><span>Não</span></label
+                  >
+                  <label class="opcao-card"
+                    ><input type="radio" name="precisaApoio" value="Sim" /><span
+                      class="radio-personalizado"
+                    ></span
+                    ><span>Sim</span></label
+                  >
                 </div>
                 <div id="campoApoios" class="campo-condicional" hidden>
-                  <label>Qual apoio? <span>*</span> <small>(pode marcar mais de um)</small></label>
+                  <label
+                    >Qual apoio? <span>*</span>
+                    <small>(pode marcar mais de um)</small></label
+                  >
                   <div class="opcoes opcoes-apoio">
-                    <label class="opcao-card"><input type="checkbox" name="apoio" value="Supervisor" /><span class="check-personalizado"></span><span>Supervisor</span></label>
-                    <label class="opcao-card"><input type="checkbox" name="apoio" value="Vistoriador" /><span class="check-personalizado"></span><span>Vistoriador</span></label>
-                    <label class="opcao-card"><input type="checkbox" name="apoio" value="Gestor" /><span class="check-personalizado"></span><span>Gestor</span></label>
-                    <label class="opcao-card"><input type="checkbox" name="apoio" value="Coordenador" /><span class="check-personalizado"></span><span>Coordenador</span></label>
-                    <label class="opcao-card"><input type="checkbox" name="apoio" value="Deca" /><span class="check-personalizado"></span><span>Deca</span></label>
-                    <label class="opcao-card"><input type="checkbox" name="apoio" value="ITS" /><span class="check-personalizado"></span><span>ITS</span></label>
+                    <label class="opcao-card"
+                      ><input
+                        type="checkbox"
+                        name="apoio"
+                        value="Supervisor"
+                      /><span class="check-personalizado"></span
+                      ><span>Supervisor</span></label
+                    >
+                    <label class="opcao-card"
+                      ><input
+                        type="checkbox"
+                        name="apoio"
+                        value="Vistoriador"
+                      /><span class="check-personalizado"></span
+                      ><span>Vistoriador</span></label
+                    >
+                    <label class="opcao-card"
+                      ><input
+                        type="checkbox"
+                        name="apoio"
+                        value="Gestor"
+                      /><span class="check-personalizado"></span
+                      ><span>Gestor</span></label
+                    >
+                    <label class="opcao-card"
+                      ><input
+                        type="checkbox"
+                        name="apoio"
+                        value="Coordenador"
+                      /><span class="check-personalizado"></span
+                      ><span>Coordenador</span></label
+                    >
+                    <label class="opcao-card"
+                      ><input type="checkbox" name="apoio" value="Deca" /><span
+                        class="check-personalizado"
+                      ></span
+                      ><span>Deca</span></label
+                    >
+                    <label class="opcao-card"
+                      ><input type="checkbox" name="apoio" value="ITS" /><span
+                        class="check-personalizado"
+                      ></span
+                      ><span>ITS</span></label
+                    >
                   </div>
                 </div>
               </div>
 
-              <!-- TIPO DE CONTRATO -->
+              <!-- JÁ EXISTE PROPOSTA? -->
+
               <div class="campo campo-grande">
-                <label for="tipoContrato">Tipo de Contrato <span>*</span></label>
-                <select id="tipoContrato" name="tipoContrato" required>
-                  <option value="" selected disabled>Selecione o tipo de contrato</option>
-                  <option value="DIGITAL">DIGITAL</option><option value="EXPRESS">EXPRESS</option><option value="Performance">Performance</option>
-                  <option value="PERFORMANCE-NÃO RENOVÁVEL">PERFORMANCE-NÃO RENOVÁVEL</option><option value="Plus (cobra algumas peças)">Plus (cobra algumas peças)</option>
-                  <option value="PLUS-Não Renovável">PLUS-Não Renovável</option><option value="PREMIUM (com emprego de peças)">PREMIUM (com emprego de peças)</option>
-                  <option value="Premium Ñ Renov.-EXTENSÃO">Premium Ñ Renov.-EXTENSÃO</option><option value="PREMIUM OM (com emprego de peças)">PREMIUM OM (com emprego de peças)</option>
-                  <option value="PREMIUM TRIM (c/ emprego de pçs)">PREMIUM TRIM (c/ emprego de pçs)</option><option value="Premium-Não Renovável">Premium-Não Renovável</option>
-                  <option value="Service (não cobre peças)">Service (não cobre peças)</option><option value="SERVICE TRIM. (s/ emprego de pçs)">SERVICE TRIM. (s/ emprego de pçs)</option>
-                  <option value="Service-Não Renovável">Service-Não Renovável</option>
-                </select>
-              </div>
-
-              <!-- VALOR DO CONTRATO -->
-
-              <div class="campo">
-                <label for="valorContrato">
-                  Valor do Contrato
+                <label>
+                  Já existe proposta?
                   <span>*</span>
                 </label>
 
-                <div class="input-prefixo">
-                  <span>R$</span>
+                <div class="opcoes opcoes-proposta">
+                  <label class="opcao-card">
+                    <input
+                      type="radio"
+                      name="temProposta"
+                      value="Sim"
+                      required
+                    />
 
-                  <input
-                    type="text"
-                    id="valorContrato"
-                    name="valorContrato"
-                    placeholder="0,00"
-                    inputmode="numeric"
-                    required
-                  />
+                    <span class="radio-personalizado"></span>
+                    <span>Sim</span>
+                  </label>
+
+                  <label class="opcao-card">
+                    <input type="radio" name="temProposta" value="Não" />
+
+                    <span class="radio-personalizado"></span>
+                    <span>Não</span>
+                  </label>
                 </div>
+
+                <p class="ajuda-campo ajuda-proposta">
+                  Se não houver proposta, o registro será salvo automaticamente
+                  como
+                  <strong>Sem Proposta</strong>.
+                </p>
               </div>
 
-              <!-- MARGEM DE VENDA -->
-              <div class="campo">
-                <label for="margemVenda">Margem de Venda (%) <span>*</span></label>
-                <div class="input-sufixo"><input type="number" id="margemVenda" name="margemVenda" placeholder="Ex.: 15" step="0.01" min="0" required /><span>%</span></div>
-              </div>
+              <!-- DADOS DA PROPOSTA -->
 
-              <!-- NÚMERO DA PROPOSTA -->
-              <div class="campo">
-                <label for="numeroProposta">Número da Proposta <span>*</span></label>
-                <input type="text" id="numeroProposta" name="numeroProposta" placeholder="Digite o número da proposta" required />
+              <div
+                id="dadosProposta"
+                class="campo campo-grande painel-condicional"
+                hidden
+              >
+                <div class="cabecalho-condicional">
+                  <strong>Dados da proposta</strong>
+                  <small
+                    >Preencha somente quando já existir uma proposta.</small
+                  >
+                </div>
+
+                <div class="grid grid-condicional">
+                  <!-- TIPO DE CONTRATO -->
+                  <div class="campo campo-grande">
+                    <label for="tipoContrato">
+                      Tipo de Contrato <span>*</span>
+                    </label>
+
+                    <select id="tipoContrato" name="tipoContrato">
+                      <option value="" selected disabled>
+                        Selecione o tipo de contrato
+                      </option>
+                      <option value="DIGITAL">DIGITAL</option>
+                      <option value="EXPRESS">EXPRESS</option>
+                      <option value="Performance">Performance</option>
+                      <option value="PERFORMANCE-NÃO RENOVÁVEL">
+                        PERFORMANCE-NÃO RENOVÁVEL
+                      </option>
+                      <option value="Plus (cobra algumas peças)">
+                        Plus (cobra algumas peças)
+                      </option>
+                      <option value="PLUS-Não Renovável">
+                        PLUS-Não Renovável
+                      </option>
+                      <option value="PREMIUM (com emprego de peças)">
+                        PREMIUM (com emprego de peças)
+                      </option>
+                      <option value="Premium Ñ Renov.-EXTENSÃO">
+                        Premium Ñ Renov.-EXTENSÃO
+                      </option>
+                      <option value="PREMIUM OM (com emprego de peças)">
+                        PREMIUM OM (com emprego de peças)
+                      </option>
+                      <option value="PREMIUM TRIM (c/ emprego de pçs)">
+                        PREMIUM TRIM (c/ emprego de pçs)
+                      </option>
+                      <option value="Premium-Não Renovável">
+                        Premium-Não Renovável
+                      </option>
+                      <option value="Service (não cobre peças)">
+                        Service (não cobre peças)
+                      </option>
+                      <option value="SERVICE TRIM. (s/ emprego de pçs)">
+                        SERVICE TRIM. (s/ emprego de pçs)
+                      </option>
+                      <option value="Service-Não Renovável">
+                        Service-Não Renovável
+                      </option>
+                    </select>
+                  </div>
+
+                  <!-- VALOR DO CONTRATO -->
+                  <div class="campo">
+                    <label for="valorContrato">
+                      Valor do Contrato
+                      <span>*</span>
+                    </label>
+
+                    <div class="input-prefixo">
+                      <span>R$</span>
+
+                      <input
+                        type="text"
+                        id="valorContrato"
+                        name="valorContrato"
+                        placeholder="0,00"
+                        inputmode="numeric"
+                      />
+                    </div>
+                  </div>
+
+                  <!-- MARGEM DE VENDA -->
+                  <div class="campo">
+                    <label for="margemVenda">
+                      Margem de Venda (%) <span>*</span>
+                    </label>
+
+                    <div class="input-sufixo">
+                      <input
+                        type="number"
+                        id="margemVenda"
+                        name="margemVenda"
+                        placeholder="Ex.: 15"
+                        step="0.01"
+                        min="0"
+                      />
+                      <span>%</span>
+                    </div>
+                  </div>
+
+                  <!-- NÚMERO DA PROPOSTA -->
+                  <div class="campo campo-grande">
+                    <label for="numeroProposta">
+                      Número da Proposta <span>*</span>
+                    </label>
+
+                    <input
+                      type="text"
+                      id="numeroProposta"
+                      name="numeroProposta"
+                      placeholder="Digite o número da proposta"
+                    />
+                  </div>
+                </div>
               </div>
 
               <!-- DATA -->
@@ -661,7 +1067,9 @@
                   <option value="OTV">OTV</option>
                   <option value="Servesul">Servesul</option>
                   <option value="Castelo">Castelo</option>
-                  <option value="Sem empresa conservadora">Sem empresa conservadora</option>
+                  <option value="Sem empresa conservadora">
+                    Sem empresa conservadora
+                  </option>
                   <option value="Outros">Outros</option>
                 </select>
 
@@ -705,198 +1113,240 @@
               <!-- ENDEREÇO PADRONIZADO -->
 
               <div class="campo campo-grande">
-                <label for="endereco">Endereço (logradouro e número) <span>*</span></label>
-                <input type="text" id="endereco" name="endereco" placeholder="Ex.: Av. Rio Branco, 156" autocomplete="street-address" required />
-                <small class="ajuda-campo">Digite somente o logradouro e o número. Bairro, cidade e UF são informados separadamente.</small>
+                <label for="endereco"
+                  >Endereço (logradouro e número) <span>*</span></label
+                >
+                <input
+                  type="text"
+                  id="endereco"
+                  name="endereco"
+                  placeholder="Ex.: Av. Rio Branco, 156"
+                  autocomplete="street-address"
+                  required
+                />
+                <small class="ajuda-campo"
+                  >Digite somente o logradouro e o número. Bairro, cidade e UF
+                  são informados separadamente.</small
+                >
               </div>
 
               <div class="campo campo-grande">
                 <label for="bairro">Bairro <span>*</span></label>
-                <input type="text" id="bairro" name="bairro" list="listaBairrosRJ" placeholder="Digite para pesquisar o bairro" autocomplete="off" required />
+                <input
+                  type="text"
+                  id="bairro"
+                  name="bairro"
+                  list="listaBairrosRJ"
+                  placeholder="Digite para pesquisar o bairro"
+                  autocomplete="off"
+                  required
+                />
                 <datalist id="listaBairrosRJ">
-                    <option value="Abolição"></option>
-                    <option value="Acari"></option>
-                    <option value="Água Santa"></option>
-                    <option value="Alto da Boa Vista"></option>
-                    <option value="Anchieta"></option>
-                    <option value="Andaraí"></option>
-                    <option value="Anil"></option>
-                    <option value="Bancários"></option>
-                    <option value="Bangu"></option>
-                    <option value="Barra da Tijuca"></option>
-                    <option value="Barra de Guaratiba"></option>
-                    <option value="Barra Olímpica"></option>
-                    <option value="Barros Filho"></option>
-                    <option value="Benfica"></option>
-                    <option value="Bento Ribeiro"></option>
-                    <option value="Bonsucesso"></option>
-                    <option value="Botafogo"></option>
-                    <option value="Brás de Pina"></option>
-                    <option value="Cachambi"></option>
-                    <option value="Cacuia"></option>
-                    <option value="Caju"></option>
-                    <option value="Camorim"></option>
-                    <option value="Campinho"></option>
-                    <option value="Campo dos Afonsos"></option>
-                    <option value="Campo Grande"></option>
-                    <option value="Cascadura"></option>
-                    <option value="Catete"></option>
-                    <option value="Catumbi"></option>
-                    <option value="Cavalcanti"></option>
-                    <option value="Centro"></option>
-                    <option value="Cidade de Deus"></option>
-                    <option value="Cidade Nova"></option>
-                    <option value="Cidade Universitária"></option>
-                    <option value="Cocotá"></option>
-                    <option value="Coelho Neto"></option>
-                    <option value="Colégio"></option>
-                    <option value="Complexo do Alemão"></option>
-                    <option value="Copacabana"></option>
-                    <option value="Cordovil"></option>
-                    <option value="Cosme Velho"></option>
-                    <option value="Cosmos"></option>
-                    <option value="Costa Barros"></option>
-                    <option value="Curicica"></option>
-                    <option value="Del Castilho"></option>
-                    <option value="Deodoro"></option>
-                    <option value="Encantado"></option>
-                    <option value="Engenheiro Leal"></option>
-                    <option value="Engenho da Rainha"></option>
-                    <option value="Engenho de Dentro"></option>
-                    <option value="Engenho Novo"></option>
-                    <option value="Estácio"></option>
-                    <option value="Flamengo"></option>
-                    <option value="Freguesia (Ilha do Governador)"></option>
-                    <option value="Freguesia (Jacarepaguá)"></option>
-                    <option value="Galeão"></option>
-                    <option value="Gamboa"></option>
-                    <option value="Gardênia Azul"></option>
-                    <option value="Gávea"></option>
-                    <option value="Gericinó"></option>
-                    <option value="Glória"></option>
-                    <option value="Grajaú"></option>
-                    <option value="Grumari"></option>
-                    <option value="Guadalupe"></option>
-                    <option value="Guaratiba"></option>
-                    <option value="Higienópolis"></option>
-                    <option value="Honório Gurgel"></option>
-                    <option value="Humaitá"></option>
-                    <option value="Ilha de Guaratiba"></option>
-                    <option value="Inhaúma"></option>
-                    <option value="Inhoaíba"></option>
-                    <option value="Ipanema"></option>
-                    <option value="Irajá"></option>
-                    <option value="Itanhangá"></option>
-                    <option value="Jabour"></option>
-                    <option value="Jacaré"></option>
-                    <option value="Jacarepaguá"></option>
-                    <option value="Jacarezinho"></option>
-                    <option value="Jardim América"></option>
-                    <option value="Jardim Botânico"></option>
-                    <option value="Jardim Carioca"></option>
-                    <option value="Jardim Guanabara"></option>
-                    <option value="Jardim Sulacap"></option>
-                    <option value="Joá"></option>
-                    <option value="Lagoa"></option>
-                    <option value="Lapa"></option>
-                    <option value="Laranjeiras"></option>
-                    <option value="Leblon"></option>
-                    <option value="Leme"></option>
-                    <option value="Lins de Vasconcelos"></option>
-                    <option value="Madureira"></option>
-                    <option value="Magalhães Bastos"></option>
-                    <option value="Mangueira"></option>
-                    <option value="Manguinhos"></option>
-                    <option value="Maracanã"></option>
-                    <option value="Maré"></option>
-                    <option value="Marechal Hermes"></option>
-                    <option value="Maria da Graça"></option>
-                    <option value="Méier"></option>
-                    <option value="Moneró"></option>
-                    <option value="Olaria"></option>
-                    <option value="Oswaldo Cruz"></option>
-                    <option value="Paciência"></option>
-                    <option value="Padre Miguel"></option>
-                    <option value="Paquetá"></option>
-                    <option value="Parada de Lucas"></option>
-                    <option value="Parque Anchieta"></option>
-                    <option value="Parque Colúmbia"></option>
-                    <option value="Pavuna"></option>
-                    <option value="Pechincha"></option>
-                    <option value="Pedra de Guaratiba"></option>
-                    <option value="Penha"></option>
-                    <option value="Penha Circular"></option>
-                    <option value="Piedade"></option>
-                    <option value="Pilares"></option>
-                    <option value="Pitangueiras"></option>
-                    <option value="Portuguesa"></option>
-                    <option value="Praça da Bandeira"></option>
-                    <option value="Praça Seca"></option>
-                    <option value="Praia da Bandeira"></option>
-                    <option value="Quintino Bocaiúva"></option>
-                    <option value="Ramos"></option>
-                    <option value="Realengo"></option>
-                    <option value="Recreio dos Bandeirantes"></option>
-                    <option value="Riachuelo"></option>
-                    <option value="Ribeira"></option>
-                    <option value="Ricardo de Albuquerque"></option>
-                    <option value="Rio Comprido"></option>
-                    <option value="Rio das Pedras"></option>
-                    <option value="Rocha"></option>
-                    <option value="Rocha Miranda"></option>
-                    <option value="Rocinha"></option>
-                    <option value="Sampaio"></option>
-                    <option value="Santa Cruz"></option>
-                    <option value="Santa Teresa"></option>
-                    <option value="Santíssimo"></option>
-                    <option value="Santo Cristo"></option>
-                    <option value="São Conrado"></option>
-                    <option value="São Cristóvão"></option>
-                    <option value="São Francisco Xavier"></option>
-                    <option value="Saúde"></option>
-                    <option value="Senador Camará"></option>
-                    <option value="Senador Vasconcelos"></option>
-                    <option value="Sepetiba"></option>
-                    <option value="Tanque"></option>
-                    <option value="Taquara"></option>
-                    <option value="Tauá"></option>
-                    <option value="Tijuca"></option>
-                    <option value="Todos os Santos"></option>
-                    <option value="Tomás Coelho"></option>
-                    <option value="Turiaçu"></option>
-                    <option value="Urca"></option>
-                    <option value="Vargem Grande"></option>
-                    <option value="Vargem Pequena"></option>
-                    <option value="Vasco da Gama"></option>
-                    <option value="Vaz Lobo"></option>
-                    <option value="Vicente de Carvalho"></option>
-                    <option value="Vidigal"></option>
-                    <option value="Vigário Geral"></option>
-                    <option value="Vila da Penha"></option>
-                    <option value="Vila Isabel"></option>
-                    <option value="Vila Kennedy"></option>
-                    <option value="Vila Kosmos"></option>
-                    <option value="Vila Militar"></option>
-                    <option value="Vila Valqueire"></option>
-                    <option value="Vista Alegre"></option>
-                    <option value="Zumbi"></option>
+                  <option value="Abolição"></option>
+                  <option value="Acari"></option>
+                  <option value="Água Santa"></option>
+                  <option value="Alto da Boa Vista"></option>
+                  <option value="Anchieta"></option>
+                  <option value="Andaraí"></option>
+                  <option value="Anil"></option>
+                  <option value="Bancários"></option>
+                  <option value="Bangu"></option>
+                  <option value="Barra da Tijuca"></option>
+                  <option value="Barra de Guaratiba"></option>
+                  <option value="Barra Olímpica"></option>
+                  <option value="Barros Filho"></option>
+                  <option value="Benfica"></option>
+                  <option value="Bento Ribeiro"></option>
+                  <option value="Bonsucesso"></option>
+                  <option value="Botafogo"></option>
+                  <option value="Brás de Pina"></option>
+                  <option value="Cachambi"></option>
+                  <option value="Cacuia"></option>
+                  <option value="Caju"></option>
+                  <option value="Camorim"></option>
+                  <option value="Campinho"></option>
+                  <option value="Campo dos Afonsos"></option>
+                  <option value="Campo Grande"></option>
+                  <option value="Cascadura"></option>
+                  <option value="Catete"></option>
+                  <option value="Catumbi"></option>
+                  <option value="Cavalcanti"></option>
+                  <option value="Centro"></option>
+                  <option value="Cidade de Deus"></option>
+                  <option value="Cidade Nova"></option>
+                  <option value="Cidade Universitária"></option>
+                  <option value="Cocotá"></option>
+                  <option value="Coelho Neto"></option>
+                  <option value="Colégio"></option>
+                  <option value="Complexo do Alemão"></option>
+                  <option value="Copacabana"></option>
+                  <option value="Cordovil"></option>
+                  <option value="Cosme Velho"></option>
+                  <option value="Cosmos"></option>
+                  <option value="Costa Barros"></option>
+                  <option value="Curicica"></option>
+                  <option value="Del Castilho"></option>
+                  <option value="Deodoro"></option>
+                  <option value="Encantado"></option>
+                  <option value="Engenheiro Leal"></option>
+                  <option value="Engenho da Rainha"></option>
+                  <option value="Engenho de Dentro"></option>
+                  <option value="Engenho Novo"></option>
+                  <option value="Estácio"></option>
+                  <option value="Flamengo"></option>
+                  <option value="Freguesia (Ilha do Governador)"></option>
+                  <option value="Freguesia (Jacarepaguá)"></option>
+                  <option value="Galeão"></option>
+                  <option value="Gamboa"></option>
+                  <option value="Gardênia Azul"></option>
+                  <option value="Gávea"></option>
+                  <option value="Gericinó"></option>
+                  <option value="Glória"></option>
+                  <option value="Grajaú"></option>
+                  <option value="Grumari"></option>
+                  <option value="Guadalupe"></option>
+                  <option value="Guaratiba"></option>
+                  <option value="Higienópolis"></option>
+                  <option value="Honório Gurgel"></option>
+                  <option value="Humaitá"></option>
+                  <option value="Ilha de Guaratiba"></option>
+                  <option value="Inhaúma"></option>
+                  <option value="Inhoaíba"></option>
+                  <option value="Ipanema"></option>
+                  <option value="Irajá"></option>
+                  <option value="Itanhangá"></option>
+                  <option value="Jabour"></option>
+                  <option value="Jacaré"></option>
+                  <option value="Jacarepaguá"></option>
+                  <option value="Jacarezinho"></option>
+                  <option value="Jardim América"></option>
+                  <option value="Jardim Botânico"></option>
+                  <option value="Jardim Carioca"></option>
+                  <option value="Jardim Guanabara"></option>
+                  <option value="Jardim Sulacap"></option>
+                  <option value="Joá"></option>
+                  <option value="Lagoa"></option>
+                  <option value="Lapa"></option>
+                  <option value="Laranjeiras"></option>
+                  <option value="Leblon"></option>
+                  <option value="Leme"></option>
+                  <option value="Lins de Vasconcelos"></option>
+                  <option value="Madureira"></option>
+                  <option value="Magalhães Bastos"></option>
+                  <option value="Mangueira"></option>
+                  <option value="Manguinhos"></option>
+                  <option value="Maracanã"></option>
+                  <option value="Maré"></option>
+                  <option value="Marechal Hermes"></option>
+                  <option value="Maria da Graça"></option>
+                  <option value="Méier"></option>
+                  <option value="Moneró"></option>
+                  <option value="Olaria"></option>
+                  <option value="Oswaldo Cruz"></option>
+                  <option value="Paciência"></option>
+                  <option value="Padre Miguel"></option>
+                  <option value="Paquetá"></option>
+                  <option value="Parada de Lucas"></option>
+                  <option value="Parque Anchieta"></option>
+                  <option value="Parque Colúmbia"></option>
+                  <option value="Pavuna"></option>
+                  <option value="Pechincha"></option>
+                  <option value="Pedra de Guaratiba"></option>
+                  <option value="Penha"></option>
+                  <option value="Penha Circular"></option>
+                  <option value="Piedade"></option>
+                  <option value="Pilares"></option>
+                  <option value="Pitangueiras"></option>
+                  <option value="Portuguesa"></option>
+                  <option value="Praça da Bandeira"></option>
+                  <option value="Praça Seca"></option>
+                  <option value="Praia da Bandeira"></option>
+                  <option value="Quintino Bocaiúva"></option>
+                  <option value="Ramos"></option>
+                  <option value="Realengo"></option>
+                  <option value="Recreio dos Bandeirantes"></option>
+                  <option value="Riachuelo"></option>
+                  <option value="Ribeira"></option>
+                  <option value="Ricardo de Albuquerque"></option>
+                  <option value="Rio Comprido"></option>
+                  <option value="Rio das Pedras"></option>
+                  <option value="Rocha"></option>
+                  <option value="Rocha Miranda"></option>
+                  <option value="Rocinha"></option>
+                  <option value="Sampaio"></option>
+                  <option value="Santa Cruz"></option>
+                  <option value="Santa Teresa"></option>
+                  <option value="Santíssimo"></option>
+                  <option value="Santo Cristo"></option>
+                  <option value="São Conrado"></option>
+                  <option value="São Cristóvão"></option>
+                  <option value="São Francisco Xavier"></option>
+                  <option value="Saúde"></option>
+                  <option value="Senador Camará"></option>
+                  <option value="Senador Vasconcelos"></option>
+                  <option value="Sepetiba"></option>
+                  <option value="Tanque"></option>
+                  <option value="Taquara"></option>
+                  <option value="Tauá"></option>
+                  <option value="Tijuca"></option>
+                  <option value="Todos os Santos"></option>
+                  <option value="Tomás Coelho"></option>
+                  <option value="Turiaçu"></option>
+                  <option value="Urca"></option>
+                  <option value="Vargem Grande"></option>
+                  <option value="Vargem Pequena"></option>
+                  <option value="Vasco da Gama"></option>
+                  <option value="Vaz Lobo"></option>
+                  <option value="Vicente de Carvalho"></option>
+                  <option value="Vidigal"></option>
+                  <option value="Vigário Geral"></option>
+                  <option value="Vila da Penha"></option>
+                  <option value="Vila Isabel"></option>
+                  <option value="Vila Kennedy"></option>
+                  <option value="Vila Kosmos"></option>
+                  <option value="Vila Militar"></option>
+                  <option value="Vila Valqueire"></option>
+                  <option value="Vista Alegre"></option>
+                  <option value="Zumbi"></option>
                 </datalist>
-                <small class="ajuda-campo">Comece a digitar e selecione um bairro da lista.</small>
+                <small class="ajuda-campo"
+                  >Comece a digitar e selecione um bairro da lista.</small
+                >
               </div>
 
               <div class="campo">
                 <label for="cidade">Cidade <span>*</span></label>
-                <input type="text" id="cidade" name="cidade" value="Rio de Janeiro" readonly required />
+                <input
+                  type="text"
+                  id="cidade"
+                  name="cidade"
+                  value="Rio de Janeiro"
+                  readonly
+                  required
+                />
               </div>
 
               <div class="campo">
                 <label for="uf">UF <span>*</span></label>
-                <input type="text" id="uf" name="uf" value="RJ" readonly required />
+                <input
+                  type="text"
+                  id="uf"
+                  name="uf"
+                  value="RJ"
+                  readonly
+                  required
+                />
               </div>
 
               <div class="campo campo-grande">
                 <label for="regiao">Região</label>
-                <input type="text" id="regiao" name="regiao" placeholder="Preenchida automaticamente pelo bairro" readonly />
+                <input
+                  type="text"
+                  id="regiao"
+                  name="regiao"
+                  placeholder="Preenchida automaticamente pelo bairro"
+                  readonly
+                />
               </div>
             </div>
           </div>
@@ -976,7 +1426,7 @@
 
               <div class="campo campo-grande">
                 <label for="observacoes">
-                  Observações
+                  Observações Gerais
                   <span>*</span>
                 </label>
 
@@ -1049,6 +1499,14 @@
         <h2 id="tituloModalSucesso">Visita registrada!</h2>
 
         <p>As informações da visita foram validadas com sucesso.</p>
+
+        <!-- ID DA OPORTUNIDADE -->
+
+        <div class="registro-id-box">
+          <span>ID DA OPORTUNIDADE</span>
+
+          <strong id="idOportunidadeGerado"> — </strong>
+        </div>
 
         <!-- ID DA VISITA -->
 
@@ -1147,6 +1605,6 @@
     <!-- JAVASCRIPT -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jspdf/dist/jspdf.umd.min.js"></script>
-    <script src="script.js?v=4"></script>
+    <script src="script.js?v=6"></script>
   </body>
 </html>
