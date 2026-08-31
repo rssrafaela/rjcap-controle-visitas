@@ -31,6 +31,18 @@ const outraConservadora =
 const idVisitaGerado =
     document.getElementById("idVisitaGerado");
 
+const idRegistroGerado =
+    document.getElementById("idRegistroGerado");
+
+const boxIdVisitaGerado =
+    document.getElementById("boxIdVisitaGerado");
+
+const tituloModalSucesso =
+    document.getElementById("tituloModalSucesso");
+
+const textoModalSucesso =
+    document.getElementById("textoModalSucesso");
+
 const exportarExcel =
     document.getElementById("exportarExcel");
 
@@ -82,6 +94,20 @@ const campoOportunidadeExistente =
 
 const idOportunidadeExistente =
     document.getElementById("idOportunidadeExistente");
+
+const campoOrigemAtualizacao =
+    document.getElementById("campoOrigemAtualizacao");
+
+const radiosOrigemAtualizacao =
+    document.querySelectorAll(
+        'input[name="origemAtualizacao"]'
+    );
+
+const rotuloNatureza =
+    document.getElementById("rotuloNatureza");
+
+const rotuloDataRegistro =
+    document.getElementById("rotuloDataRegistro");
 
     /* =========================================================
    CONSULTAR AO SAIR DO CAMPO DE ID
@@ -138,6 +164,35 @@ if (
                 preencherDadosOportunidade(
                     oportunidade
                 );
+
+
+                if (
+                    oportunidadeSelecionadaNome
+                ) {
+                    oportunidadeSelecionadaNome.textContent =
+                        oportunidade.nomeCondominio ||
+                        id;
+                }
+
+                if (
+                    oportunidadeSelecionadaDetalhes
+                ) {
+                    oportunidadeSelecionadaDetalhes.textContent =
+                        [
+                            oportunidade.bairro ||
+                                "",
+                            id
+                        ]
+                            .filter(Boolean)
+                            .join(" • ");
+                }
+
+                if (
+                    oportunidadeSelecionada
+                ) {
+                    oportunidadeSelecionada.hidden =
+                        false;
+                }
 
 
             } catch (erro) {
@@ -213,6 +268,603 @@ const regiao =
 
 
 /* =========================================================
+   EQUIPAMENTOS DINÂMICOS
+========================================================= */
+
+const listaEquipamentos =
+    document.getElementById("listaEquipamentos");
+
+const btnAdicionarEquipamento =
+    document.getElementById("btnAdicionarEquipamento");
+
+const totalEquipamentosResumo =
+    document.getElementById("totalEquipamentosResumo");
+
+const totalParadasResumo =
+    document.getElementById("totalParadasResumo");
+
+const TIPOS_EQUIPAMENTO = [
+    "Elevador",
+    "Escada Rolante",
+    "Home Lift",
+    "Plataforma de acessibilidade",
+    "Uso Restrito",
+    "Monta Carga",
+    "Elevador de Carga",
+    "Portas Automáticas",
+    "Cadeira Elevante",
+    "Cadeira de Piscina"
+];
+
+const MARCAS_EQUIPAMENTO = [
+    "Thyssenkrupp",
+    "Atlas",
+    "Otis",
+    "Ortobras",
+    "Outros"
+];
+
+
+/* =========================================================
+   EQUIPAMENTOS - CARDS DINÂMICOS
+========================================================= */
+
+function criarOpcoesSelect(lista, selecionado) {
+
+    return lista
+        .map(
+            item =>
+                `<option value="${item}" ${item === selecionado ? "selected" : ""}>${item}</option>`
+        )
+        .join("");
+
+}
+
+
+function criarCardEquipamento(dados = {}) {
+
+    const card =
+        document.createElement("div");
+
+    card.className =
+        "equipamento-card";
+
+    const tipo =
+        String(dados.tipo || "");
+
+    const marca =
+        String(dados.marca || "");
+
+    const quantidade =
+        Number(dados.quantidade || 1);
+
+    const paradasPorEquipamento =
+        Number(
+            dados.paradasPorEquipamento ??
+            dados.quantidadeParadas ??
+            0
+        );
+
+    card.innerHTML = `
+        <div class="equipamento-card-cabecalho">
+            <div class="equipamento-card-titulo">
+                <span class="equipamento-numero">1</span>
+                <strong>Tipo de equipamento</strong>
+            </div>
+
+            <button
+                type="button"
+                class="btn-remover-equipamento"
+                aria-label="Remover este equipamento"
+            >
+                Remover
+            </button>
+        </div>
+
+        <div class="equipamento-grid">
+            <div class="campo">
+                <label>
+                    Tipo de Equipamento
+                    <span>*</span>
+                </label>
+
+                <select class="equipamento-tipo">
+                    <option value="" ${!tipo ? "selected" : ""} disabled>
+                        Selecione o tipo
+                    </option>
+                    ${criarOpcoesSelect(TIPOS_EQUIPAMENTO, tipo)}
+                </select>
+            </div>
+
+            <div class="campo">
+                <label>
+                    Marca
+                    <span>*</span>
+                </label>
+
+                <select class="equipamento-marca">
+                    <option value="" ${!marca ? "selected" : ""} disabled>
+                        Selecione a marca
+                    </option>
+                    ${criarOpcoesSelect(MARCAS_EQUIPAMENTO, marca)}
+                </select>
+            </div>
+
+            <div class="campo">
+                <label>
+                    Quantidade deste tipo
+                    <span>*</span>
+                </label>
+
+                <input
+                    type="number"
+                    class="equipamento-quantidade"
+                    min="1"
+                    step="1"
+                    value="${quantidade > 0 ? quantidade : 1}"
+                    placeholder="Ex.: 2"
+                />
+            </div>
+
+            <div class="campo">
+                <label>
+                    Paradas por equipamento
+                    <span>*</span>
+                </label>
+
+                <input
+                    type="number"
+                    class="equipamento-paradas-unitarias"
+                    min="0"
+                    step="1"
+                    value="${paradasPorEquipamento >= 0 ? paradasPorEquipamento : 0}"
+                    placeholder="Ex.: 10"
+                />
+
+                <small class="ajuda-equipamento">
+                    Use 0 quando não se aplicar ao tipo de equipamento.
+                </small>
+            </div>
+
+            <div class="campo campo-total-paradas">
+                <label>Total de paradas deste item</label>
+
+                <input
+                    type="number"
+                    class="equipamento-total-paradas"
+                    value="0"
+                    readonly
+                    tabindex="-1"
+                />
+            </div>
+        </div>
+    `;
+
+    return card;
+
+}
+
+
+function renumerarEquipamentos() {
+
+    if (!listaEquipamentos) {
+        return;
+    }
+
+    const cards =
+        listaEquipamentos.querySelectorAll(
+            ".equipamento-card"
+        );
+
+    cards.forEach(
+        (card, indice) => {
+
+            const numero =
+                card.querySelector(
+                    ".equipamento-numero"
+                );
+
+            const titulo =
+                card.querySelector(
+                    ".equipamento-card-titulo strong"
+                );
+
+            const remover =
+                card.querySelector(
+                    ".btn-remover-equipamento"
+                );
+
+            if (numero) {
+                numero.textContent =
+                    String(indice + 1)
+                        .padStart(2, "0");
+            }
+
+            if (titulo) {
+                titulo.textContent =
+                    `Equipamento ${indice + 1}`;
+            }
+
+            if (remover) {
+                remover.hidden =
+                    cards.length === 1;
+            }
+
+        }
+    );
+
+}
+
+
+function atualizarResumoEquipamentos() {
+
+    if (!listaEquipamentos) {
+        return;
+    }
+
+    let totalEquipamentos = 0;
+    let totalParadas = 0;
+
+    listaEquipamentos
+        .querySelectorAll(
+            ".equipamento-card"
+        )
+        .forEach(
+            card => {
+
+                const quantidade =
+                    Number(
+                        card.querySelector(
+                            ".equipamento-quantidade"
+                        )?.value || 0
+                    );
+
+                const paradasUnitarias =
+                    Number(
+                        card.querySelector(
+                            ".equipamento-paradas-unitarias"
+                        )?.value || 0
+                    );
+
+                const totalItem =
+                    Math.max(quantidade, 0) *
+                    Math.max(paradasUnitarias, 0);
+
+                const campoTotal =
+                    card.querySelector(
+                        ".equipamento-total-paradas"
+                    );
+
+                if (campoTotal) {
+                    campoTotal.value =
+                        String(totalItem);
+                }
+
+                totalEquipamentos +=
+                    Math.max(quantidade, 0);
+
+                totalParadas +=
+                    totalItem;
+
+            }
+        );
+
+    if (totalEquipamentosResumo) {
+        totalEquipamentosResumo.textContent =
+            String(totalEquipamentos);
+    }
+
+    if (totalParadasResumo) {
+        totalParadasResumo.textContent =
+            String(totalParadas);
+    }
+
+}
+
+
+function adicionarEquipamento(dados = {}) {
+
+    if (!listaEquipamentos) {
+        return;
+    }
+
+    const card =
+        criarCardEquipamento(dados);
+
+    listaEquipamentos.appendChild(card);
+
+    renumerarEquipamentos();
+    atualizarResumoEquipamentos();
+
+}
+
+
+function resetarEquipamentos() {
+
+    if (!listaEquipamentos) {
+        return;
+    }
+
+    listaEquipamentos.innerHTML = "";
+
+    adicionarEquipamento();
+
+}
+
+
+function obterEquipamentos() {
+
+    if (!listaEquipamentos) {
+        return [];
+    }
+
+    return Array
+        .from(
+            listaEquipamentos.querySelectorAll(
+                ".equipamento-card"
+            )
+        )
+        .map(
+            card => {
+
+                const tipo =
+                    card.querySelector(
+                        ".equipamento-tipo"
+                    )?.value || "";
+
+                const marca =
+                    card.querySelector(
+                        ".equipamento-marca"
+                    )?.value || "";
+
+                const quantidade =
+                    Number(
+                        card.querySelector(
+                            ".equipamento-quantidade"
+                        )?.value || 0
+                    );
+
+                const paradasPorEquipamento =
+                    Number(
+                        card.querySelector(
+                            ".equipamento-paradas-unitarias"
+                        )?.value || 0
+                    );
+
+                return {
+                    tipo,
+                    marca,
+                    quantidade,
+                    paradasPorEquipamento,
+                    totalParadas:
+                        quantidade *
+                        paradasPorEquipamento
+                };
+
+            }
+        );
+
+}
+
+
+function validarEquipamentos() {
+
+    if (!listaEquipamentos) {
+        return false;
+    }
+
+    const cards =
+        Array.from(
+            listaEquipamentos.querySelectorAll(
+                ".equipamento-card"
+            )
+        );
+
+    if (!cards.length) {
+        return false;
+    }
+
+    let valido = true;
+
+    cards.forEach(
+        card => {
+
+            const tipo =
+                card.querySelector(
+                    ".equipamento-tipo"
+                );
+
+            const marca =
+                card.querySelector(
+                    ".equipamento-marca"
+                );
+
+            const quantidade =
+                card.querySelector(
+                    ".equipamento-quantidade"
+                );
+
+            const paradas =
+                card.querySelector(
+                    ".equipamento-paradas-unitarias"
+                );
+
+            if (!tipo?.value) {
+                mostrarErro(
+                    tipo,
+                    "Selecione o tipo de equipamento."
+                );
+                valido = false;
+            }
+
+            if (!marca?.value) {
+                mostrarErro(
+                    marca,
+                    "Selecione a marca."
+                );
+                valido = false;
+            }
+
+            if (
+                !quantidade?.value ||
+                Number(quantidade.value) < 1
+            ) {
+                mostrarErro(
+                    quantidade,
+                    "Informe uma quantidade maior que zero."
+                );
+                valido = false;
+            }
+
+            if (
+                paradas?.value === "" ||
+                Number(paradas.value) < 0
+            ) {
+                mostrarErro(
+                    paradas,
+                    "Informe as paradas por equipamento. Use 0 se não se aplicar."
+                );
+                valido = false;
+            }
+
+        }
+    );
+
+    return valido;
+
+}
+
+
+function carregarEquipamentosOportunidade(oportunidade) {
+
+    if (!listaEquipamentos) {
+        return;
+    }
+
+    listaEquipamentos.innerHTML = "";
+
+    if (
+        Array.isArray(oportunidade.equipamentos) &&
+        oportunidade.equipamentos.length
+    ) {
+
+        oportunidade.equipamentos.forEach(
+            equipamento =>
+                adicionarEquipamento(equipamento)
+        );
+
+        return;
+    }
+
+    /*
+       Compatibilidade com registros antigos,
+       que possuíam apenas um tipo/marca por visita.
+    */
+    adicionarEquipamento({
+        tipo:
+            oportunidade.tipoEquipamento || "",
+        marca:
+            oportunidade.marca || "",
+        quantidade:
+            oportunidade.quantidadeEquipamentos || 1,
+        paradasPorEquipamento:
+            oportunidade.quantidadeEquipamentos
+                ? Math.round(
+                    Number(
+                        oportunidade.quantidadeParadas || 0
+                    ) /
+                    Math.max(
+                        Number(
+                            oportunidade.quantidadeEquipamentos || 1
+                        ),
+                        1
+                    )
+                )
+                : Number(
+                    oportunidade.quantidadeParadas || 0
+                )
+    });
+
+}
+
+
+if (btnAdicionarEquipamento) {
+
+    btnAdicionarEquipamento.addEventListener(
+        "click",
+        function () {
+
+            adicionarEquipamento();
+
+            const ultimoCard =
+                listaEquipamentos
+                    ?.lastElementChild;
+
+            ultimoCard
+                ?.scrollIntoView({
+                    behavior: "smooth",
+                    block: "center"
+                });
+
+        }
+    );
+
+}
+
+
+if (listaEquipamentos) {
+
+    listaEquipamentos.addEventListener(
+        "input",
+        atualizarResumoEquipamentos
+    );
+
+    listaEquipamentos.addEventListener(
+        "change",
+        atualizarResumoEquipamentos
+    );
+
+    listaEquipamentos.addEventListener(
+        "click",
+        function (event) {
+
+            const botao =
+                event.target.closest(
+                    ".btn-remover-equipamento"
+                );
+
+            if (!botao) {
+                return;
+            }
+
+            const cards =
+                listaEquipamentos.querySelectorAll(
+                    ".equipamento-card"
+                );
+
+            if (cards.length <= 1) {
+                return;
+            }
+
+            botao
+                .closest(
+                    ".equipamento-card"
+                )
+                ?.remove();
+
+            renumerarEquipamentos();
+            atualizarResumoEquipamentos();
+
+        }
+    );
+
+}
+
+
+resetarEquipamentos();
+
+
+/* =========================================================
    ÚLTIMO REGISTRO
 ========================================================= */
 
@@ -225,6 +877,830 @@ let ultimoRegistro = null;
 
 const URL_GOOGLE_SHEETS =
     "https://script.google.com/macros/s/AKfycbzuILbvHjE_eZGbU-uMKm5xrg5Dgj0Fe2AMruSqeJ8-zSi1CfGss25yirURW8i1gu7FMg/exec";
+
+
+/* =========================================================
+   ACESSO / SESSÃO
+   IMPORTANTE:
+   O Apps Script precisa validar estes tokens no servidor.
+========================================================= */
+
+const CHAVE_SESSAO =
+    "rjcap_sessao";
+
+const telaAcesso =
+    document.getElementById("telaAcesso");
+
+const formAcesso =
+    document.getElementById("formAcesso");
+
+const vendedorAcesso =
+    document.getElementById("vendedorAcesso");
+
+const codigoAcesso =
+    document.getElementById("codigoAcesso");
+
+const erroAcesso =
+    document.getElementById("erroAcesso");
+
+const btnEntrar =
+    document.getElementById("btnEntrar");
+
+const btnSair =
+    document.getElementById("btnSair");
+
+const vendedorFormulario =
+    document.getElementById("vendedor");
+
+
+function obterSessao() {
+
+    try {
+
+        const valor =
+            sessionStorage.getItem(
+                CHAVE_SESSAO
+            );
+
+        return valor
+            ? JSON.parse(valor)
+            : null;
+
+    } catch (erro) {
+
+        return null;
+
+    }
+
+}
+
+
+function salvarSessao(sessao) {
+
+    sessionStorage.setItem(
+        CHAVE_SESSAO,
+        JSON.stringify(sessao)
+    );
+
+}
+
+
+function limparSessao() {
+
+    sessionStorage.removeItem(
+        CHAVE_SESSAO
+    );
+
+}
+
+
+function aplicarSessaoNaTela() {
+
+    const sessao =
+        obterSessao();
+
+    const autenticado =
+        Boolean(
+            sessao &&
+            sessao.token &&
+            sessao.vendedor
+        );
+
+    if (telaAcesso) {
+
+        telaAcesso.hidden =
+            autenticado;
+
+        telaAcesso.setAttribute(
+            "aria-hidden",
+            autenticado
+                ? "true"
+                : "false"
+        );
+
+    }
+
+    document.body.classList.toggle(
+        "acesso-bloqueado",
+        !autenticado
+    );
+
+    if (btnSair) {
+
+        btnSair.hidden =
+            !autenticado;
+
+    }
+
+    if (
+        vendedorFormulario &&
+        autenticado
+    ) {
+
+        vendedorFormulario.value =
+            sessao.vendedor;
+
+        vendedorFormulario.disabled =
+            true;
+
+        vendedorFormulario
+            .classList
+            .add(
+                "vendedor-bloqueado"
+            );
+
+    } else if (
+        vendedorFormulario
+    ) {
+
+        vendedorFormulario.disabled =
+            false;
+
+        vendedorFormulario
+            .classList
+            .remove(
+                "vendedor-bloqueado"
+            );
+
+    }
+
+}
+
+
+async function autenticarVendedor(
+    vendedor,
+    codigo
+) {
+
+    const url =
+        `${URL_GOOGLE_SHEETS}` +
+        `?acao=autenticar` +
+        `&consultor=${encodeURIComponent(vendedor)}` +
+        `&codigo=${encodeURIComponent(codigo)}`;
+
+    const resposta =
+        await fetch(
+            url,
+            {
+                method: "GET",
+                cache: "no-store"
+            }
+        );
+
+    if (!resposta.ok) {
+
+        throw new Error(
+            "Não foi possível validar o acesso."
+        );
+
+    }
+
+    const dados =
+        await resposta.json();
+
+    if (
+        !dados.sucesso ||
+        !dados.autenticado ||
+        !dados.token
+    ) {
+
+        return null;
+
+    }
+
+    return {
+        token:
+            String(dados.token),
+        vendedor:
+            String(
+                dados.consultor ||
+                vendedor
+            ),
+        expiraEm:
+            dados.expiraEm ||
+            ""
+    };
+
+}
+
+
+if (formAcesso) {
+
+    formAcesso.addEventListener(
+        "submit",
+        async function (event) {
+
+            event.preventDefault();
+
+            if (erroAcesso) {
+                erroAcesso.hidden = true;
+                erroAcesso.textContent = "";
+            }
+
+            const vendedor =
+                vendedorAcesso?.value ||
+                "";
+
+            const codigo =
+                codigoAcesso?.value.trim() ||
+                "";
+
+            if (
+                !vendedor ||
+                !codigo
+            ) {
+
+                if (erroAcesso) {
+                    erroAcesso.textContent =
+                        "Informe o vendedor e o código de acesso.";
+                    erroAcesso.hidden = false;
+                }
+
+                return;
+
+            }
+
+            if (btnEntrar) {
+                btnEntrar.disabled = true;
+            }
+
+            try {
+
+                const sessao =
+                    await autenticarVendedor(
+                        vendedor,
+                        codigo
+                    );
+
+                if (!sessao) {
+
+                    if (erroAcesso) {
+                        erroAcesso.textContent =
+                            "Vendedor ou código de acesso inválido.";
+                        erroAcesso.hidden = false;
+                    }
+
+                    return;
+
+                }
+
+                salvarSessao(
+                    sessao
+                );
+
+                if (codigoAcesso) {
+                    codigoAcesso.value = "";
+                }
+
+                aplicarSessaoNaTela();
+
+            } catch (erro) {
+
+                console.error(
+                    "Erro de autenticação:",
+                    erro
+                );
+
+                if (erroAcesso) {
+                    erroAcesso.textContent =
+                        "Não foi possível validar o acesso agora.";
+                    erroAcesso.hidden = false;
+                }
+
+            } finally {
+
+                if (btnEntrar) {
+                    btnEntrar.disabled = false;
+                }
+
+            }
+
+        }
+    );
+
+}
+
+
+if (btnSair) {
+
+    btnSair.addEventListener(
+        "click",
+        function () {
+
+            limparSessao();
+            aplicarSessaoNaTela();
+
+            if (vendedorAcesso) {
+                vendedorAcesso.selectedIndex = 0;
+            }
+
+        }
+    );
+
+}
+
+
+aplicarSessaoNaTela();
+
+
+/* =========================================================
+   BUSCA DE OPORTUNIDADE POR CONDOMÍNIO
+========================================================= */
+
+const modosBuscaOportunidade =
+    document.querySelectorAll(
+        'input[name="modoBuscaOportunidade"]'
+    );
+
+const buscaPorCondominio =
+    document.getElementById(
+        "buscaPorCondominio"
+    );
+
+const buscaPorId =
+    document.getElementById(
+        "buscaPorId"
+    );
+
+const buscaCondominio =
+    document.getElementById(
+        "buscaCondominio"
+    );
+
+const resultadosCondominio =
+    document.getElementById(
+        "resultadosCondominio"
+    );
+
+const buscaCondominioCarregando =
+    document.getElementById(
+        "buscaCondominioCarregando"
+    );
+
+const oportunidadeSelecionada =
+    document.getElementById(
+        "oportunidadeSelecionada"
+    );
+
+const oportunidadeSelecionadaNome =
+    document.getElementById(
+        "oportunidadeSelecionadaNome"
+    );
+
+const oportunidadeSelecionadaDetalhes =
+    document.getElementById(
+        "oportunidadeSelecionadaDetalhes"
+    );
+
+const btnTrocarOportunidade =
+    document.getElementById(
+        "btnTrocarOportunidade"
+    );
+
+let temporizadorBuscaCondominio =
+    null;
+
+
+function obterTokenSessao() {
+
+    return obterSessao()?.token ||
+        "";
+
+}
+
+
+function atualizarModoBuscaOportunidade() {
+
+    const modo =
+        document.querySelector(
+            'input[name="modoBuscaOportunidade"]:checked'
+        )?.value ||
+        "condominio";
+
+    if (buscaPorCondominio) {
+        buscaPorCondominio.hidden =
+            modo !== "condominio";
+    }
+
+    if (buscaPorId) {
+        buscaPorId.hidden =
+            modo !== "id";
+    }
+
+}
+
+
+modosBuscaOportunidade
+    .forEach(
+        radio => {
+
+            radio.addEventListener(
+                "change",
+                atualizarModoBuscaOportunidade
+            );
+
+        }
+    );
+
+
+atualizarModoBuscaOportunidade();
+
+
+async function pesquisarCondominios(
+    termo
+) {
+
+    const sessao =
+        obterSessao();
+
+    if (
+        !sessao ||
+        !sessao.token
+    ) {
+
+        throw new Error(
+            "SESSAO_INVALIDA"
+        );
+
+    }
+
+    const url =
+        `${URL_GOOGLE_SHEETS}` +
+        `?acao=buscarCondominios` +
+        `&termo=${encodeURIComponent(termo)}` +
+        `&consultor=${encodeURIComponent(sessao.vendedor)}` +
+        `&token=${encodeURIComponent(sessao.token)}`;
+
+    const resposta =
+        await fetch(
+            url,
+            {
+                method: "GET",
+                cache: "no-store"
+            }
+        );
+
+    if (!resposta.ok) {
+
+        throw new Error(
+            "Falha na pesquisa."
+        );
+
+    }
+
+    const dados =
+        await resposta.json();
+
+    if (
+        !dados.sucesso
+    ) {
+
+        if (
+            dados.erro ===
+            "SESSAO_INVALIDA"
+        ) {
+
+            throw new Error(
+                "SESSAO_INVALIDA"
+            );
+
+        }
+
+        return [];
+
+    }
+
+    return Array.isArray(
+        dados.resultados
+    )
+        ? dados.resultados
+        : [];
+
+}
+
+
+function mostrarResultadosCondominio(
+    resultados
+) {
+
+    if (!resultadosCondominio) {
+        return;
+    }
+
+    resultadosCondominio.innerHTML =
+        "";
+
+    if (!resultados.length) {
+
+        resultadosCondominio.innerHTML =
+            '<div class="resultados-vazio">Nenhuma oportunidade encontrada.</div>';
+
+        resultadosCondominio.hidden =
+            false;
+
+        return;
+
+    }
+
+    resultados
+        .slice(
+            0,
+            8
+        )
+        .forEach(
+            item => {
+
+                const botao =
+                    document.createElement(
+                        "button"
+                    );
+
+                botao.type =
+                    "button";
+
+                botao.className =
+                    "resultado-condominio";
+
+                botao.dataset.idOportunidade =
+                    item.idOportunidade ||
+                    "";
+
+                const nome =
+                    document.createElement(
+                        "strong"
+                    );
+
+                nome.textContent =
+                    item.nomeCondominio ||
+                    "Condomínio";
+
+                const detalhes =
+                    document.createElement(
+                        "span"
+                    );
+
+                detalhes.textContent =
+                    [
+                        item.bairro ||
+                            "",
+                        item.statusComercial ||
+                            ""
+                    ]
+                        .filter(Boolean)
+                        .join(" • ");
+
+                botao.append(
+                    nome,
+                    detalhes
+                );
+
+                resultadosCondominio
+                    .appendChild(
+                        botao
+                    );
+
+            }
+        );
+
+    resultadosCondominio.hidden =
+        false;
+
+}
+
+
+if (buscaCondominio) {
+
+    buscaCondominio.addEventListener(
+        "input",
+        function () {
+
+            const termo =
+                this.value.trim();
+
+            clearTimeout(
+                temporizadorBuscaCondominio
+            );
+
+            if (
+                resultadosCondominio
+            ) {
+                resultadosCondominio.hidden =
+                    true;
+                resultadosCondominio.innerHTML =
+                    "";
+            }
+
+            if (
+                termo.length < 3
+            ) {
+
+                if (
+                    buscaCondominioCarregando
+                ) {
+                    buscaCondominioCarregando.hidden =
+                        true;
+                }
+
+                return;
+
+            }
+
+            temporizadorBuscaCondominio =
+                setTimeout(
+                    async () => {
+
+                        if (
+                            buscaCondominioCarregando
+                        ) {
+                            buscaCondominioCarregando.hidden =
+                                false;
+                        }
+
+                        try {
+
+                            const resultados =
+                                await pesquisarCondominios(
+                                    termo
+                                );
+
+                            mostrarResultadosCondominio(
+                                resultados
+                            );
+
+                        } catch (erro) {
+
+                            if (
+                                erro.message ===
+                                "SESSAO_INVALIDA"
+                            ) {
+
+                                limparSessao();
+                                aplicarSessaoNaTela();
+
+                            }
+
+                            if (
+                                resultadosCondominio
+                            ) {
+                                resultadosCondominio.innerHTML =
+                                    '<div class="resultados-vazio">Não foi possível realizar a busca.</div>';
+                                resultadosCondominio.hidden =
+                                    false;
+                            }
+
+                        } finally {
+
+                            if (
+                                buscaCondominioCarregando
+                            ) {
+                                buscaCondominioCarregando.hidden =
+                                    true;
+                            }
+
+                        }
+
+                    },
+                    450
+                );
+
+        }
+    );
+
+}
+
+
+if (resultadosCondominio) {
+
+    resultadosCondominio.addEventListener(
+        "click",
+        async function (event) {
+
+            const botao =
+                event.target.closest(
+                    ".resultado-condominio"
+                );
+
+            if (!botao) {
+                return;
+            }
+
+            const id =
+                botao.dataset
+                    .idOportunidade ||
+                "";
+
+            if (!id) {
+                return;
+            }
+
+            try {
+
+                const oportunidade =
+                    await buscarOportunidadeExistente(
+                        id
+                    );
+
+                if (!oportunidade) {
+                    alert(
+                        "Não foi possível carregar essa oportunidade."
+                    );
+                    return;
+                }
+
+                if (
+                    idOportunidadeExistente
+                ) {
+                    idOportunidadeExistente.value =
+                        id;
+                }
+
+                preencherDadosOportunidade(
+                    oportunidade
+                );
+
+                if (
+                    oportunidadeSelecionadaNome
+                ) {
+                    oportunidadeSelecionadaNome.textContent =
+                        oportunidade.nomeCondominio ||
+                        id;
+                }
+
+                if (
+                    oportunidadeSelecionadaDetalhes
+                ) {
+                    oportunidadeSelecionadaDetalhes.textContent =
+                        [
+                            oportunidade.bairro ||
+                                "",
+                            id
+                        ]
+                            .filter(Boolean)
+                            .join(" • ");
+                }
+
+                if (
+                    oportunidadeSelecionada
+                ) {
+                    oportunidadeSelecionada.hidden =
+                        false;
+                }
+
+                resultadosCondominio.hidden =
+                    true;
+
+            } catch (erro) {
+
+                console.error(
+                    "Erro ao carregar oportunidade:",
+                    erro
+                );
+
+                alert(
+                    "Não foi possível carregar a oportunidade."
+                );
+
+            }
+
+        }
+    );
+
+}
+
+
+if (btnTrocarOportunidade) {
+
+    btnTrocarOportunidade.addEventListener(
+        "click",
+        function () {
+
+            if (
+                oportunidadeSelecionada
+            ) {
+                oportunidadeSelecionada.hidden =
+                    true;
+            }
+
+            if (
+                idOportunidadeExistente
+            ) {
+                idOportunidadeExistente.value =
+                    "";
+            }
+
+            if (
+                buscaCondominio
+            ) {
+                buscaCondominio.value =
+                    "";
+                buscaCondominio.focus();
+            }
+
+        }
+    );
+
+}
+
 
 /* =========================================================
    BUSCAR OPORTUNIDADE EXISTENTE
@@ -247,10 +1723,26 @@ async function buscarOportunidadeExistente(
     }
 
 
+    const sessao =
+        obterSessao();
+
+    if (
+        !sessao ||
+        !sessao.token
+    ) {
+
+        throw new Error(
+            "SESSAO_INVALIDA"
+        );
+
+    }
+
     const url =
         `${URL_GOOGLE_SHEETS}` +
         `?acao=buscarOportunidade` +
-        `&idOportunidade=${encodeURIComponent(id)}`;
+        `&idOportunidade=${encodeURIComponent(id)}` +
+        `&consultor=${encodeURIComponent(sessao.vendedor)}` +
+        `&token=${encodeURIComponent(sessao.token)}`;
 
 
     const resposta =
@@ -381,10 +1873,10 @@ function preencherDadosOportunidade(
     }
 
 
-    /* CONSULTOR */
+    /* VENDEDOR */
 
     preencherCampo(
-        "consultor",
+        "vendedor",
         oportunidade.consultor
     );
 
@@ -407,27 +1899,8 @@ function preencherDadosOportunidade(
 
     /* EQUIPAMENTOS */
 
-    preencherCampo(
-        "quantidadeEquipamentos",
-        oportunidade.quantidadeEquipamentos
-    );
-
-
-    preencherCampo(
-        "quantidadeParadas",
-        oportunidade.quantidadeParadas
-    );
-
-
-    selecionarRadio(
-        "marca",
-        oportunidade.marca
-    );
-
-
-    selecionarRadio(
-        "tipoEquipamento",
-        oportunidade.tipoEquipamento
+    carregarEquipamentosOportunidade(
+        oportunidade
     );
 
 
@@ -632,7 +2105,14 @@ async function enviarParaGoogleSheets(registro) {
             },
 
             body:
-                JSON.stringify(registro)
+                JSON.stringify({
+                    ...registro,
+                    tokenSessao:
+                        obterTokenSessao(),
+                    consultorAutenticado:
+                        obterSessao()?.vendedor ||
+                        ""
+                })
         }
     );
 
@@ -707,8 +2187,8 @@ function adicionarPendente(registro) {
     const existe =
         pendentes.some(
             item =>
-                item.idVisita ===
-                registro.idVisita
+                item.idRegistro ===
+                registro.idRegistro
         );
 
     if (!existe) {
@@ -1098,24 +2578,42 @@ function atualizarTipoRegistro() {
             'input[name="tipoRegistro"]:checked'
         );
 
-    const acompanhamento =
+    const atualizacao =
         escolha &&
         escolha.value ===
-            "Acompanhamento de oportunidade existente";
+            "Atualização da Oportunidade Existente";
 
     if (campoOportunidadeExistente) {
-
         campoOportunidadeExistente.hidden =
-            !acompanhamento;
-
+            !atualizacao;
     }
+
+    if (campoOrigemAtualizacao) {
+        campoOrigemAtualizacao.hidden =
+            !atualizacao;
+    }
+
+    radiosOrigemAtualizacao
+        .forEach(
+            radio => {
+
+                radio.required =
+                    Boolean(atualizacao);
+
+                if (!atualizacao) {
+                    radio.checked =
+                        false;
+                }
+
+            }
+        );
 
     if (idOportunidadeExistente) {
 
         idOportunidadeExistente.required =
-            Boolean(acompanhamento);
+            Boolean(atualizacao);
 
-        if (!acompanhamento) {
+        if (!atualizacao) {
 
             idOportunidadeExistente.value =
                 "";
@@ -1126,6 +2624,20 @@ function atualizarTipoRegistro() {
 
         }
 
+    }
+
+    if (rotuloNatureza) {
+        rotuloNatureza.innerHTML =
+            atualizacao
+                ? 'Natureza da Atualização <span>*</span>'
+                : 'Natureza da Visita <span>*</span>';
+    }
+
+    if (rotuloDataRegistro) {
+        rotuloDataRegistro.innerHTML =
+            atualizacao
+                ? 'Data da Atualização <span>*</span>'
+                : 'Data da Visita <span>*</span>';
     }
 
 }
@@ -1946,7 +3458,7 @@ function validarFormulario() {
     if (
         !validarRadio(
             "tipoRegistro",
-            "Informe se é uma nova oportunidade ou acompanhamento."
+            "Informe se é uma nova oportunidade ou atualização."
         )
     ) {
 
@@ -1981,7 +3493,7 @@ function validarFormulario() {
     if (
         tipoRegistroSelecionado &&
         tipoRegistroSelecionado.value ===
-            "Acompanhamento de oportunidade existente" &&
+            "Atualização da Oportunidade Existente" &&
         (
             !idOportunidadeExistente ||
             !idOportunidadeExistente.value.trim()
@@ -1992,6 +3504,24 @@ function validarFormulario() {
             idOportunidadeExistente,
             "Informe o ID da oportunidade existente."
         );
+
+        valido =
+            false;
+
+    }
+
+
+    /* ORIGEM DA ATUALIZAÇÃO */
+
+    if (
+        tipoRegistroSelecionado &&
+        tipoRegistroSelecionado.value ===
+            "Atualização da Oportunidade Existente" &&
+        !validarRadio(
+            "origemAtualizacao",
+            "Selecione a origem da atualização."
+        )
+    ) {
 
         valido =
             false;
@@ -2019,7 +3549,7 @@ function validarFormulario() {
     if (
         !validarRadio(
             "natureza",
-            "Selecione a natureza da visita."
+            "Selecione a natureza da visita ou atualização."
         )
     ) {
 
@@ -2164,28 +3694,10 @@ function validarFormulario() {
     }
 
 
-    /* MARCA */
+    /* EQUIPAMENTOS */
 
     if (
-        !validarRadio(
-            "marca",
-            "Selecione a marca."
-        )
-    ) {
-
-        valido =
-            false;
-
-    }
-
-
-    /* TIPO DE EQUIPAMENTO */
-
-    if (
-        !validarRadio(
-            "tipoEquipamento",
-            "Selecione o tipo de equipamento."
-        )
+        !validarEquipamentos()
     ) {
 
         valido =
@@ -2468,6 +3980,71 @@ function gerarIdVisita() {
 
 
 /* =========================================================
+   GERAR ID DO REGISTRO
+   Todo lançamento recebe um ID próprio.
+========================================================= */
+
+function gerarIdRegistro() {
+
+    const agora =
+        new Date();
+
+    const data =
+        [
+            agora.getFullYear(),
+            String(
+                agora.getMonth() + 1
+            ).padStart(
+                2,
+                "0"
+            ),
+            String(
+                agora.getDate()
+            ).padStart(
+                2,
+                "0"
+            )
+        ].join("");
+
+    const hora =
+        [
+            String(
+                agora.getHours()
+            ).padStart(
+                2,
+                "0"
+            ),
+            String(
+                agora.getMinutes()
+            ).padStart(
+                2,
+                "0"
+            ),
+            String(
+                agora.getSeconds()
+            ).padStart(
+                2,
+                "0"
+            )
+        ].join("");
+
+    const aleatorio =
+        Math.random()
+            .toString(36)
+            .substring(
+                2,
+                7
+            )
+            .toUpperCase();
+
+    return (
+        `REG-${data}-${hora}-${aleatorio}`
+    );
+
+}
+
+
+/* =========================================================
    FORMATAR ENDEREÇO COMPLETO
 ========================================================= */
 
@@ -2543,19 +4120,25 @@ function rotulosRegistro(
 
     return {
 
+        "ID do Registro":
+            registro.idRegistro,
+
         "ID da Oportunidade":
             registro.idOportunidade,
 
         "ID da Visita":
-            registro.idVisita,
+            registro.idVisita || "Não se aplica",
 
         "Tipo de Registro":
             registro.tipoRegistro,
 
-        "Data da Visita":
+        "Origem da Atualização":
+            registro.origemAtualizacao,
+
+        "Data do Registro / Visita":
             registro.dataVisita,
 
-        "Consultor":
+        "Vendedor":
             registro.consultor,
 
         "Modalidade de Negócios":
@@ -2618,6 +4201,16 @@ function rotulosRegistro(
 
         "Tipo de Equipamento":
             registro.tipoEquipamento,
+
+        "Detalhamento dos Equipamentos":
+            Array.isArray(registro.equipamentos)
+                ? registro.equipamentos
+                    .map(
+                        item =>
+                            `${item.tipo} | ${item.marca} | Qtd: ${item.quantidade} | Paradas/equip.: ${item.paradasPorEquipamento} | Total: ${item.totalParadas}`
+                    )
+                    .join(" ; ")
+                : "",
 
         "Empresa Conservadora":
             registro.empresaConservadora,
@@ -2742,22 +4335,32 @@ function exportarRegistroExcel() {
 
     XLSX.writeFile(
         pasta,
-        `${ultimoRegistro.idVisita}.xlsx`
+        `${ultimoRegistro.idRegistro || ultimoRegistro.idVisita}.xlsx`
     );
 
 }
 
-
 /* =========================================================
    EXPORTAR REGISTRO PARA PDF
+
+   Gera o PDF diretamente no navegador usando jsPDF.
+
+   REGRAS:
+   - Presencial:
+     "RJCAP - Registro de Visita Comercial"
+
+   - WhatsApp / Ligação / E-mail / Outro:
+     "RJCAP - Atualização de Oportunidade"
+
+   Também inclui a logotipo da TKE no cabeçalho.
 ========================================================= */
 
-function exportarRegistroPdf() {
+async function exportarRegistroPdf() {
 
     if (!ultimoRegistro) {
 
         alert(
-            "Registre uma visita antes de exportar."
+            "Registre uma visita ou atualização antes de exportar."
         );
 
         return;
@@ -2798,41 +4401,270 @@ function exportarRegistroPdf() {
         );
 
 
+    /* =====================================================
+       IDENTIFICAR SE FOI PRESENCIAL
+    ===================================================== */
+
+    const origem =
+        String(
+            ultimoRegistro.origemAtualizacao ||
+            ""
+        ).trim();
+
+
+    const presencial =
+        origem ===
+        "Presencial";
+
+
+    const tituloPdf =
+        presencial
+            ? "RJCAP - Registro de Visita Comercial"
+            : "RJCAP - Atualização de Oportunidade";
+
+
+    /* =====================================================
+       LOGOTIPO TKE
+
+       Arquivo salvo no Google Drive:
+       ID:
+       1Gipnn5iDl_Sg3loSloCTwWUwKjLF0wNV
+    ===================================================== */
+
+    const urlLogo =
+    "./img/logo-tke.png";
+
+
+    /*
+       Converte a imagem para Base64
+       antes de inserir no jsPDF.
+    */
+    async function carregarImagemBase64(url) {
+
+        const resposta =
+            await fetch(
+                url
+            );
+
+
+        if (
+            !resposta.ok
+        ) {
+
+            throw new Error(
+                "Não foi possível carregar a logotipo."
+            );
+
+        }
+
+
+        const blob =
+            await resposta.blob();
+
+
+        return new Promise(
+            (
+                resolve,
+                reject
+            ) => {
+
+                const leitor =
+                    new FileReader();
+
+
+                leitor.onloadend =
+                    function () {
+
+                        resolve(
+                            leitor.result
+                        );
+
+                    };
+
+
+                leitor.onerror =
+                    reject;
+
+
+                leitor.readAsDataURL(
+                    blob
+                );
+
+            }
+        );
+
+    }
+
+
+    let logoBase64 =
+        null;
+
+
+    try {
+
+        logoBase64 =
+            await carregarImagemBase64(
+                urlLogo
+            );
+
+    } catch (erro) {
+
+        console.warn(
+            "A logotipo não pôde ser carregada no PDF:",
+            erro
+        );
+
+    }
+
+
+    /* =====================================================
+       CABEÇALHO
+    ===================================================== */
+
     let y =
-        20;
+        18;
 
 
-    /* -----------------------------
+    /*
+       Insere a logotipo se ela tiver sido
+       carregada corretamente.
+    */
+    if (
+        logoBase64
+    ) {
+
+        try {
+
+            /*
+               O jsPDF detecta automaticamente
+               PNG/JPEG pelo Base64.
+            */
+            pdf.addImage(
+                logoBase64,
+                "PNG",
+                15,
+                10,
+                32,
+                16
+            );
+
+        } catch (erro) {
+
+            /*
+               Caso a imagem não seja PNG,
+               tenta como JPEG.
+            */
+            try {
+
+                pdf.addImage(
+                    logoBase64,
+                    "JPEG",
+                    15,
+                    10,
+                    32,
+                    16
+                );
+
+            } catch (erroImagem) {
+
+                console.warn(
+                    "Não foi possível inserir a logotipo no PDF.",
+                    erroImagem
+                );
+
+            }
+
+        }
+
+    }
+
+
+    /*
        TÍTULO
-    ----------------------------- */
+    */
 
     pdf.setFont(
         "helvetica",
         "bold"
     );
 
+
     pdf.setFontSize(
-        18
+        17
     );
+
 
     pdf.text(
-        "RJCAP - Registro de Visita Comercial",
-        15,
-        y
+        tituloPdf,
+        55,
+        17
     );
 
 
-    y +=
-        10;
+    /*
+       SUBTÍTULO
+    */
+
+    pdf.setFont(
+        "helvetica",
+        "normal"
+    );
 
 
-    /* -----------------------------
-       ID
-    ----------------------------- */
+    pdf.setFontSize(
+        9
+    );
+
+
+    pdf.text(
+        "Controle Comercial - RJCAP",
+        55,
+        23
+    );
+
+
+    /*
+       LINHA SEPARADORA
+    */
+
+    pdf.setLineWidth(
+        0.5
+    );
+
+
+    pdf.line(
+        15,
+        31,
+        195,
+        31
+    );
+
+
+    y =
+        40;
+
+
+    /* =====================================================
+       ID DO REGISTRO
+    ===================================================== */
 
     pdf.setFontSize(
         10
     );
+
+
+    pdf.setFont(
+        "helvetica",
+        "bold"
+    );
+
+
+    pdf.text(
+        "Registro:",
+        15,
+        y
+    );
+
 
     pdf.setFont(
         "helvetica",
@@ -2841,8 +4673,11 @@ function exportarRegistroPdf() {
 
 
     pdf.text(
-        `ID: ${ultimoRegistro.idVisita}`,
-        15,
+        String(
+            ultimoRegistro.idRegistro ||
+            "—"
+        ),
+        35,
         y
     );
 
@@ -2851,9 +4686,9 @@ function exportarRegistroPdf() {
         12;
 
 
-    /* -----------------------------
-       DADOS
-    ----------------------------- */
+    /* =====================================================
+       DADOS DO REGISTRO
+    ===================================================== */
 
     Object.entries(
         dados
@@ -2862,13 +4697,30 @@ function exportarRegistroPdf() {
 
 
             /*
-               O ID já apareceu
+               ID do Registro já apareceu
                no cabeçalho.
             */
 
             if (
                 rotulo ===
-                "ID da Visita"
+                "ID do Registro"
+            ) {
+
+                return;
+
+            }
+
+
+            /*
+               Quando não houve visita presencial,
+               evita mostrar "ID da Visita: Não se aplica"
+               caso você prefira omitir totalmente.
+            */
+
+            if (
+                rotulo ===
+                    "ID da Visita" &&
+                !presencial
             ) {
 
                 return;
@@ -2878,29 +4730,34 @@ function exportarRegistroPdf() {
 
             const valorTexto =
                 String(
-                    valor ?? ""
+                    valor ??
+                    ""
                 );
 
 
             const valorLinhas =
                 pdf.splitTextToSize(
                     valorTexto,
-                    115
+                    110
                 );
 
 
             /*
-               Cria nova página
-               quando necessário.
+               NOVA PÁGINA
+
+               Se estiver chegando ao final da folha,
+               cria automaticamente outra página.
             */
 
             if (
                 y +
-                valorLinhas.length * 6 >
+                valorLinhas.length *
+                6 >
                 282
             ) {
 
                 pdf.addPage();
+
 
                 y =
                     20;
@@ -2908,11 +4765,18 @@ function exportarRegistroPdf() {
             }
 
 
-            /* RÓTULO */
+            /*
+               RÓTULO
+            */
 
             pdf.setFont(
                 "helvetica",
                 "bold"
+            );
+
+
+            pdf.setFontSize(
+                10
             );
 
 
@@ -2923,7 +4787,9 @@ function exportarRegistroPdf() {
             );
 
 
-            /* VALOR */
+            /*
+               VALOR
+            */
 
             pdf.setFont(
                 "helvetica",
@@ -2941,19 +4807,68 @@ function exportarRegistroPdf() {
             y +=
                 Math.max(
                     8,
-                    valorLinhas.length * 6
+                    valorLinhas.length *
+                    6
                 );
 
         }
     );
 
 
+    /* =====================================================
+       RODAPÉ
+    ===================================================== */
+
+    const totalPaginas =
+        pdf.getNumberOfPages();
+
+
+    for (
+        let pagina = 1;
+        pagina <= totalPaginas;
+        pagina++
+    ) {
+
+        pdf.setPage(
+            pagina
+        );
+
+
+        pdf.setFont(
+            "helvetica",
+            "normal"
+        );
+
+
+        pdf.setFontSize(
+            8
+        );
+
+
+        pdf.text(
+            `Página ${pagina} de ${totalPaginas}`,
+            180,
+            290,
+            {
+                align: "right"
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       SALVAR PDF
+    ===================================================== */
+
     pdf.save(
-        `${ultimoRegistro.idVisita}.pdf`
+        `${
+            ultimoRegistro.idRegistro ||
+            ultimoRegistro.idVisita
+        }.pdf`
     );
 
 }
-
 
 /* =========================================================
    BOTÕES DE EXPORTAÇÃO
@@ -2990,6 +4905,8 @@ if (
 function limparFormulario() {
 
     formulario.reset();
+
+    resetarEquipamentos();
 
 
     if (
@@ -3049,6 +4966,31 @@ function limparFormulario() {
     atualizarTipoRegistro();
 
     atualizarStatusComercial();
+
+    aplicarSessaoNaTela();
+
+    if (
+        oportunidadeSelecionada
+    ) {
+        oportunidadeSelecionada.hidden =
+            true;
+    }
+
+    if (
+        buscaCondominio
+    ) {
+        buscaCondominio.value =
+            "";
+    }
+
+    if (
+        resultadosCondominio
+    ) {
+        resultadosCondominio.hidden =
+            true;
+        resultadosCondominio.innerHTML =
+            "";
+    }
 
 }
 
@@ -3198,6 +5140,40 @@ formulario.addEventListener(
         event.preventDefault();
 
 
+        const sessaoAtual =
+            obterSessao();
+
+        if (
+            !sessaoAtual ||
+            !sessaoAtual.token ||
+            !sessaoAtual.vendedor
+        ) {
+
+            limparSessao();
+            aplicarSessaoNaTela();
+
+            alert(
+                "Seu acesso não está ativo. Entre novamente para registrar a visita."
+            );
+
+            return;
+
+        }
+
+
+        if (
+            vendedorFormulario
+        ) {
+
+            vendedorFormulario.disabled =
+                false;
+
+            vendedorFormulario.value =
+                sessaoAtual.vendedor;
+
+        }
+
+
         /* =================================================
            1. VALIDAR FORMULÁRIO
         ================================================= */
@@ -3249,6 +5225,22 @@ formulario.addEventListener(
             );
 
 
+        if (
+            vendedorFormulario
+        ) {
+
+            vendedorFormulario.disabled =
+                true;
+
+            vendedorFormulario
+                .classList
+                .add(
+                    "vendedor-bloqueado"
+                );
+
+        }
+
+
         const registro =
             {};
 
@@ -3279,6 +5271,67 @@ formulario.addEventListener(
 
             }
         );
+
+
+        /*
+           O vendedor vem obrigatoriamente da sessão autenticada.
+           Mesmo que alguém altere o HTML no navegador, o front-end
+           não usa outro vendedor no registro.
+        */
+
+        /*
+           Compatibilidade com o Apps Script:
+           visualmente usamos "Vendedor", mas o backend
+           ainda recebe a propriedade "consultor".
+        */
+        registro.consultor =
+            sessaoAtual.vendedor;
+
+        delete registro.vendedor;
+
+
+        /* =================================================
+           EQUIPAMENTOS
+
+           A lista detalhada vai para a futura aba
+           Equipamentos. Os campos-resumo abaixo mantêm
+           a Página1 compatível com o formato atual.
+        ================================================= */
+
+        registro.equipamentos =
+            obterEquipamentos();
+
+        registro.quantidadeEquipamentos =
+            registro.equipamentos.reduce(
+                (total, item) =>
+                    total + Number(item.quantidade || 0),
+                0
+            );
+
+        registro.quantidadeParadas =
+            registro.equipamentos.reduce(
+                (total, item) =>
+                    total + Number(item.totalParadas || 0),
+                0
+            );
+
+        registro.tipoEquipamento =
+            [
+                ...new Set(
+                    registro.equipamentos
+                        .map(item => item.tipo)
+                        .filter(Boolean)
+                )
+            ].join(" / ");
+
+        registro.marca =
+            [
+                ...new Set(
+                    registro.equipamentos
+                        .map(item => item.marca)
+                        .filter(Boolean)
+                )
+            ].join(" / ");
 
 
         /* =================================================
@@ -3463,7 +5516,7 @@ formulario.addEventListener(
 
         if (
             registro.tipoRegistro ===
-            "Acompanhamento de oportunidade existente"
+            "Atualização da Oportunidade Existente"
         ) {
 
             registro.idOportunidade =
@@ -3575,11 +5628,51 @@ formulario.addEventListener(
 
 
         /* =================================================
-           8. GERAR ID ÚNICO DA VISITA
+           8. ORIGEM + IDS DO REGISTRO / VISITA
         ================================================= */
 
+        const ehNovaOportunidade =
+            registro.tipoRegistro ===
+            "Nova Oportunidade (Primeira Visita ao Cliente)";
+
+        if (ehNovaOportunidade) {
+
+            /*
+               A primeira oportunidade sempre nasce
+               de uma primeira visita presencial.
+            */
+            registro.origemAtualizacao =
+                "Presencial";
+
+        } else {
+
+            registro.origemAtualizacao =
+                registro.origemAtualizacao ||
+                "";
+
+        }
+
+
+        /*
+           TODO lançamento gera ID do Registro.
+        */
+        registro.idRegistro =
+            gerarIdRegistro();
+
+
+        /*
+           ID da Visita só existe quando houve
+           presença física no cliente.
+        */
+        const houveVisitaPresencial =
+            ehNovaOportunidade ||
+            registro.origemAtualizacao ===
+                "Presencial";
+
         registro.idVisita =
-            gerarIdVisita();
+            houveVisitaPresencial
+                ? gerarIdVisita()
+                : "";
 
 
         /* =================================================
@@ -3643,12 +5736,58 @@ formulario.addEventListener(
         ================================================= */
 
         if (
+            idRegistroGerado
+        ) {
+
+            idRegistroGerado
+                .textContent =
+                registro.idRegistro;
+
+        }
+
+
+        if (
             idVisitaGerado
         ) {
 
             idVisitaGerado
                 .textContent =
-                registro.idVisita;
+                registro.idVisita ||
+                "—";
+
+        }
+
+
+        if (
+            boxIdVisitaGerado
+        ) {
+
+            boxIdVisitaGerado.hidden =
+                !registro.idVisita;
+
+        }
+
+
+        if (
+            tituloModalSucesso
+        ) {
+
+            tituloModalSucesso.textContent =
+                registro.idVisita
+                    ? "Visita registrada!"
+                    : "Atualização registrada!";
+
+        }
+
+
+        if (
+            textoModalSucesso
+        ) {
+
+            textoModalSucesso.textContent =
+                registro.idVisita
+                    ? "A visita e a atualização da oportunidade foram registradas com sucesso."
+                    : "A atualização da oportunidade foi registrada sem contabilizar uma nova visita.";
 
         }
 
@@ -3763,7 +5902,6 @@ formulario.addEventListener(
     }
 );
 
-
 /* =========================================================
    FECHAR MODAL E LIMPAR FORMULÁRIO
 ========================================================= */
@@ -3783,412 +5921,29 @@ function fecharModalELimpar() {
     }
 
 
-    /* RESET */
+    /* LIMPA O FORMULÁRIO SEM ENCERRAR A SESSÃO */
 
-    formulario.reset();
+    limparFormulario();
 
 
-    /* =====================================================
-       LIMPAR CAMPOS
-    ===================================================== */
-
-    formulario
-        .querySelectorAll(
-            "input, select, textarea"
-        )
-        .forEach(
-            campo => {
-
-                /*
-                   DATA SERÁ DEFINIDA
-                   NOVAMENTE DEPOIS.
-                */
-
-                if (
-                    campo ===
-                    dataVisita
-                ) {
-
-                    return;
-
-                }
-
-
-                /*
-                   RADIO E CHECKBOX
-                */
-
-                if (
-                    campo.type ===
-                        "radio" ||
-                    campo.type ===
-                        "checkbox"
-                ) {
-
-                    campo.checked =
-                        false;
-
-                } else {
-
-                    campo.value =
-                        "";
-
-                }
-
-            }
-        );
-
-            /* =====================================================
-       OBSERVAÇÕES
-    ===================================================== */
-
-    if (
-        observacoes
-    ) {
-
-        observacoes.value =
-            "";
-
-    }
-
-
-    if (
-        contadorCaracteres
-    ) {
-
-        contadorCaracteres
-            .textContent =
-            "0";
-
-    }
-
-
-    /* =====================================================
-       OBS / MOTIVO COMERCIAL
-    ===================================================== */
-
-    if (
-        obsMotivo
-    ) {
-
-        obsMotivo.value =
-            "";
-
-    }
-
-
-    /* =====================================================
-       EMPRESA CONSERVADORA
-    ===================================================== */
-
-    if (
-        empresaConservadora
-    ) {
-
-        empresaConservadora
-            .selectedIndex =
-            0;
-
-    }
-
-
-    if (
-        outraConservadora
-    ) {
-
-        outraConservadora.value =
-            "";
-
-        outraConservadora.required =
-            false;
-
-    }
-
-
-    if (
-        campoOutraConservadora
-    ) {
-
-        campoOutraConservadora.hidden =
-            true;
-
-    }
-
-
-    /* =====================================================
-       APOIO
-    ===================================================== */
-
-    if (
-        campoApoios
-    ) {
-
-        campoApoios.hidden =
-            true;
-
-    }
-
-
-    checkboxesApoio
-        .forEach(
-            checkbox => {
-
-                checkbox.checked =
-                    false;
-
-            }
-        );
-
-
-    /* =====================================================
-       PROPOSTA
-    ===================================================== */
-
-    if (
-        dadosProposta
-    ) {
-
-        dadosProposta.hidden =
-            true;
-
-    }
-
-
-    if (
-        tipoContrato
-    ) {
-
-        tipoContrato.selectedIndex =
-            0;
-
-        tipoContrato.required =
-            false;
-
-    }
-
-
-    if (
-        valorContrato
-    ) {
-
-        valorContrato.value =
-            "";
-
-        valorContrato.required =
-            false;
-
-    }
-
-
-    if (
-        margemVenda
-    ) {
-
-        margemVenda.value =
-            "";
-
-        margemVenda.required =
-            false;
-
-    }
-
-
-    if (
-        numeroProposta
-    ) {
-
-        numeroProposta.value =
-            "";
-
-        numeroProposta.required =
-            false;
-
-    }
-
-
-    /* =====================================================
-       OPORTUNIDADE EXISTENTE
-    ===================================================== */
-
-    if (
-        campoOportunidadeExistente
-    ) {
-
-        campoOportunidadeExistente.hidden =
-            true;
-
-    }
-
-
-    if (
-        idOportunidadeExistente
-    ) {
-
-        idOportunidadeExistente.value =
-            "";
-
-        idOportunidadeExistente.required =
-            false;
-
-    }
-
-
-    /* =====================================================
-       STATUS COMERCIAL
-    ===================================================== */
-
-    if (
-        statusComercial
-    ) {
-
-        statusComercial.selectedIndex =
-            0;
-
-    }
-
-
-    if (
-        campoMotivoPerda
-    ) {
-
-        campoMotivoPerda.hidden =
-            true;
-
-    }
-
-
-    if (
-        motivoPerda
-    ) {
-
-        motivoPerda.selectedIndex =
-            0;
-
-        motivoPerda.required =
-            false;
-
-    }
-
-
-    /* =====================================================
-       DESTINO DO CASO
-    ===================================================== */
-
-    if (
-        campoDestinoDeclinio
-    ) {
-
-        campoDestinoDeclinio.hidden =
-            true;
-
-    }
-
-
-    radiosDestinoDeclinio
-        .forEach(
-            radio => {
-
-                radio.checked =
-                    false;
-
-                radio.required =
-                    false;
-
-            }
-        );
-
-
-    /* =====================================================
-       PREVISÃO DE FECHAMENTO
-    ===================================================== */
-
-    if (
-        campoPrevisaoFechamento
-    ) {
-
-        campoPrevisaoFechamento.hidden =
-            false;
-
-    }
-
-
-    if (
-        previsaoFechamento
-    ) {
-
-        previsaoFechamento.value =
-            "";
-
-    }
-
-
-    /* =====================================================
-       ATUALIZAR CAMPOS CONDICIONAIS
-    ===================================================== */
-
-    atualizarCampoOutraConservadora();
-
-    atualizarCampoApoio();
-
-    atualizarCamposProposta();
-
-    atualizarTipoRegistro();
-
-    atualizarStatusComercial();
-
-
-    /* =====================================================
-       LOCALIZAÇÃO
-    ===================================================== */
-
-    if (
-        bairro
-    ) {
-
-        bairro.value =
-            "";
-
-    }
-
-
-    if (
-        regiao
-    ) {
-
-        regiao.value =
-            "";
-
-    }
-
-
-    definirLocalizacaoPadrao();
-
-
-    /* =====================================================
-       DATA
-    ===================================================== */
-
-    definirDataAtual();
-
-
-    /* =====================================================
-       ERROS
-    ===================================================== */
-
-    limparErros();
-
-
-    /* =====================================================
-       ÚLTIMO REGISTRO
-    ===================================================== */
+    /* LIMPA O ÚLTIMO REGISTRO */
 
     ultimoRegistro =
         null;
 
 
-    /* =====================================================
-       IDs DO MODAL
-    ===================================================== */
+    /* LIMPA OS IDS EXIBIDOS NO MODAL */
+
+    if (
+        idRegistroGerado
+    ) {
+
+        idRegistroGerado
+            .textContent =
+            "—";
+
+    }
+
 
     if (
         idVisitaGerado
@@ -4197,6 +5952,16 @@ function fecharModalELimpar() {
         idVisitaGerado
             .textContent =
             "—";
+
+    }
+
+
+    if (
+        boxIdVisitaGerado
+    ) {
+
+        boxIdVisitaGerado.hidden =
+            false;
 
     }
 
@@ -4212,9 +5977,12 @@ function fecharModalELimpar() {
     }
 
 
-    /* =====================================================
-       VOLTAR AO TOPO
-    ===================================================== */
+    /* MANTÉM O VENDEDOR LOGADO */
+
+    aplicarSessaoNaTela();
+
+
+    /* VOLTA AO TOPO */
 
     window.scrollTo({
         top: 0,
@@ -4295,12 +6063,33 @@ if (
 
 
             if (
+                idRegistroGerado
+            ) {
+
+                idRegistroGerado
+                    .textContent =
+                    "—";
+
+            }
+
+
+            if (
                 idVisitaGerado
             ) {
 
                 idVisitaGerado
                     .textContent =
                     "—";
+
+            }
+
+
+            if (
+                boxIdVisitaGerado
+            ) {
+
+                boxIdVisitaGerado.hidden =
+                    false;
 
             }
 
