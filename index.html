@@ -73,22 +73,34 @@
           <span class="acesso-tag">ACESSO RESTRITO</span>
           <h2>Identifique-se para continuar</h2>
           <p>
-            O acesso é individual. As consultas e os registros ficam vinculados
-            ao vendedor autenticado.
+            Selecione a filial e seu perfil. As consultas e os registros ficam
+            vinculados ao responsável autenticado.
           </p>
 
           <form id="formAcesso" class="form-acesso" autocomplete="off">
-            <div class="campo">
-              <label for="vendedorAcesso">Vendedor <span>*</span></label>
-              <select id="vendedorAcesso" required>
-                <option value="" selected disabled>Selecione o Vendedor</option>
-                <option value="Reinaldo Silva Soares Dias">
-                  Reinaldo Silva Soares Dias
-                </option>
-                <option value="Pedro Pereira Filho">
-                  Pedro Pereira Filho
-                </option>
-              </select>
+            <div class="login-etapas">
+              <div class="campo">
+                <label for="filialAcesso">Filial <span>*</span></label>
+                <select id="filialAcesso" required>
+                  <option value="5004" selected>5004 - RJ</option>
+                </select>
+              </div>
+
+              <div class="campo">
+                <label for="perfilAcesso">Perfil <span>*</span></label>
+                <select id="perfilAcesso" required>
+                  <option value="" selected disabled>Selecione o perfil</option>
+                  <option value="consultor">Consultor</option>
+                  <option value="vendedor">Vendedor</option>
+                </select>
+              </div>
+
+              <div class="campo campo-login-nome">
+                <label for="vendedorAcesso">Nome <span>*</span></label>
+                <select id="vendedorAcesso" required disabled>
+                  <option value="" selected disabled>Selecione primeiro o perfil</option>
+                </select>
+              </div>
             </div>
 
             <div class="campo">
@@ -222,18 +234,18 @@
           </div>
         </div>
 
-        <form id="formVisita">
+        <form id="formVisita" novalidate>
           <!-- =====================================
                      BLOCO 1 - DADOS COMERCIAIS
                 ====================================== -->
 
-          <div class="secao-formulario">
+          <div class="secao-formulario" id="secaoDadosComerciais">
             <div class="titulo-secao">
               <span>01</span>
 
               <div>
                 <h3>Dados comerciais</h3>
-                <p>Informações gerais da visita.</p>
+                <p>Defina o tipo do registro, modalidade e situação comercial.</p>
               </div>
             </div>
 
@@ -267,12 +279,22 @@
                     <span class="radio-personalizado"></span>
                     <span>Atualização da Oportunidade Existente</span>
                   </label>
+
+                  <label class="opcao-card" id="opcaoRegistroRetencao">
+                    <input
+                      type="radio"
+                      name="tipoRegistro"
+                      value="Acompanhamento / Retenção de Cliente"
+                    />
+                    <span class="radio-personalizado"></span>
+                    <span>Acompanhamento / Retenção de Cliente</span>
+                  </label>
                 </div>
 
                 <p class="ajuda-campo">
-                  A primeira opção representa a primeira visita presencial ao cliente.
-                  Nas atualizações, informe a origem do contato. Somente registros
-                  presenciais geram um novo ID da Visita.
+                  Nova oportunidade e atualização mantêm o fluxo comercial normal.
+                  Ao selecionar Acompanhamento / Retenção de Cliente, o sistema ativa
+                  automaticamente o fluxo simplificado de Retenção.
                 </p>
 
                 <div
@@ -433,23 +455,34 @@
 
               <div class="campo campo-grande">
                 <label for="vendedor">
-                  Vendedor
+                  Responsável
                   <span>*</span>
                 </label>
 
                 <select id="vendedor" name="vendedor" required>
                   <option value="" selected disabled>
-                    Selecione o vendedor
+                    Selecione o responsável
                   </option>
 
-                  <option value="Reinaldo Silva Soares Dias">
-                    Reinaldo Silva Soares Dias
-                  </option>
+                  <optgroup label="Vendedores">
+                    <option value="Reinaldo Silva Soares Dias">Reinaldo Silva Soares Dias</option>
+                    <option value="Pedro Pereira Filho">Pedro Pereira Filho</option>
+                  </optgroup>
 
-                  <option value="Pedro Pereira Filho">
-                    Pedro Pereira Filho
-                  </option>
+                  <optgroup label="Consultores">
+                    <option value="Thiago Ribeiro Fernandes">Thiago Ribeiro Fernandes</option>
+                    <option value="Dayanna da Silva Pinto">Dayanna da Silva Pinto</option>
+                    <option value="Luanda de Souza Santos">Luanda de Souza Santos</option>
+                    <option value="Renata Costa Hygino de Miranda">Renata Costa Hygino de Miranda</option>
+                    <option value="Renata Martins Martellote de Castilho">Renata Martins Martellote de Castilho</option>
+                    <option value="Erickson de Carvalho Souto Maior">Erickson de Carvalho Souto Maior</option>
+                    <option value="Pedro Ivo Valente do Carmo Gomes">Pedro Ivo Valente do Carmo Gomes</option>
+                    <option value="Renata Alves Narciso da Silva">Renata Alves Narciso da Silva</option>
+                    <option value="Mariana da Silva dos Santos">Mariana da Silva dos Santos</option>
+                  </optgroup>
                 </select>
+
+                <p class="ajuda-campo" id="perfilResponsavel"></p>
               </div>
 
               <!-- MODALIDADE DE NEGÓCIOS -->
@@ -481,6 +514,23 @@
 
                     <span>Captação</span>
                   </label>
+
+                  <label class="opcao-card">
+                    <input type="radio" name="modalidade" value="Retenção" />
+
+                    <span class="radio-personalizado"></span>
+
+                    <span>Retenção</span>
+                  </label>
+                </div>
+
+                <div class="aviso-retencao" id="avisoRetencao" hidden>
+                  <strong>Fluxo de Retenção</strong>
+                  <span>
+                    Modalidade fica automaticamente como Retenção. Permanecem ativos:
+                    Tipo (Residencial/Comercial), Natureza da Visita (Relacionamento),
+                    Data da Visita, Cliente e Local, Contato do Cliente e Observações Gerais.
+                  </span>
                 </div>
               </div>
 
@@ -522,68 +572,45 @@
 
                 <div class="opcoes">
                   <label class="opcao-card">
-                    <input
-                      type="radio"
-                      name="natureza"
-                      value="Prospecção"
-                      required
-                    />
-
+                    <input type="radio" name="natureza" value="Prospecção" required />
                     <span class="radio-personalizado"></span>
-
                     <span>Prospecção</span>
                   </label>
 
                   <label class="opcao-card">
                     <input type="radio" name="natureza" value="Vistoria" />
-
                     <span class="radio-personalizado"></span>
-
                     <span>Vistoria</span>
                   </label>
 
                   <label class="opcao-card">
-                    <input
-                      type="radio"
-                      name="natureza"
-                      value="Apresentação da Proposta"
-                    />
-
+                    <input type="radio" name="natureza" value="Apresentação da Proposta" />
                     <span class="radio-personalizado"></span>
-
-                    <span> Apresentação da Proposta </span>
+                    <span>Apresentação da Proposta</span>
                   </label>
 
                   <label class="opcao-card">
-                    <input
-                      type="radio"
-                      name="natureza"
-                      value="Reunião com o cliente"
-                    />
-
+                    <input type="radio" name="natureza" value="Reunião com o cliente" />
                     <span class="radio-personalizado"></span>
-
-                    <span> Reunião com o cliente </span>
+                    <span>Reunião com o Cliente</span>
                   </label>
 
                   <label class="opcao-card">
-                    <input type="radio" name="natureza" value="Fechamento" />
-
+                    <input type="radio" name="natureza" value="Relacionamento" />
                     <span class="radio-personalizado"></span>
-
-                    <span>Fechamento</span>
-                  </label>
-
-                  <label class="opcao-card">
-                    <input
-                      type="radio"
-                      name="natureza"
-                      value="Relacionamento"
-                    />
-
-                    <span class="radio-personalizado"></span>
-
                     <span>Relacionamento</span>
+                  </label>
+
+                  <label class="opcao-card">
+                    <input type="radio" name="natureza" value="Proposta Assinada" />
+                    <span class="radio-personalizado"></span>
+                    <span>Proposta Assinada</span>
+                  </label>
+
+                  <label class="opcao-card">
+                    <input type="radio" name="natureza" value="Proposta Perdida" />
+                    <span class="radio-personalizado"></span>
+                    <span>Proposta Perdida</span>
                   </label>
                 </div>
               </div>
@@ -604,8 +631,8 @@
                   <option value="Aguardando vistoria">
                     Aguardando vistoria
                   </option>
-                  <option value="Aguardando proposta">
-                    Aguardando proposta
+                  <option value="Aguardando geração da proposta">
+                    Aguardando geração da proposta
                   </option>
                   <option value="Em negociação">Em negociação</option>
                   <option value="Aguardando retorno do cliente">
@@ -701,32 +728,21 @@
               <!-- PREVISÃO DE FECHAMENTO -->
 
               <div id="campoPrevisaoFechamento" class="campo campo-grande">
-                <label for="previsaoFechamento"> Previsão de Fechamento </label>
+                <label for="previsaoFechamento">
+                  Previsão de Fechamento
+                  <span>*</span>
+                </label>
 
                 <input
                   type="date"
                   id="previsaoFechamento"
                   name="previsaoFechamento"
+                  required
                 />
 
                 <p class="ajuda-campo">
-                  Informe a data prevista de fechamento. O campo será ocultado
-                  automaticamente quando o status for Assinado ou Perda.
+                  Informe obrigatoriamente a data prevista de fechamento.
                 </p>
-              </div>
-
-              <!-- OBS / MOTIVO COMERCIAL -->
-
-              <div class="campo campo-grande">
-                <label for="obsMotivo"> Obs./Motivo </label>
-
-                <textarea
-                  id="obsMotivo"
-                  name="obsMotivo"
-                  rows="4"
-                  maxlength="700"
-                  placeholder="Ex.: aguardando assinatura, cliente fechou com concorrente, pendência financeira..."
-                ></textarea>
               </div>
 
               <!-- PRECISA DE APOIO? -->
@@ -976,14 +992,14 @@
                      BLOCO 2 - EQUIPAMENTOS
                 ====================================== -->
 
-          <div class="secao-formulario">
+          <div class="secao-formulario" id="secaoEquipamentos">
             <div class="titulo-secao">
               <span>02</span>
 
               <div>
                 <h3>Equipamentos</h3>
 
-                <p>Informe os dados dos equipamentos encontrados.</p>
+                <p>Informações técnicas dos equipamentos vinculados à oportunidade.</p>
               </div>
             </div>
 
@@ -1026,7 +1042,7 @@
                      BLOCO 3 - CLIENTE E LOCAL
                 ====================================== -->
 
-          <div class="secao-formulario">
+          <div class="secao-formulario" id="secaoCliente">
             <div class="titulo-secao">
               <span>03</span>
 
@@ -1365,13 +1381,13 @@
                      BLOCO 4 - CONTATO
                 ====================================== -->
 
-          <div class="secao-formulario">
+          <div class="secao-formulario" id="secaoContato">
             <div class="titulo-secao">
               <span>04</span>
 
               <div>
-                <h3>Contato</h3>
-                <p>Dados do responsável no local.</p>
+                <h3>Contato do cliente</h3>
+                <p>Identificação e canais de contato do cliente.</p>
               </div>
             </div>
 
@@ -1453,6 +1469,19 @@
                   <span id="contadorCaracteres">0</span>/1000
                 </div>
               </div>
+            </div>
+          </div>
+
+          <!-- =====================================
+                     RESUMO DE PENDÊNCIAS
+                ====================================== -->
+
+          <div class="resumo-erros-formulario" id="resumoErrosFormulario" hidden>
+            <div class="resumo-erros-icone">!</div>
+            <div>
+              <strong>Faltam informações para registrar a visita</strong>
+              <p>Preencha os campos destacados abaixo:</p>
+              <ul id="listaErrosFormulario"></ul>
             </div>
           </div>
 
