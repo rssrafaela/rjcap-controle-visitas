@@ -181,6 +181,9 @@ if (
                         [
                             oportunidade.bairro ||
                                 "",
+                            oportunidade.filial ||
+                                obterSessao()?.filialNome ||
+                                "5004 - RJ",
                             id
                         ]
                             .filter(Boolean)
@@ -894,6 +897,12 @@ const telaAcesso =
 const formAcesso =
     document.getElementById("formAcesso");
 
+const filialAcesso =
+    document.getElementById("filialAcesso");
+
+const perfilAcesso =
+    document.getElementById("perfilAcesso");
+
 const vendedorAcesso =
     document.getElementById("vendedorAcesso");
 
@@ -911,6 +920,244 @@ const btnSair =
 
 const vendedorFormulario =
     document.getElementById("vendedor");
+
+
+const perfilResponsavel =
+    document.getElementById("perfilResponsavel");
+
+const opcaoRegistroRetencao =
+    document.getElementById("opcaoRegistroRetencao");
+
+const avisoRetencao =
+    document.getElementById("avisoRetencao");
+
+const resumoErrosFormulario =
+    document.getElementById("resumoErrosFormulario");
+
+const listaErrosFormulario =
+    document.getElementById("listaErrosFormulario");
+
+const USUARIOS_RJCAP = {
+    "5004": {
+        nome: "5004 - RJ",
+
+        vendedores: [
+            "Pedro Pereira Filho",
+            "Reinaldo Silva Soares Dias"
+        ],
+
+        consultores: [
+            "Dayanna da Silva Pinto",
+            "Erickson de Carvalho Souto Maior",
+            "Luanda de Souza Santos",
+            "Mariana da Silva dos Santos",
+            "Pedro Ivo Valente do Carmo Gomes",
+            "Renata Alves Narciso da Silva",
+            "Renata Costa Hygino de Miranda",
+            "Renata Martins Martellote de Castilho",
+            "Thiago Ribeiro Fernandes"
+        ]
+    }
+};
+
+function obterPerfilPorNome(nome) {
+
+    const filial =
+        USUARIOS_RJCAP["5004"];
+
+    if (
+        filial.vendedores.includes(nome)
+    ) {
+        return "vendedor";
+    }
+
+    if (
+        filial.consultores.includes(nome)
+    ) {
+        return "consultor";
+    }
+
+    return "";
+}
+
+
+function atualizarNomesLogin() {
+
+    if (
+        !vendedorAcesso ||
+        !perfilAcesso ||
+        !filialAcesso
+    ) {
+        return;
+    }
+
+    const filial =
+        USUARIOS_RJCAP[
+            filialAcesso.value
+        ];
+
+    const perfil =
+        perfilAcesso.value;
+
+    vendedorAcesso.innerHTML = "";
+
+    const placeholder =
+        document.createElement("option");
+
+    placeholder.value = "";
+    placeholder.disabled = true;
+    placeholder.selected = true;
+
+    if (!filial) {
+        placeholder.textContent =
+            "Filial não configurada";
+
+        vendedorAcesso.appendChild(
+            placeholder
+        );
+
+        vendedorAcesso.disabled = true;
+        return;
+    }
+
+    if (!perfil) {
+        placeholder.textContent =
+            "Selecione primeiro o perfil";
+
+        vendedorAcesso.appendChild(
+            placeholder
+        );
+
+        vendedorAcesso.disabled = true;
+        return;
+    }
+
+    placeholder.textContent =
+        "Selecione seu nome";
+
+    vendedorAcesso.appendChild(
+        placeholder
+    );
+
+    const lista =
+        perfil === "vendedor"
+            ? filial.vendedores
+            : filial.consultores;
+
+    lista
+        .slice()
+        .sort(
+            (a, b) =>
+                a.localeCompare(
+                    b,
+                    "pt-BR"
+                )
+        )
+        .forEach(nome => {
+
+            const opcao =
+                document.createElement(
+                    "option"
+                );
+
+            opcao.value = nome;
+            opcao.textContent = nome;
+
+            vendedorAcesso.appendChild(
+                opcao
+            );
+
+        });
+
+    vendedorAcesso.disabled = false;
+}
+
+
+if (perfilAcesso) {
+    perfilAcesso.addEventListener(
+        "change",
+        atualizarNomesLogin
+    );
+}
+
+if (filialAcesso) {
+    filialAcesso.addEventListener(
+        "change",
+        atualizarNomesLogin
+    );
+}
+
+atualizarNomesLogin();
+
+function ehConsultorAutenticado() {
+    const sessao = obterSessao();
+    return Boolean(sessao && sessao.perfil === "consultor");
+}
+
+function aplicarPerfilNaTela() {
+
+    const sessao =
+        obterSessao();
+
+    /*
+       O perfil exibido é sempre recalculado pelo nome.
+       Isso evita sessão antiga mostrar "Vendedor" para um Consultor.
+    */
+    const perfilPorNome =
+        sessao?.vendedor
+            ? obterPerfilPorNome(
+                sessao.vendedor
+            )
+            : "";
+
+    const perfil =
+        perfilPorNome ||
+        sessao?.perfil ||
+        "";
+
+    if (
+        sessao &&
+        perfilPorNome &&
+        sessao.perfil !== perfilPorNome
+    ) {
+        sessao.perfil =
+            perfilPorNome;
+
+        salvarSessao(
+            sessao
+        );
+    }
+
+    const consultor =
+        perfil === "consultor";
+
+    if (
+        perfilResponsavel &&
+        sessao?.vendedor
+    ) {
+
+        const nomePerfil =
+            consultor
+                ? "Consultor"
+                : "Vendedor";
+
+        const filialTexto =
+            sessao.filialNome ||
+            (
+                sessao.filial === "5004"
+                    ? "5004 - RJ"
+                    : sessao.filial || ""
+            );
+
+        perfilResponsavel.textContent =
+            [
+                filialTexto,
+                `Perfil: ${nomePerfil}`
+            ]
+                .filter(Boolean)
+                .join(" • ");
+    }
+}
 
 
 function obterSessao() {
@@ -1024,10 +1271,14 @@ function aplicarSessaoNaTela() {
 
     }
 
+    aplicarPerfilNaTela();
+
 }
 
 
 async function autenticarVendedor(
+    filial,
+    perfil,
     vendedor,
     codigo
 ) {
@@ -1035,6 +1286,8 @@ async function autenticarVendedor(
     const url =
         `${URL_GOOGLE_SHEETS}` +
         `?acao=autenticar` +
+        `&filial=${encodeURIComponent(filial)}` +
+        `&perfil=${encodeURIComponent(perfil)}` +
         `&consultor=${encodeURIComponent(vendedor)}` +
         `&codigo=${encodeURIComponent(codigo)}`;
 
@@ -1048,11 +1301,9 @@ async function autenticarVendedor(
         );
 
     if (!resposta.ok) {
-
         throw new Error(
             "Não foi possível validar o acesso."
         );
-
     }
 
     const dados =
@@ -1063,24 +1314,55 @@ async function autenticarVendedor(
         !dados.autenticado ||
         !dados.token
     ) {
-
         return null;
-
     }
+
+    const nomeAutenticado =
+        String(
+            dados.consultor ||
+            vendedor
+        );
+
+    const perfilAutenticado =
+        String(
+            obterPerfilPorNome(
+                nomeAutenticado
+            ) ||
+            perfil ||
+            dados.perfil ||
+            ""
+        ).toLowerCase();
 
     return {
         token:
             String(dados.token),
+
         vendedor:
+            nomeAutenticado,
+
+        perfil:
+            perfilAutenticado,
+
+        filial:
             String(
-                dados.consultor ||
-                vendedor
+                dados.filial ||
+                filial
             ),
+
+        filialNome:
+            String(
+                dados.filialNome ||
+                (
+                    filial === "5004"
+                        ? "5004 - RJ"
+                        : filial
+                )
+            ),
+
         expiraEm:
             dados.expiraEm ||
             ""
     };
-
 }
 
 
@@ -1097,6 +1379,14 @@ if (formAcesso) {
                 erroAcesso.textContent = "";
             }
 
+            const filial =
+                filialAcesso?.value ||
+                "";
+
+            const perfil =
+                perfilAcesso?.value ||
+                "";
+
             const vendedor =
                 vendedorAcesso?.value ||
                 "";
@@ -1106,13 +1396,15 @@ if (formAcesso) {
                 "";
 
             if (
+                !filial ||
+                !perfil ||
                 !vendedor ||
                 !codigo
             ) {
 
                 if (erroAcesso) {
                     erroAcesso.textContent =
-                        "Informe o vendedor e o código de acesso.";
+                        "Informe filial, perfil, nome e código de acesso.";
                     erroAcesso.hidden = false;
                 }
 
@@ -1128,6 +1420,8 @@ if (formAcesso) {
 
                 const sessao =
                     await autenticarVendedor(
+                        filial,
+                        perfil,
                         vendedor,
                         codigo
                     );
@@ -1136,7 +1430,7 @@ if (formAcesso) {
 
                     if (erroAcesso) {
                         erroAcesso.textContent =
-                            "Vendedor ou código de acesso inválido.";
+                            "Responsável ou código de acesso inválido.";
                         erroAcesso.hidden = false;
                     }
 
@@ -1190,9 +1484,15 @@ if (btnSair) {
             limparSessao();
             aplicarSessaoNaTela();
 
-            if (vendedorAcesso) {
-                vendedorAcesso.selectedIndex = 0;
+            if (perfilAcesso) {
+                perfilAcesso.selectedIndex = 0;
             }
+
+            if (filialAcesso) {
+                filialAcesso.value = "5004";
+            }
+
+            atualizarNomesLogin();
 
         }
     );
@@ -1443,6 +1743,9 @@ function mostrarResultadosCondominio(
                     [
                         item.bairro ||
                             "",
+                        item.filial ||
+                            obterSessao()?.filialNome ||
+                            "5004 - RJ",
                         item.statusComercial ||
                             ""
                     ]
@@ -1633,6 +1936,9 @@ if (resultadosCondominio) {
                         [
                             oportunidade.bairro ||
                                 "",
+                            oportunidade.filial ||
+                                obterSessao()?.filialNome ||
+                                "5004 - RJ",
                             id
                         ]
                             .filter(Boolean)
@@ -2087,34 +2393,243 @@ function preencherDadosOportunidade(
 async function enviarParaGoogleSheets(registro) {
 
     if (!navigator.onLine) {
-
         throw new Error("SEM_INTERNET");
+    }
+
+
+    const sessao =
+        obterSessao();
+
+
+    const payload = {
+        ...registro,
+
+        tokenSessao:
+            obterTokenSessao(),
+
+        consultorAutenticado:
+            sessao?.vendedor ||
+            ""
+    };
+
+
+    const corpo =
+        JSON.stringify(
+            payload
+        );
+
+
+    /*
+       ENVIO RÁPIDO
+
+       O modal não precisa esperar o Apps Script terminar
+       toda a gravação na planilha.
+
+       Primeiro tentamos sendBeacon, que entrega o POST em
+       segundo plano e libera a interface imediatamente.
+    */
+    let disparado =
+        false;
+
+
+    if (
+        typeof navigator.sendBeacon ===
+        "function"
+    ) {
+
+        try {
+
+            const blob =
+                new Blob(
+                    [corpo],
+                    {
+                        type:
+                            "text/plain;charset=utf-8"
+                    }
+                );
+
+
+            disparado =
+                navigator.sendBeacon(
+                    URL_GOOGLE_SHEETS,
+                    blob
+                );
+
+        } catch (erroBeacon) {
+
+            console.warn(
+                "sendBeacon indisponível. Usando fetch.",
+                erroBeacon
+            );
+
+        }
 
     }
 
-    await fetch(
-        URL_GOOGLE_SHEETS,
-        {
-            method: "POST",
 
-            mode: "no-cors",
+    /*
+       Fallback:
+       se o navegador não aceitar sendBeacon,
+       inicia o fetch SEM bloquear o modal.
+    */
+    if (!disparado) {
 
-            headers: {
-                "Content-Type":
-                    "text/plain;charset=utf-8"
-            },
+        try {
 
-            body:
-                JSON.stringify({
-                    ...registro,
-                    tokenSessao:
-                        obterTokenSessao(),
-                    consultorAutenticado:
-                        obterSessao()?.vendedor ||
-                        ""
-                })
+            fetch(
+                URL_GOOGLE_SHEETS,
+                {
+                    method: "POST",
+
+                    mode: "no-cors",
+
+                    headers: {
+                        "Content-Type":
+                            "text/plain;charset=utf-8"
+                    },
+
+                    body:
+                        corpo,
+
+                    keepalive:
+                        true
+                }
+            )
+            .catch(
+                erro => {
+
+                    console.error(
+                        "Falha posterior no envio:",
+                        erro
+                    );
+
+                }
+            );
+
+
+            disparado =
+                true;
+
+        } catch (erroFetch) {
+
+            throw erroFetch;
+
         }
-    );
+
+    }
+
+
+    if (!disparado) {
+        throw new Error(
+            "ENVIO_NAO_INICIADO"
+        );
+    }
+
+
+    /*
+       CONFIRMAÇÃO EM SEGUNDO PLANO
+
+       Não bloqueia o usuário.
+       O modal abre imediatamente enquanto o Google
+       conclui a gravação.
+    */
+    const urlConfirmacao =
+        `${URL_GOOGLE_SHEETS}` +
+        `?acao=confirmarRegistro` +
+        `&idRegistro=${encodeURIComponent(registro.idRegistro || "")}` +
+        `&consultor=${encodeURIComponent(sessao?.vendedor || "")}` +
+        `&token=${encodeURIComponent(obterTokenSessao() || "")}`;
+
+
+    (async function confirmarEmSegundoPlano() {
+
+        try {
+
+            for (
+                let tentativa = 1;
+                tentativa <= 5;
+                tentativa++
+            ) {
+
+                await new Promise(
+                    resolve =>
+                        setTimeout(
+                            resolve,
+                            tentativa === 1
+                                ? 1200
+                                : 1800
+                        )
+                );
+
+
+                const resposta =
+                    await fetch(
+                        urlConfirmacao,
+                        {
+                            method:
+                                "GET",
+
+                            cache:
+                                "no-store"
+                        }
+                    );
+
+
+                if (!resposta.ok) {
+                    continue;
+                }
+
+
+                const dados =
+                    await resposta.json();
+
+
+                if (
+                    dados.sucesso &&
+                    dados.confirmado
+                ) {
+
+                    console.log(
+                        "Registro confirmado na planilha:",
+                        registro.idRegistro
+                    );
+
+                    return;
+
+                }
+
+            }
+
+
+            console.warn(
+                "O envio foi disparado, mas a confirmação não foi lida a tempo:",
+                registro.idRegistro
+            );
+
+        } catch (erroConfirmacao) {
+
+            console.warn(
+                "Não foi possível consultar a confirmação em segundo plano:",
+                erroConfirmacao
+            );
+
+        }
+
+    })();
+
+
+    /*
+       Retorna AGORA.
+       Isso faz o modal aparecer praticamente na hora.
+    */
+    return {
+        enviado:
+            true,
+
+        idRegistro:
+            registro.idRegistro ||
+            ""
+    };
 
 }
 
@@ -2567,6 +3082,274 @@ radiosTemProposta
 
 atualizarCamposProposta();
 
+
+/* =========================================================
+   PERFIL / RETENÇÃO
+========================================================= */
+
+function atualizarFluxoRetencao() {
+
+    const tipoSelecionado =
+        document.querySelector(
+            'input[name="tipoRegistro"]:checked'
+        );
+
+    const modalidadeSelecionada =
+        document.querySelector(
+            'input[name="modalidade"]:checked'
+        );
+
+    const retencaoPorTipo =
+        tipoSelecionado?.value ===
+        "Acompanhamento / Retenção de Cliente";
+
+    const retencaoPorModalidade =
+        modalidadeSelecionada?.value ===
+        "Retenção";
+
+    const retencao =
+        retencaoPorTipo ||
+        retencaoPorModalidade;
+
+    formulario.classList.toggle("modo-retencao", retencao);
+
+    if (avisoRetencao) {
+        avisoRetencao.hidden = !retencao;
+    }
+
+    const radiosTipoRegistroLocais =
+        document.querySelectorAll(
+            'input[name="tipoRegistro"]'
+        );
+
+    const tipoRetencao =
+        document.querySelector(
+            'input[name="tipoRegistro"][value="Acompanhamento / Retenção de Cliente"]'
+        );
+
+    const modalidadeRetencao =
+        document.querySelector(
+            'input[name="modalidade"][value="Retenção"]'
+        );
+
+    /*
+       O gatilho principal agora é o Tipo de Registro.
+       Ao clicar em Acompanhamento / Retenção de Cliente,
+       a Modalidade Retenção é marcada automaticamente.
+       Também mantemos compatibilidade com quem clicar
+       diretamente em Retenção na modalidade.
+    */
+    if (retencao && tipoRetencao) {
+        tipoRetencao.checked = true;
+    }
+
+    if (retencao && modalidadeRetencao) {
+        modalidadeRetencao.checked = true;
+    }
+
+    /*
+       TIPO DE REGISTRO fica SEMPRE liberado.
+       Assim, se o usuário escolher Retenção por engano,
+       pode trocar imediatamente para Nova Oportunidade
+       ou Atualização da Oportunidade Existente.
+    */
+    radiosTipoRegistroLocais.forEach(radio => {
+        radio.disabled = false;
+
+        const card =
+            radio.closest(".opcao-card");
+
+        card?.classList.remove(
+            "opcao-bloqueada"
+        );
+    });
+
+    const radiosNatureza =
+        document.querySelectorAll(
+            'input[name="natureza"]'
+        );
+
+    const naturezaRelacionamento =
+        document.querySelector(
+            'input[name="natureza"][value="Relacionamento"]'
+        );
+
+    if (retencao && naturezaRelacionamento) {
+        naturezaRelacionamento.checked = true;
+    }
+
+    radiosNatureza.forEach(radio => {
+        const card = radio.closest(".opcao-card");
+
+        if (retencao) {
+            radio.disabled =
+                radio.value !== "Relacionamento";
+
+            card?.classList.toggle(
+                "opcao-bloqueada",
+                radio.disabled
+            );
+        } else {
+            radio.disabled = false;
+            card?.classList.remove("opcao-bloqueada");
+        }
+    });
+
+    const permitidos = new Set([
+        "modalidade",
+        "tipoCliente",
+        "natureza",
+        "dataVisita",
+
+        /* CLIENTE E LOCAL */
+        "empresaConservadora",
+        "outraConservadora",
+        "nomeCondominio",
+        "endereco",
+        "bairro",
+        "cidade",
+        "uf",
+        "regiao",
+
+        /* CONTATO */
+        "nomeContato",
+        "telefone",
+        "email",
+
+        /* OBSERVAÇÕES */
+        "observacoes",
+
+        "vendedor"
+    ]);
+
+    const controles =
+        Array.from(
+            formulario.querySelectorAll(
+                "input, select, textarea, button"
+            )
+        );
+
+    controles.forEach(controle => {
+
+        if (controle.type === "submit") return;
+
+        const chave =
+            controle.name || controle.id || "";
+
+        if (
+            chave === "tipoRegistro" ||
+            chave === "natureza" ||
+            chave === "modalidade"
+        ) {
+            return;
+        }
+
+        if (retencao) {
+
+            if (controle.dataset.retencaoDisabledOriginal === undefined) {
+                controle.dataset.retencaoDisabledOriginal =
+                    controle.disabled ? "1" : "0";
+            }
+
+            if (controle.dataset.retencaoRequiredOriginal === undefined) {
+                controle.dataset.retencaoRequiredOriginal =
+                    controle.required ? "1" : "0";
+            }
+
+            const permitido = permitidos.has(chave);
+
+            if (!permitido) {
+                controle.disabled = true;
+                controle.required = false;
+            } else {
+                controle.disabled =
+                    controle.dataset.retencaoDisabledOriginal === "1";
+
+                if (
+                    [
+                        "tipoCliente",
+                        "dataVisita",
+
+                                                                        "regiao",
+
+                        "nomeContato",
+                        "telefone",
+                        "email",
+                        "observacoes"
+                    ].includes(chave)
+                ) {
+                    controle.required = true;
+                }
+            }
+
+        } else {
+
+            if (controle.dataset.retencaoDisabledOriginal !== undefined) {
+                controle.disabled =
+                    controle.dataset.retencaoDisabledOriginal === "1";
+            }
+
+            if (controle.dataset.retencaoRequiredOriginal !== undefined) {
+                controle.required =
+                    controle.dataset.retencaoRequiredOriginal === "1";
+            }
+
+            delete controle.dataset.retencaoDisabledOriginal;
+            delete controle.dataset.retencaoRequiredOriginal;
+        }
+    });
+
+    formulario.querySelectorAll(".campo").forEach(campo => {
+        const internos =
+            Array.from(
+                campo.querySelectorAll("input, select, textarea")
+            );
+
+        if (!internos.length) return;
+
+        const temAtivo =
+            internos.some(el => !el.disabled);
+
+        campo.classList.toggle(
+            "campo-retencao-inativo",
+            retencao && !temAtivo
+        );
+    });
+
+    [
+        document.getElementById("secaoEquipamentos")
+    ].forEach(secao => {
+        secao?.classList.toggle(
+            "secao-retencao-inativa",
+            retencao
+        );
+    });
+
+    /*
+       Cliente e Local FAZ PARTE do fluxo de Retenção.
+       Garantimos que a seção nunca fique acinzentada.
+    */
+    document
+        .getElementById("secaoCliente")
+        ?.classList.remove(
+            "secao-retencao-inativa"
+        );
+
+    atualizarTipoRegistro();
+    limparErros();
+}
+
+
+document
+    .querySelectorAll('input[name="modalidade"]')
+    .forEach(radio => {
+        radio.addEventListener(
+            "change",
+            atualizarFluxoRetencao
+        );
+    });
+
+
 /* =========================================================
    TIPO DE REGISTRO / OPORTUNIDADE
 ========================================================= */
@@ -2649,7 +3432,44 @@ radiosTipoRegistro
 
             radio.addEventListener(
                 "change",
-                atualizarTipoRegistro
+                function () {
+
+                    const ehRetencao =
+                        this.value ===
+                        "Acompanhamento / Retenção de Cliente";
+
+                    if (ehRetencao) {
+
+                        const modalidadeRetencao =
+                            document.querySelector(
+                                'input[name="modalidade"][value="Retenção"]'
+                            );
+
+                        if (modalidadeRetencao) {
+                            modalidadeRetencao.checked = true;
+                        }
+
+                    } else {
+
+                        /*
+                           Se o usuário sair de Retenção,
+                           desmarcamos a modalidade Retenção.
+                           Resgate/Captação voltam a ficar disponíveis
+                           e o formulário comercial normal é restaurado.
+                        */
+                        const modalidadeRetencao =
+                            document.querySelector(
+                                'input[name="modalidade"][value="Retenção"]'
+                            );
+
+                        if (modalidadeRetencao?.checked) {
+                            modalidadeRetencao.checked = false;
+                        }
+                    }
+
+                    atualizarTipoRegistro();
+                    atualizarFluxoRetencao();
+                }
             );
 
         }
@@ -2657,6 +3477,7 @@ radiosTipoRegistro
 
 
 atualizarTipoRegistro();
+atualizarFluxoRetencao();
 
 
 /* =========================================================
@@ -2742,18 +3563,15 @@ function atualizarStatusComercial() {
     }
 
 
-    /* PREVISÃO DE FECHAMENTO */
+    /* PREVISÃO DE FECHAMENTO - SEMPRE OBRIGATÓRIA */
 
-    if (
-        campoPrevisaoFechamento
-    ) {
-
-        campoPrevisaoFechamento.hidden =
-            status === "Assinado" ||
-            status === "Perda";
-
+    if (campoPrevisaoFechamento) {
+        campoPrevisaoFechamento.hidden = false;
     }
 
+    if (previsaoFechamento) {
+        previsaoFechamento.required = true;
+    }
 
     if (
         previsaoFechamento &&
@@ -3197,6 +4015,10 @@ definirLocalizacaoPadrao();
 
 function limparErros() {
 
+    if (typeof limparResumoErros === "function") {
+        limparResumoErros();
+    }
+
     document
         .querySelectorAll(
             ".erro-mensagem"
@@ -3303,6 +4125,239 @@ function removerErroDoCampo(
 
     }
 
+}
+
+
+/* =========================================================
+   RESUMO AMIGÁVEL DOS CAMPOS PENDENTES
+========================================================= */
+
+function obterNomeCampoErro(campo) {
+    if (!campo) return "Campo obrigatório";
+
+    const label = campo.querySelector("label");
+    if (label) {
+        return label.textContent
+            .replace(/\*/g, "")
+            .replace(/\s+/g, " ")
+            .trim();
+    }
+
+    const titulo =
+        campo.closest(".secao-formulario")
+            ?.querySelector(".titulo-secao h3");
+
+    return titulo
+        ? titulo.textContent.trim()
+        : "Campo obrigatório";
+}
+
+const ROTULOS_CAMPOS_RJCAP = {
+    tipoRegistro: "Tipo de Registro",
+    origemAtualizacao: "Origem da Atualização",
+    modalidade: "Modalidade de Negócios",
+    tipoCliente: "Tipo (Residencial ou Comercial)",
+    natureza: "Natureza da Visita",
+    statusComercial: "Status Comercial",
+    motivoPerda: "Motivo da Perda",
+    destinoDeclinio: "Destino do Caso",
+    previsaoFechamento: "Previsão de Fechamento",
+    temProposta: "Já existe proposta?",
+    tipoContrato: "Tipo de Contrato",
+    valorContrato: "Valor do Contrato",
+    margemVenda: "Margem da Venda",
+    numeroProposta: "Número da Proposta",
+    precisaApoio: "Precisa de Apoio?",
+    apoio: "Tipo de Apoio",
+    empresaConservadora: "Empresa Conservadora",
+    outraConservadora: "Outra Conservadora",
+    nomeCondominio: "Nome do Condomínio",
+    endereco: "Endereço",
+    bairro: "Bairro",
+    cidade: "Cidade",
+    uf: "UF",
+    regiao: "Região",
+    dataVisita: "Data da Visita",
+    nomeContato: "Nome do Contato",
+    telefone: "Telefone",
+    email: "E-mail",
+    observacoes: "Observações Gerais"
+};
+
+
+function obterCamposPendentes() {
+
+    const camposComErro =
+        Array.from(
+            formulario.querySelectorAll(
+                ".campo-erro"
+            )
+        );
+
+    const nomes =
+        camposComErro
+            .map(campo => {
+
+                const controle =
+                    campo.querySelector(
+                        "input, select, textarea"
+                    );
+
+                const chave =
+                    controle?.name ||
+                    controle?.id ||
+                    "";
+
+                if (
+                    chave &&
+                    ROTULOS_CAMPOS_RJCAP[chave]
+                ) {
+                    return ROTULOS_CAMPOS_RJCAP[chave];
+                }
+
+                return obterNomeCampoErro(
+                    campo
+                );
+
+            })
+            .filter(Boolean);
+
+    /*
+       Segurança extra: inclui grupos de rádio obrigatórios que
+       eventualmente não tenham recebido .campo-erro no contêiner.
+    */
+    const gruposRadioObrigatorios = [
+        ["tipoRegistro", "Tipo de Registro"],
+        ["modalidade", "Modalidade de Negócios"],
+        ["tipoCliente", "Tipo (Residencial ou Comercial)"],
+        ["natureza", "Natureza da Visita"],
+        ["temProposta", "Já existe proposta?"],
+        ["precisaApoio", "Precisa de Apoio?"]
+    ];
+
+    gruposRadioObrigatorios.forEach(
+        ([name, rotulo]) => {
+
+            const radios =
+                Array.from(
+                    formulario.querySelectorAll(
+                        `input[type="radio"][name="${name}"]`
+                    )
+                );
+
+            const existeAtivo =
+                radios.some(
+                    radio =>
+                        !radio.disabled &&
+                        !radio.closest("[hidden]") &&
+                        !radio.closest(".campo-retencao-inativo")
+                );
+
+            const algumMarcado =
+                radios.some(
+                    radio =>
+                        !radio.disabled &&
+                        radio.checked
+                );
+
+            if (
+                existeAtivo &&
+                !algumMarcado
+            ) {
+                nomes.push(rotulo);
+            }
+        }
+    );
+
+    return [
+        ...new Set(nomes)
+    ];
+
+}
+
+
+function mostrarAlertaCamposPendentes() {
+
+    const campos =
+        obterCamposPendentes();
+
+    if (!campos.length) {
+        return;
+    }
+
+    const lista =
+        campos
+            .map(
+                (campo, indice) =>
+                    `${indice + 1}. ${campo}`
+            )
+            .join("\\n");
+
+    alert(
+        "ATENÇÃO! Faltam campos obrigatórios.\\n\\n" +
+        "Preencha antes de registrar a visita:\\n\\n" +
+        lista
+    );
+
+}
+
+
+function atualizarResumoErros() {
+    if (!resumoErrosFormulario || !listaErrosFormulario) return;
+
+    const nomes =
+        obterCamposPendentes();
+
+    listaErrosFormulario.innerHTML = "";
+
+    nomes.forEach(nome => {
+        const item = document.createElement("li");
+        item.textContent = nome;
+        listaErrosFormulario.appendChild(item);
+    });
+
+    resumoErrosFormulario.hidden = nomes.length === 0;
+}
+
+function limparResumoErros() {
+    if (resumoErrosFormulario) {
+        resumoErrosFormulario.hidden = true;
+    }
+    if (listaErrosFormulario) {
+        listaErrosFormulario.innerHTML = "";
+    }
+}
+
+function focarPrimeiroErro() {
+    const primeiroErro =
+        formulario.querySelector(".campo-erro");
+
+    if (!primeiroErro) return;
+
+    primeiroErro.scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+    });
+
+    const controle =
+        primeiroErro.querySelector(
+            "input:not([disabled]), select:not([disabled]), textarea:not([disabled])"
+        );
+
+    setTimeout(() => {
+        try {
+            controle?.focus?.({ preventScroll: true });
+        } catch (_) {}
+    }, 350);
+}
+
+function campoEstaAtivo(elemento) {
+    return Boolean(
+        elemento &&
+        !elemento.disabled &&
+        !elemento.closest("[hidden]") &&
+        !elemento.closest(".campo-retencao-inativo")
+    );
 }
 
 
@@ -3416,420 +4471,304 @@ function validarFormulario() {
 
     limparErros();
 
-    let valido =
-        true;
+    let valido = true;
 
+    const modalidadeAtual =
+        document.querySelector(
+            'input[name="modalidade"]:checked'
+        )?.value || "";
 
-    /* CAMPOS OBRIGATÓRIOS */
+    const tipoRegistroAtual =
+        document.querySelector(
+            'input[name="tipoRegistro"]:checked'
+        )?.value || "";
+
+    const retencao =
+        modalidadeAtual === "Retenção" ||
+        tipoRegistroAtual ===
+            "Acompanhamento / Retenção de Cliente";
 
     const campos =
         formulario.querySelectorAll(
             "input:not([type='radio']):not([type='checkbox']), select, textarea"
         );
 
-    campos.forEach(
-        campo => {
-
-            if (
-                campo.hasAttribute(
-                    "required"
-                ) &&
-                !String(
-                    campo.value
-                ).trim()
-            ) {
-
-                mostrarErro(
-                    campo,
-                    "Este campo é obrigatório."
-                );
-
-                valido =
-                    false;
-
-            }
-
-        }
-    );
-
-
-    /* TIPO DE REGISTRO */
-
-    if (
-        !validarRadio(
-            "tipoRegistro",
-            "Informe se é uma nova oportunidade ou atualização."
-        )
-    ) {
-
-        valido =
-            false;
-
-    }
-
-
-    /* TIPO RESIDENCIAL / COMERCIAL */
-
-    if (
-        !validarRadio(
-            "tipoCliente",
-            "Informe se o cliente é Residencial ou Comercial."
-        )
-    ) {
-
-        valido =
-            false;
-
-    }
-
-
-    /* OPORTUNIDADE EXISTENTE */
-
-    const tipoRegistroSelecionado =
-        document.querySelector(
-            'input[name="tipoRegistro"]:checked'
-        );
-
-    if (
-        tipoRegistroSelecionado &&
-        tipoRegistroSelecionado.value ===
-            "Atualização da Oportunidade Existente" &&
-        (
-            !idOportunidadeExistente ||
-            !idOportunidadeExistente.value.trim()
-        )
-    ) {
-
-        mostrarErro(
-            idOportunidadeExistente,
-            "Informe o ID da oportunidade existente."
-        );
-
-        valido =
-            false;
-
-    }
-
-
-    /* ORIGEM DA ATUALIZAÇÃO */
-
-    if (
-        tipoRegistroSelecionado &&
-        tipoRegistroSelecionado.value ===
-            "Atualização da Oportunidade Existente" &&
-        !validarRadio(
-            "origemAtualizacao",
-            "Selecione a origem da atualização."
-        )
-    ) {
-
-        valido =
-            false;
-
-    }
-
-
-    /* MODALIDADE DE NEGÓCIOS */
-
-    if (
-        !validarRadio(
-            "modalidade",
-            "Selecione uma modalidade de negócios."
-        )
-    ) {
-
-        valido =
-            false;
-
-    }
-
-
-    /* NATUREZA DA VISITA */
-
-    if (
-        !validarRadio(
-            "natureza",
-            "Selecione a natureza da visita ou atualização."
-        )
-    ) {
-
-        valido =
-            false;
-
-    }
-
-
-    /* STATUS COMERCIAL */
-
-    if (
-        !statusComercial ||
-        !statusComercial.value
-    ) {
-
-        mostrarErro(
-            statusComercial,
-            "Selecione o status comercial."
-        );
-
-        valido =
-            false;
-
-    }
-
-
-    /* PERDA */
-
-    if (
-        statusComercial &&
-        statusComercial.value ===
-            "Perda"
-    ) {
-
+    campos.forEach(campo => {
         if (
-            !motivoPerda ||
-            !motivoPerda.value
+            campoEstaAtivo(campo) &&
+            campo.required &&
+            !String(campo.value).trim()
         ) {
-
             mostrarErro(
-                motivoPerda,
-                "Informe o motivo da perda."
+                campo,
+                "Este campo é obrigatório."
+            );
+            valido = false;
+        }
+    });
+
+    if (retencao) {
+
+        const tipoRetencao =
+            document.querySelector(
+                'input[name="tipoRegistro"][value="Acompanhamento / Retenção de Cliente"]'
             );
 
-            valido =
-                false;
-
+        if (!tipoRetencao?.checked) {
+            mostrarErro(
+                tipoRetencao,
+                "O tipo de registro de Retenção deve estar selecionado."
+            );
+            valido = false;
         }
 
+        if (
+            !validarRadio(
+                "tipoCliente",
+                "Informe se o cliente é Residencial ou Comercial."
+            )
+        ) {
+            valido = false;
+        }
 
-        /* SEM SUPORTE TÉCNICO */
+        const natureza =
+            document.querySelector(
+                'input[name="natureza"]:checked'
+            );
 
         if (
-            motivoPerda &&
-            motivoPerda.value ===
-                "Sem suporte técnico"
+            !natureza ||
+            natureza.value !== "Relacionamento"
         ) {
+            mostrarErro(
+                document.querySelector(
+                    'input[name="natureza"][value="Relacionamento"]'
+                ),
+                "Na Retenção, a Natureza da Visita deve ser Relacionamento."
+            );
+            valido = false;
+        }
+
+    } else {
+
+        if (
+            !validarRadio(
+                "tipoRegistro",
+                "Informe se é uma nova oportunidade ou atualização."
+            )
+        ) {
+            valido = false;
+        }
+
+        if (
+            !validarRadio(
+                "tipoCliente",
+                "Informe se o cliente é Residencial ou Comercial."
+            )
+        ) {
+            valido = false;
+        }
+
+        const tipoRegistroSelecionado =
+            document.querySelector(
+                'input[name="tipoRegistro"]:checked'
+            );
+
+        if (
+            tipoRegistroSelecionado &&
+            tipoRegistroSelecionado.value ===
+                "Atualização da Oportunidade Existente" &&
+            (
+                !idOportunidadeExistente ||
+                !idOportunidadeExistente.value.trim()
+            )
+        ) {
+            mostrarErro(
+                idOportunidadeExistente,
+                "Informe o ID da oportunidade existente."
+            );
+            valido = false;
+        }
+
+        if (
+            tipoRegistroSelecionado &&
+            tipoRegistroSelecionado.value ===
+                "Atualização da Oportunidade Existente" &&
+            !validarRadio(
+                "origemAtualizacao",
+                "Selecione a origem da atualização."
+            )
+        ) {
+            valido = false;
+        }
+
+        if (
+            !validarRadio(
+                "modalidade",
+                "Selecione uma modalidade de negócios."
+            )
+        ) {
+            valido = false;
+        }
+
+        if (
+            !validarRadio(
+                "natureza",
+                "Selecione a natureza da visita ou atualização."
+            )
+        ) {
+            valido = false;
+        }
+
+        if (
+            !statusComercial ||
+            !statusComercial.value
+        ) {
+            mostrarErro(
+                statusComercial,
+                "Selecione o status comercial."
+            );
+            valido = false;
+        }
+
+        if (
+            statusComercial &&
+            statusComercial.value === "Perda"
+        ) {
+            if (!motivoPerda?.value) {
+                mostrarErro(
+                    motivoPerda,
+                    "Informe o motivo da perda."
+                );
+                valido = false;
+            }
 
             if (
+                motivoPerda?.value ===
+                    "Sem suporte técnico" &&
                 !validarRadio(
                     "destinoDeclinio",
                     "Informe o destino dado ao caso."
                 )
             ) {
-
-                valido =
-                    false;
-
+                valido = false;
             }
-
         }
 
-    }
+        if (
+            !validarRadio(
+                "temProposta",
+                "Informe se já existe proposta."
+            )
+        ) {
+            valido = false;
+        }
 
+        if (
+            !validarRadio(
+                "precisaApoio",
+                "Informe se precisa de apoio."
+            )
+        ) {
+            valido = false;
+        }
 
-    /* JÁ EXISTE PROPOSTA? */
-
-    if (
-        !validarRadio(
-            "temProposta",
-            "Informe se já existe proposta."
-        )
-    ) {
-
-        valido =
-            false;
-
-    }
-
-
-    /* PRECISA DE APOIO */
-
-    if (
-        !validarRadio(
-            "precisaApoio",
-            "Informe se precisa de apoio."
-        )
-    ) {
-
-        valido =
-            false;
-
-    }
-
-
-    /* SE PRECISA DE APOIO, EXIGE PELO MENOS UM */
-
-    const precisaApoio =
-        document.querySelector(
-            'input[name="precisaApoio"]:checked'
-        );
-
-    if (
-        precisaApoio &&
-        precisaApoio.value ===
-            "Sim"
-    ) {
-
-        const apoioSelecionado =
+        const precisaApoio =
             document.querySelector(
-                'input[name="apoio"]:checked'
+                'input[name="precisaApoio"]:checked'
             );
 
-        if (!apoioSelecionado) {
-
-            const primeiroApoio =
-                document.querySelector(
-                    'input[name="apoio"]'
-                );
-
+        if (
+            precisaApoio?.value === "Sim" &&
+            !document.querySelector(
+                'input[name="apoio"]:checked'
+            )
+        ) {
             mostrarErro(
-                primeiroApoio,
+                document.querySelector('input[name="apoio"]'),
                 "Selecione pelo menos um tipo de apoio."
             );
-
-            valido =
-                false;
-
+            valido = false;
         }
 
+        if (!validarEquipamentos()) {
+            valido = false;
+        }
+
+        if (!validarBairro()) {
+            valido = false;
+        }
     }
-
-
-    /* EQUIPAMENTOS */
-
-    if (
-        !validarEquipamentos()
-    ) {
-
-        valido =
-            false;
-
-    }
-
-
-    /* BAIRRO */
-
-    if (
-        !validarBairro()
-    ) {
-
-        valido =
-            false;
-
-    }
-
-
-    /* EMAIL */
 
     const email =
-        document.getElementById(
-            "email"
-        );
+        document.getElementById("email");
 
     if (
-        email &&
+        campoEstaAtivo(email) &&
         email.value.trim()
     ) {
-
         const regexEmail =
             /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-        if (
-            !regexEmail.test(
-                email.value
-            )
-        ) {
-
+        if (!regexEmail.test(email.value)) {
             mostrarErro(
                 email,
                 "Informe um e-mail válido."
             );
-
-            valido =
-                false;
-
+            valido = false;
         }
-
     }
 
-
-    /* TELEFONE */
-
     if (
-        telefone &&
+        campoEstaAtivo(telefone) &&
         telefone.value
     ) {
-
         const numeros =
-            telefone.value.replace(
-                /\D/g,
-                ""
-            );
+            telefone.value.replace(/\D/g, "");
 
-        if (
-            numeros.length < 10
-        ) {
-
+        if (numeros.length < 10) {
             mostrarErro(
                 telefone,
                 "Informe um telefone válido com DDD."
             );
-
-            valido =
-                false;
-
+            valido = false;
         }
-
     }
 
-
-    /* VALOR DO CONTRATO */
-
     if (
+        !retencao &&
         valorContrato &&
+        campoEstaAtivo(valorContrato) &&
         valorContrato.required &&
-        valorContrato.value ===
-            "0,00"
+        valorContrato.value === "0,00"
     ) {
-
         mostrarErro(
             valorContrato,
             "Informe um valor de contrato maior que zero."
         );
-
-        valido =
-            false;
-
+        valido = false;
     }
 
-
-    /* MARGEM DE VENDA */
-
     if (
+        !retencao &&
         margemVenda &&
+        campoEstaAtivo(margemVenda) &&
         margemVenda.value !== "" &&
         Number(
-            String(
-                margemVenda.value
-            ).replace(
-                ",",
-                "."
-            )
+            String(margemVenda.value)
+                .replace(",", ".")
         ) < 0
     ) {
-
         mostrarErro(
             margemVenda,
             "Informe uma margem válida."
         );
-
-        valido =
-            false;
-
+        valido = false;
     }
 
+    atualizarResumoErros();
 
     return valido;
-
 }
 
 
@@ -4346,11 +5285,11 @@ function exportarRegistroExcel() {
    Gera o PDF diretamente no navegador usando jsPDF.
 
    REGRAS:
-   - Presencial:
-     "RJCAP - Registro de Visita Comercial"
+   - Título único:
+     "RJCAP - Registro da Visita"
 
-   - WhatsApp / Ligação / E-mail / Outro:
-     "RJCAP - Atualização de Oportunidade"
+   - Exibe somente campos preenchidos e aplicáveis.
+   - Campos vazios ou "Não se aplica" são omitidos.
 
    Também inclui a logotipo da TKE no cabeçalho.
 ========================================================= */
@@ -4418,9 +5357,7 @@ async function exportarRegistroPdf() {
 
 
     const tituloPdf =
-        presencial
-            ? "RJCAP - Registro de Visita Comercial"
-            : "RJCAP - Atualização de Oportunidade";
+        "RJCAP - Registro da Visita";
 
 
     /* =====================================================
@@ -4732,7 +5669,39 @@ async function exportarRegistroPdf() {
                 String(
                     valor ??
                     ""
-                );
+                ).trim();
+
+
+            /*
+               PDF LIMPO:
+               mostra somente informações realmente preenchidas
+               e aplicáveis ao tipo de registro realizado.
+            */
+            const valorNormalizado =
+                valorTexto
+                    .toLowerCase()
+                    .trim();
+
+
+            const valoresNaoExibir = [
+                "",
+                "não se aplica",
+                "nao se aplica",
+                "n/a",
+                "—",
+                "-"
+            ];
+
+
+            if (
+                valoresNaoExibir.includes(
+                    valorNormalizado
+                )
+            ) {
+
+                return;
+
+            }
 
 
             const valorLinhas =
@@ -4903,6 +5872,8 @@ if (
 ========================================================= */
 
 function limparFormulario() {
+
+    liberarBotaoRegistrar();
 
     formulario.reset();
 
@@ -5130,6 +6101,292 @@ if (
 }
 
 /* =========================================================
+   PROTEÇÃO CONTRA DUPLO REGISTRO
+========================================================= */
+
+const botaoRegistrarVisita =
+    formulario.querySelector(
+        ".btn-enviar"
+    );
+
+let envioRegistroEmAndamento =
+    false;
+
+
+function bloquearBotaoRegistrar() {
+
+    envioRegistroEmAndamento =
+        true;
+
+    if (!botaoRegistrarVisita) {
+        return;
+    }
+
+    botaoRegistrarVisita.disabled =
+        true;
+
+    botaoRegistrarVisita
+        .classList
+        .add(
+            "btn-enviando"
+        );
+
+    const texto =
+        botaoRegistrarVisita
+            .querySelector("span");
+
+    if (texto) {
+        texto.textContent =
+            "Registrando...";
+    }
+
+}
+
+
+function liberarBotaoRegistrar() {
+
+    envioRegistroEmAndamento =
+        false;
+
+    if (!botaoRegistrarVisita) {
+        return;
+    }
+
+    botaoRegistrarVisita.disabled =
+        false;
+
+    botaoRegistrarVisita
+        .classList
+        .remove(
+            "btn-enviando"
+        );
+
+    const texto =
+        botaoRegistrarVisita
+            .querySelector("span");
+
+    if (texto) {
+        texto.textContent =
+            "Registrar visita";
+    }
+
+}
+
+
+/*
+   Cria uma assinatura sem considerar IDs gerados,
+   data/hora técnica ou latitude/longitude.
+
+   Se os dados comerciais forem iguais, a assinatura
+   será a mesma.
+*/
+function gerarAssinaturaRegistroLocal(
+    registro
+) {
+
+    const campos = [
+        "consultor",
+        "perfilResponsavel",
+        "filial",
+        "tipoRegistro",
+        "origemAtualizacao",
+        "dataVisita",
+        "modalidade",
+        "tipoCliente",
+        "natureza",
+        "statusComercial",
+        "motivoPerda",
+        "destinoDeclinio",
+        "previsaoFechamento",
+        "precisaApoio",
+        "apoio",
+        "temProposta",
+        "numeroProposta",
+        "tipoContrato",
+        "valorContrato",
+        "margemVenda",
+        "empresaConservadora",
+        "outraConservadora",
+        "nomeCondominio",
+        "endereco",
+        "bairro",
+        "cidade",
+        "uf",
+        "regiao",
+        "nomeContato",
+        "telefone",
+        "email",
+        "observacoes"
+    ];
+
+
+    const base = {};
+
+    campos.forEach(chave => {
+        base[chave] =
+            String(
+                registro[chave] ?? ""
+            )
+                .trim()
+                .toLowerCase();
+    });
+
+
+    base.equipamentos =
+        Array.isArray(
+            registro.equipamentos
+        )
+            ? registro.equipamentos.map(
+                item => ({
+                    tipo:
+                        String(item.tipo || "")
+                            .trim()
+                            .toLowerCase(),
+
+                    marca:
+                        String(item.marca || "")
+                            .trim()
+                            .toLowerCase(),
+
+                    quantidade:
+                        Number(item.quantidade || 0),
+
+                    paradas:
+                        Number(
+                            item.paradasPorEquipamento ||
+                            0
+                        )
+                })
+            )
+            : [];
+
+
+    const texto =
+        JSON.stringify(
+            base
+        );
+
+
+    /*
+       Hash simples e determinístico apenas para
+       proteção local contra clique/reenvio repetido.
+    */
+    let hash =
+        2166136261;
+
+    for (
+        let i = 0;
+        i < texto.length;
+        i++
+    ) {
+
+        hash ^=
+            texto.charCodeAt(i);
+
+        hash =
+            Math.imul(
+                hash,
+                16777619
+            );
+
+    }
+
+
+    return (
+        hash >>> 0
+    ).toString(16);
+
+}
+
+
+function registroFoiEnviadoRecentemente(
+    registro
+) {
+
+    try {
+
+        const chave =
+            gerarAssinaturaRegistroLocal(
+                registro
+            );
+
+        const salvo =
+            JSON.parse(
+                localStorage.getItem(
+                    "rjcap_ultimo_envio"
+                ) ||
+                "null"
+            );
+
+
+        if (
+            !salvo ||
+            salvo.chave !== chave ||
+            !salvo.horario
+        ) {
+
+            return false;
+        }
+
+
+        /*
+           Bloqueia o mesmo conteúdo por 2 minutos.
+           Isso evita duplo clique, F5 ou reenvio acidental.
+        */
+        return (
+            Date.now() -
+            Number(salvo.horario)
+        ) < 120000;
+
+    } catch (erro) {
+
+        console.warn(
+            "Não foi possível verificar duplicidade local:",
+            erro
+        );
+
+        return false;
+    }
+
+}
+
+
+function marcarRegistroComoEnviado(
+    registro
+) {
+
+    try {
+
+        localStorage.setItem(
+            "rjcap_ultimo_envio",
+            JSON.stringify({
+                chave:
+                    gerarAssinaturaRegistroLocal(
+                        registro
+                    ),
+
+                horario:
+                    Date.now(),
+
+                idRegistro:
+                    registro.idRegistro ||
+                    ""
+            })
+        );
+
+    } catch (erro) {
+
+        console.warn(
+            "Não foi possível salvar a trava local de duplicidade:",
+            erro
+        );
+
+    }
+
+}
+
+
+/* =========================================================
    ENVIO DO FORMULÁRIO
 ========================================================= */
 
@@ -5138,6 +6395,19 @@ formulario.addEventListener(
     async function (event) {
 
         event.preventDefault();
+
+
+        /*
+           Se o usuário clicar novamente enquanto o mesmo
+           registro ainda está sendo processado, ignoramos.
+        */
+        if (
+            envioRegistroEmAndamento
+        ) {
+
+            return;
+
+        }
 
 
         const sessaoAtual =
@@ -5182,28 +6452,31 @@ formulario.addEventListener(
             !validarFormulario()
         ) {
 
-            const primeiroErro =
-                document.querySelector(
-                    ".campo-erro"
-                );
+            atualizarResumoErros();
 
+            /*
+               Mostra imediatamente um alerta com TODOS os campos
+               que ficaram sem preencher ou possuem erro.
+            */
+            mostrarAlertaCamposPendentes();
 
-            if (
-                primeiroErro
-            ) {
-
-                primeiroErro
-                    .scrollIntoView({
-                        behavior: "smooth",
-                        block: "center"
-                    });
-
-            }
-
+            /*
+               Depois do usuário fechar o alerta, a tela vai
+               automaticamente ao primeiro campo que precisa
+               ser corrigido.
+            */
+            focarPrimeiroErro();
 
             return;
 
         }
+
+
+        /*
+           A partir daqui o formulário está válido.
+           Trava o botão para um clique não gerar dois IDs.
+        */
+        bloquearBotaoRegistrar();
 
 
         /* =================================================
@@ -5274,9 +6547,9 @@ formulario.addEventListener(
 
 
         /*
-           O vendedor vem obrigatoriamente da sessão autenticada.
+           O responsável vem obrigatoriamente da sessão autenticada.
            Mesmo que alguém altere o HTML no navegador, o front-end
-           não usa outro vendedor no registro.
+           não usa outro responsável no registro.
         */
 
         /*
@@ -5287,19 +6560,38 @@ formulario.addEventListener(
         registro.consultor =
             sessaoAtual.vendedor;
 
+        registro.perfilResponsavel =
+            sessaoAtual.perfil || "";
+
+        registro.filial =
+            sessaoAtual.filial || "5004";
+
+        registro.nomeFilial =
+            sessaoAtual.filialNome || "5004 - RJ";
+
         delete registro.vendedor;
 
+
+        /*
+           Define o fluxo antes de tratar equipamentos.
+           IMPORTANTE: esta variável precisa existir antes do primeiro uso.
+        */
+        const registroEhRetencao =
+            registro.modalidade === "Retenção" ||
+            registro.tipoRegistro ===
+                "Acompanhamento / Retenção de Cliente";
 
         /* =================================================
            EQUIPAMENTOS
 
-           A lista detalhada vai para a futura aba
-           Equipamentos. Os campos-resumo abaixo mantêm
-           a Página1 compatível com o formato atual.
+           No fluxo normal, coleta os equipamentos.
+           Na Retenção, equipamentos não fazem parte do fluxo.
         ================================================= */
 
         registro.equipamentos =
-            obterEquipamentos();
+            registroEhRetencao
+                ? []
+                : obterEquipamentos();
 
         registro.quantidadeEquipamentos =
             registro.equipamentos.reduce(
@@ -5514,7 +6806,18 @@ formulario.addEventListener(
            OPORTUNIDADE
         */
 
-        if (
+        const ehRetencao =
+            registroEhRetencao;
+
+        if (ehRetencao) {
+
+            /*
+               Retenção é uma visita de relacionamento,
+               não uma nova oportunidade comercial.
+            */
+            registro.idOportunidade = "";
+
+        } else if (
             registro.tipoRegistro ===
             "Atualização da Oportunidade Existente"
         ) {
@@ -5605,17 +6908,7 @@ formulario.addEventListener(
         */
 
         registro.previsaoFechamento =
-            (
-                registro.statusComercial ===
-                    "Assinado" ||
-                registro.statusComercial ===
-                    "Perda"
-            )
-                ? ""
-                : (
-                    registro.previsaoFechamento ||
-                    ""
-                );
+            registro.previsaoFechamento || "";
 
 
         /*
@@ -5665,6 +6958,7 @@ formulario.addEventListener(
            presença física no cliente.
         */
         const houveVisitaPresencial =
+            ehRetencao ||
             ehNovaOportunidade ||
             registro.origemAtualizacao ===
                 "Presencial";
@@ -5773,9 +7067,13 @@ formulario.addEventListener(
         ) {
 
             tituloModalSucesso.textContent =
-                registro.idVisita
-                    ? "Visita registrada!"
-                    : "Atualização registrada!";
+                registroEhRetencao
+                    ? "Visita de retenção registrada!"
+                    : (
+                        registro.idVisita
+                            ? "Visita registrada!"
+                            : "Atualização registrada!"
+                    );
 
         }
 
@@ -5785,9 +7083,13 @@ formulario.addEventListener(
         ) {
 
             textoModalSucesso.textContent =
-                registro.idVisita
-                    ? "A visita e a atualização da oportunidade foram registradas com sucesso."
-                    : "A atualização da oportunidade foi registrada sem contabilizar uma nova visita.";
+                registroEhRetencao
+                    ? "A visita de retenção foi enviada para registro com sucesso."
+                    : (
+                        registro.idVisita
+                            ? "A visita foi enviada para registro com sucesso."
+                            : "A atualização foi enviada para registro com sucesso."
+                    );
 
         }
 
@@ -5798,7 +7100,8 @@ formulario.addEventListener(
 
             idOportunidadeGerado
                 .textContent =
-                registro.idOportunidade;
+                registro.idOportunidade ||
+                "Não se aplica";
 
         }
 
@@ -5838,12 +7141,41 @@ formulario.addEventListener(
 
 
         /* =================================================
-           14. ENVIAR PARA GOOGLE SHEETS
+           14. EVITAR REENVIO DO MESMO CONTEÚDO
+        ================================================= */
+
+        if (
+            registroFoiEnviadoRecentemente(
+                registro
+            )
+        ) {
+
+            liberarBotaoRegistrar();
+
+            alert(
+                "Este mesmo registro já foi enviado há poucos instantes.\n\n" +
+                "Para evitar uma linha duplicada na planilha, o novo envio foi bloqueado."
+            );
+
+            return;
+        }
+
+
+        /* =================================================
+           15. ENVIAR PARA GOOGLE SHEETS
         ================================================= */
 
         try {
 
             await enviarParaGoogleSheets(
+                registro
+            );
+
+            /*
+               Marca localmente somente depois que o envio
+               foi disparado sem erro.
+            */
+            marcarRegistroComoEnviado(
                 registro
             );
 
@@ -5853,6 +7185,12 @@ formulario.addEventListener(
                 "Falha no envio para o Google Sheets:",
                 erro
             );
+
+
+            /*
+               Houve falha real no disparo: libera nova tentativa.
+            */
+            liberarBotaoRegistrar();
 
 
             if (
@@ -5865,6 +7203,16 @@ formulario.addEventListener(
                     "A visita foi salva com segurança neste aparelho, " +
                     "mas ainda não foi enviada para a planilha.\n\n" +
                     "Não limpe os dados do navegador."
+                );
+
+            } else if (
+                erro.message ===
+                "SESSAO_INVALIDA"
+            ) {
+
+                alert(
+                    "Sua sessão expirou.\n\n" +
+                    "Entre novamente no sistema e tente registrar a visita."
                 );
 
             } else {
@@ -5907,6 +7255,12 @@ formulario.addEventListener(
 ========================================================= */
 
 function fecharModalELimpar() {
+
+    /*
+       Novo registro = libera o botão novamente.
+    */
+    liberarBotaoRegistrar();
+
 
     if (
         modalSucesso
