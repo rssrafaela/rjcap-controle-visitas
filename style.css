@@ -2706,3 +2706,244 @@ body.acesso-bloqueado {
         grid-template-columns: 1fr;
     }
 }
+
+
+/* ================================
+   PERFIL / RETENÇÃO
+================================ */
+
+.opcao-somente-consultor[hidden] {
+    display: none !important;
+}
+
+.opcao-card.opcao-bloqueada {
+    opacity: 0.45;
+    cursor: not-allowed;
+    background: #f3f3f5;
+}
+
+.opcao-card.opcao-bloqueada:hover {
+    border-color: var(--borda);
+    background: #f3f3f5;
+    box-shadow: none;
+}
+
+#perfilResponsavel {
+    margin-top: 8px;
+    font-weight: 800;
+    color: var(--roxo);
+}
+
+
+/* =========================================================
+   LEITURA VISUAL DAS SEÇÕES
+========================================================= */
+
+.secao-formulario {
+    position: relative;
+    transition:
+        opacity 0.2s ease,
+        filter 0.2s ease,
+        background 0.2s ease;
+}
+
+#secaoDadosComerciais,
+#secaoCliente {
+    background: #ffffff;
+}
+
+#secaoEquipamentos,
+#secaoContato {
+    background: #fbfbfd;
+}
+
+.titulo-secao {
+    padding-bottom: 18px;
+    border-bottom: 1px solid #ececf1;
+}
+
+.titulo-secao > span {
+    box-shadow: 0 6px 18px rgba(105, 0, 216, 0.10);
+}
+
+
+/* =========================================================
+   FLUXO DE RETENÇÃO
+========================================================= */
+
+.aviso-retencao {
+    margin-top: 14px;
+    padding: 14px 16px;
+    border: 1px solid rgba(105, 0, 216, 0.16);
+    border-radius: 12px;
+    background: #f7f1ff;
+}
+
+.aviso-retencao strong,
+.aviso-retencao span {
+    display: block;
+}
+
+.aviso-retencao strong {
+    color: var(--roxo);
+    margin-bottom: 4px;
+}
+
+.aviso-retencao span {
+    color: var(--texto-secundario);
+    font-size: 12px;
+    line-height: 1.55;
+}
+
+.modo-retencao .secao-retencao-inativa {
+    background: #f1f1f3 !important;
+    opacity: 0.62;
+    filter: grayscale(0.85);
+}
+
+.modo-retencao .secao-retencao-inativa::after {
+    content: "Não se aplica ao fluxo de Retenção";
+    position: absolute;
+    top: 22px;
+    right: 32px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: #dedee3;
+    color: #70707a;
+    font-size: 10px;
+    font-weight: 800;
+}
+
+.campo-retencao-inativo {
+    opacity: 0.48;
+    filter: grayscale(0.8);
+}
+
+.campo-retencao-inativo input,
+.campo-retencao-inativo select,
+.campo-retencao-inativo textarea {
+    background: #ececef !important;
+    cursor: not-allowed;
+}
+
+.opcao-card.opcao-bloqueada {
+    opacity: 0.46;
+    cursor: not-allowed;
+    background: #eeeeF1;
+}
+
+
+/* =========================================================
+   RESUMO DOS CAMPOS NÃO PREENCHIDOS
+========================================================= */
+
+.resumo-erros-formulario {
+    margin: 24px 45px 0;
+    padding: 18px 20px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    border: 1px solid #e5a0a0;
+    border-radius: 14px;
+    background: #fff6f6;
+}
+
+.resumo-erros-formulario[hidden] {
+    display: none;
+}
+
+.resumo-erros-icone {
+    width: 30px;
+    height: 30px;
+    flex: 0 0 30px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: #b42318;
+    color: #ffffff;
+    font-weight: 900;
+}
+
+.resumo-erros-formulario strong {
+    display: block;
+    color: #8f1d15;
+    font-size: 14px;
+}
+
+.resumo-erros-formulario p {
+    margin-top: 3px;
+    color: #6d3a36;
+    font-size: 12px;
+}
+
+.resumo-erros-formulario ul {
+    margin: 10px 0 0 18px;
+    display: grid;
+    gap: 5px;
+    color: #7b2822;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.campo-erro {
+    scroll-margin-top: 120px;
+}
+
+@media (max-width: 700px) {
+    .resumo-erros-formulario {
+        margin: 18px 20px 0;
+    }
+
+    .modo-retencao .secao-retencao-inativa::after {
+        position: static;
+        display: inline-flex;
+        margin: 0 0 14px;
+    }
+}
+
+
+/* =========================================================
+   LOGIN ESCALÁVEL: FILIAL > PERFIL > NOME
+========================================================= */
+
+.login-etapas {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.login-etapas .campo-login-nome {
+    grid-column: 1 / -1;
+}
+
+.login-etapas select:disabled {
+    cursor: not-allowed;
+    background: #eeeeF2;
+    color: #8d8d96;
+}
+
+@media (max-width: 640px) {
+    .login-etapas {
+        grid-template-columns: 1fr;
+    }
+
+    .login-etapas .campo-login-nome {
+        grid-column: auto;
+    }
+}
+
+
+/* =========================================================
+   PROTEÇÃO VISUAL CONTRA DUPLO ENVIO
+========================================================= */
+
+.btn-enviar:disabled,
+.btn-enviar.btn-enviando {
+    opacity: 0.72;
+    cursor: wait;
+    pointer-events: none;
+}
+
+.btn-enviar.btn-enviando .seta {
+    opacity: 0.45;
+}
