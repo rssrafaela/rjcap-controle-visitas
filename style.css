@@ -2947,3 +2947,195 @@ body.acesso-bloqueado {
 .btn-enviar.btn-enviando .seta {
     opacity: 0.45;
 }
+
+
+/* =========================================================
+   V19.5 - RESPONSIVIDADE GLOBAL / MOBILE
+========================================================= */
+
+html,
+body {
+    width: 100%;
+    max-width: 100%;
+}
+
+body {
+    overflow-x: hidden;
+}
+
+img,
+svg,
+video,
+canvas,
+input,
+select,
+textarea,
+button {
+    max-width: 100%;
+}
+
+.grid > *,
+.login-etapas > *,
+.equipamento-grid > *,
+.resumo-equipamentos > *,
+.grid-condicional > *,
+.opcoes > * {
+    min-width: 0;
+}
+
+body.acesso-bloqueado {
+    overflow: hidden;
+}
+
+.tela-acesso {
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+}
+
+.acesso-box {
+    max-width: min(460px, 100%);
+}
+
+@media (max-width: 640px) {
+    .tela-acesso {
+        display: block;
+        padding:
+            max(12px, env(safe-area-inset-top))
+            12px
+            max(16px, env(safe-area-inset-bottom));
+    }
+
+    .acesso-box {
+        width: 100%;
+        margin: 0 auto;
+        border-radius: 16px;
+    }
+
+    .acesso-marca {
+        gap: 12px;
+        padding: 16px 18px;
+    }
+
+    .acesso-logo {
+        width: 78px;
+    }
+
+    .acesso-marca > div {
+        padding-left: 12px;
+    }
+
+    .acesso-marca strong {
+        font-size: 13px;
+    }
+
+    .acesso-conteudo {
+        padding: 20px 18px 22px;
+    }
+
+    .acesso-conteudo h2 {
+        margin-top: 10px;
+        font-size: clamp(21px, 6vw, 25px);
+        line-height: 1.08;
+    }
+
+    .acesso-conteudo > p {
+        margin-top: 7px;
+        font-size: 12px;
+        line-height: 1.5;
+    }
+
+    .form-acesso {
+        gap: 14px;
+        margin-top: 18px;
+    }
+
+    .login-etapas {
+        gap: 14px;
+    }
+
+    .form-acesso input,
+    .form-acesso select {
+        min-height: 50px;
+        height: 50px;
+        font-size: 16px;
+    }
+
+    .btn-entrar {
+        height: 50px;
+    }
+
+    .acesso-aviso {
+        margin-top: 12px;
+    }
+
+    .hero-conteudo,
+    .topo-conteudo,
+    .formulario-container {
+        max-width: 100%;
+    }
+
+    .formulario-container {
+        width: calc(100% - 20px);
+        border-radius: 16px;
+    }
+
+    .cabecalho-formulario,
+    .secao-formulario,
+    .acoes {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+
+    .opcoes,
+    .opcoes-equipamentos,
+    .opcoes-proposta,
+    .opcoes-origem-atualizacao {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 380px) {
+    .tela-acesso {
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+
+    .acesso-conteudo {
+        padding-left: 14px;
+        padding-right: 14px;
+    }
+
+    .acesso-marca {
+        padding-left: 14px;
+        padding-right: 14px;
+    }
+
+    .acesso-logo {
+        width: 70px;
+    }
+
+    .formulario-container {
+        width: calc(100% - 12px);
+    }
+
+    .cabecalho-formulario,
+    .secao-formulario,
+    .acoes {
+        padding-left: 13px;
+        padding-right: 13px;
+    }
+}
+
+@media (max-height: 760px) {
+    .tela-acesso {
+        display: block;
+        padding-top: max(10px, env(safe-area-inset-top));
+        padding-bottom: max(12px, env(safe-area-inset-bottom));
+    }
+
+    .acesso-box {
+        margin: 0 auto;
+    }
+}
