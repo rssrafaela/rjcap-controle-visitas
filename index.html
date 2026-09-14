@@ -2,890 +2,1657 @@
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>Estrutura Organizacional | TKE</title>
+    <meta
+      name="description"
+      content="Registro de Visitas RJCAP - Rio de Janeiro"
+    />
+
+    <!-- =====================================
+       NOME DO SITE
+  ====================================== -->
+
+    <title>Registro de Visitas RJCAP | TKE</title>
+
+    <!-- =====================================
+       ÍCONE DO SITE / APLICATIVO
+  ====================================== -->
+
+    <!-- iPhone / iPad -->
+    <link rel="apple-touch-icon" sizes="180x180" href="img/icone-app.png" />
+
+    <!-- Navegadores / Android -->
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="512x512"
+      href="img/icone-app.png"
+    />
+
+    <!-- =====================================
+       CONFIGURAÇÕES PARA IPHONE
+  ====================================== -->
+
+    <meta name="apple-mobile-web-app-title" content="Visitas RJCAP" />
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+
+    <!-- =====================================
+       COR DO NAVEGADOR
+  ====================================== -->
+
+    <meta name="theme-color" content="#7a00d9" />
+
+    <!-- =====================================
+       CSS
+  ====================================== -->
 
     <link rel="stylesheet" href="style.css" />
   </head>
 
-  <body>
-    <div class="app">
-      <!-- =====================================
+  <body class="acesso-bloqueado">
+
+    <!-- =====================================
+         ACESSO RESTRITO
+    ====================================== -->
+    <div class="tela-acesso" id="telaAcesso" aria-hidden="false">
+      <div class="acesso-box">
+        <div class="acesso-marca">
+          <img src="img/logo-tke.png" alt="TKE" class="acesso-logo" />
+          <div>
+            <span>RJCAP</span>
+            <strong>Controle de Visitas</strong>
+          </div>
+        </div>
+
+        <div class="acesso-conteudo">
+          <span class="acesso-tag">ACESSO RESTRITO</span>
+          <h2>Identifique-se para continuar</h2>
+          <p>
+            Selecione a filial e seu perfil. As consultas e os registros ficam
+            vinculados ao responsável autenticado.
+          </p>
+
+          <form id="formAcesso" class="form-acesso" autocomplete="off">
+            <div class="login-etapas">
+              <div class="campo">
+                <label for="filialAcesso">Filial <span>*</span></label>
+                <select id="filialAcesso" required>
+                  <option value="5004" selected>5004 - RJ</option>
+                </select>
+              </div>
+
+              <div class="campo">
+                <label for="perfilAcesso">Perfil <span>*</span></label>
+                <select id="perfilAcesso" required>
+                  <option value="" selected disabled>Selecione o perfil</option>
+                  <option value="consultor">Consultor</option>
+                  <option value="vendedor">Vendedor</option>
+                </select>
+              </div>
+
+              <div class="campo campo-login-nome">
+                <label for="vendedorAcesso">Nome <span>*</span></label>
+                <select id="vendedorAcesso" required disabled>
+                  <option value="" selected disabled>Selecione primeiro o perfil</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="campo">
+              <label for="codigoAcesso">Código de acesso <span>*</span></label>
+              <input
+                type="password"
+                id="codigoAcesso"
+                inputmode="text"
+                autocomplete="current-password"
+                placeholder="Digite seu código"
+                required
+              />
+            </div>
+
+            <p class="erro-acesso" id="erroAcesso" hidden></p>
+
+            <button type="submit" class="btn-entrar" id="btnEntrar">
+              <span>Entrar</span>
+              <span aria-hidden="true">→</span>
+            </button>
+          </form>
+
+          <small class="acesso-aviso">
+            O código não fica salvo no site. A validação será feita no servidor.
+          </small>
+        </div>
+      </div>
+    </div>
+
+    <!-- =====================================
          CABEÇALHO
     ====================================== -->
 
-      <header class="header">
-        <div class="header-logo">
-          <img src="logo-tke.png" alt="TKE" />
+    <header class="topo">
+      <div class="topo-conteudo">
+        <!-- LOGOTIPO / IDENTIFICAÇÃO -->
+
+        <div class="marca">
+          <img src="img/logo-tke.png" alt="TKE" class="logo" />
+
+          <div class="marca-texto">
+            <span>RJCAP</span>
+            <strong>Rio de Janeiro</strong>
+          </div>
         </div>
 
-        <div class="header-center">
-          <h1>Estrutura Organizacional</h1>
-          <p>Filial Rio de Janeiro</p>
-        </div>
+        <!-- AÇÕES DO CABEÇALHO -->
 
-        <div class="header-actions">
-          <button class="slide-btn active" data-page="estrutura">
-            Estrutura
+        <div class="acoes-topo">
+          <div class="status">
+            <span class="status-bolinha"></span>
+            <span>Registro de Visitas</span>
+          </div>
+
+          <button
+            type="button"
+            class="btn-sair-topo"
+            id="btnSair"
+            title="Encerrar acesso"
+            hidden
+          >
+            Sair
           </button>
 
-          <button class="slide-btn" data-page="zonas">Zonas</button>
+          <button
+            type="button"
+            class="btn-limpar-topo"
+            id="btnLimparFormulario"
+            aria-label="Limpar dados preenchidos"
+            title="Limpar todos os dados preenchidos no formulário"
+          >
+            <span class="icone-nova-visita" aria-hidden="true"> ↻ </span>
+
+            <span>Limpar dados</span>
+          </button>
         </div>
-      </header>
+      </div>
+    </header>
 
+    <main class="pagina">
       <!-- =====================================
-         CONTEÚDO
-    ====================================== -->
-
-      <main class="main">
-        <!-- =====================================
-             TELA 1 - ESTRUTURA ORGANIZACIONAL
+             HERO
         ====================================== -->
 
-        <section id="estrutura" class="page active">
-          <div class="section-heading">
-            <div>
-              <span class="eyebrow"> ORGANOGRAMA </span>
-              <h2>Estrutura de Gestão</h2>
-            </div>
+      <section class="hero">
+        <div class="hero-conteudo">
+          <div class="hero-texto">
+            <span class="tag"> CONTROLE COMERCIAL </span>
 
-            <p>Organização das áreas Comercial, Operacional e Reparo</p>
+            <h1>
+              Registro de
+              <span>Visitas RJCAP</span>
+            </h1>
+
+            <p>
+              Preencha as informações abaixo para registrar uma nova visita
+              comercial.
+            </p>
           </div>
 
-          <!-- GERENTE / COORDENADOR -->
-          <div class="management">
-            <div class="person-card gerente">
-              <span>Gerente</span>
-              <strong>Juliano Zanetti</strong>
+          <div class="hero-decoracao">
+            <div class="circulo circulo-1"></div>
+            <div class="circulo circulo-2"></div>
+            <div class="circulo circulo-3"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =====================================
+             FORMULÁRIO
+        ====================================== -->
+
+      <section class="formulario-container">
+        <div class="cabecalho-formulario">
+          <div>
+            <span class="numero-etapa"> 01 </span>
+
+            <div>
+              <h2>Informações da visita</h2>
+
+              <p>
+                Preencha os campos obrigatórios. Alguns campos serão exibidos
+                conforme as respostas.
+              </p>
+            </div>
+          </div>
+
+          <div class="obrigatorio">
+            <span>*</span>
+            Campos obrigatórios
+          </div>
+        </div>
+
+        <form id="formVisita" novalidate>
+          <!-- =====================================
+                     BLOCO 1 - DADOS COMERCIAIS
+                ====================================== -->
+
+          <div class="secao-formulario" id="secaoDadosComerciais">
+            <div class="titulo-secao">
+              <span>01</span>
+
+              <div>
+                <h3>Dados comerciais</h3>
+                <p>Defina o tipo do registro, modalidade e situação comercial.</p>
+              </div>
             </div>
 
-            <div class="management-line"></div>
+            <div class="grid">
+              <!-- TIPO DE REGISTRO -->
 
-            <div class="coordinator-row">
-              <div class="person-card coordenador">
-                <span>Coordenador</span>
-                <strong>Carlos Ramalho</strong>
-              </div>
+              <div class="campo campo-grande">
+                <label>
+                  Tipo de Registro
+                  <span>*</span>
+                </label>
 
-              <div class="operational-responsibility">
-                <span class="operational-label">Responsável Operacional</span>
+                <div class="opcoes opcoes-tipo-registro">
+                  <label class="opcao-card">
+                    <input
+                      type="radio"
+                      name="tipoRegistro"
+                      value="Nova Oportunidade (Primeira Visita ao Cliente)"
+                      required
+                    />
+                    <span class="radio-personalizado"></span>
+                    <span>Nova Oportunidade (Primeira Visita ao Cliente)</span>
+                  </label>
+
+                  <label class="opcao-card">
+                    <input
+                      type="radio"
+                      name="tipoRegistro"
+                      value="Atualização da Oportunidade Existente"
+                    />
+                    <span class="radio-personalizado"></span>
+                    <span>Atualização da Oportunidade Existente</span>
+                  </label>
+
+                  <label class="opcao-card" id="opcaoRegistroRetencao">
+                    <input
+                      type="radio"
+                      name="tipoRegistro"
+                      value="Acompanhamento / Retenção de Cliente"
+                    />
+                    <span class="radio-personalizado"></span>
+                    <span>Acompanhamento / Retenção de Cliente</span>
+                  </label>
+                </div>
+
+                <p class="ajuda-campo">
+                  Nova oportunidade e atualização mantêm o fluxo comercial normal.
+                  Ao selecionar Acompanhamento / Retenção de Cliente, o sistema ativa
+                  automaticamente o fluxo simplificado de Retenção.
+                </p>
+
                 <div
-                  class="operational-zones"
-                  aria-label="Zonas sob responsabilidade operacional de Carlos Ramalho"
+                  id="campoOrigemAtualizacao"
+                  class="campo-condicional painel-condicional origem-atualizacao"
+                  hidden
                 >
-                  <span>Zona 09</span>
-                  <span>Zona 13</span>
-                  <span>Zona 18</span>
-                  <span>Zona 19</span>
+                  <label>
+                    Origem da Atualização
+                    <span>*</span>
+                  </label>
+
+                  <div class="opcoes opcoes-origem-atualizacao">
+                    <label class="opcao-card">
+                      <input type="radio" name="origemAtualizacao" value="Presencial" />
+                      <span class="radio-personalizado"></span>
+                      <span>Presencial</span>
+                    </label>
+
+                    <label class="opcao-card">
+                      <input type="radio" name="origemAtualizacao" value="WhatsApp" />
+                      <span class="radio-personalizado"></span>
+                      <span>WhatsApp</span>
+                    </label>
+
+                    <label class="opcao-card">
+                      <input type="radio" name="origemAtualizacao" value="Ligação" />
+                      <span class="radio-personalizado"></span>
+                      <span>Ligação</span>
+                    </label>
+
+                    <label class="opcao-card">
+                      <input type="radio" name="origemAtualizacao" value="E-mail" />
+                      <span class="radio-personalizado"></span>
+                      <span>E-mail</span>
+                    </label>
+
+                    <label class="opcao-card">
+                      <input type="radio" name="origemAtualizacao" value="Outro" />
+                      <span class="radio-personalizado"></span>
+                      <span>Outro</span>
+                    </label>
+                  </div>
+
+                  <p class="ajuda-campo">
+                    Presencial gera um novo ID da Visita. WhatsApp, ligação,
+                    e-mail e outro registram a atualização sem contar uma nova visita.
+                  </p>
                 </div>
+
+                <div
+                  id="campoOportunidadeExistente"
+                  class="campo-condicional painel-condicional"
+                  hidden
+                >
+                  <div class="busca-oportunidade-topo">
+                    <div>
+                      <strong>Localizar oportunidade existente</strong>
+                      <p class="ajuda-campo">
+                        Pesquise pelo condomínio ou informe o ID da oportunidade.
+                      </p>
+                    </div>
+
+                    <div class="busca-oportunidade-modos">
+                      <label class="modo-busca">
+                        <input
+                          type="radio"
+                          name="modoBuscaOportunidade"
+                          value="condominio"
+                          checked
+                        />
+                        <span>Condomínio</span>
+                      </label>
+
+                      <label class="modo-busca">
+                        <input
+                          type="radio"
+                          name="modoBuscaOportunidade"
+                          value="id"
+                        />
+                        <span>ID da oportunidade</span>
+                      </label>
+                    </div>
+                  </div>
+
+                  <div id="buscaPorCondominio">
+                    <label for="buscaCondominio">
+                      Nome do Condomínio
+                      <span>*</span>
+                    </label>
+
+                    <div class="campo-busca-condominio">
+                      <input
+                        type="search"
+                        id="buscaCondominio"
+                        placeholder="Digite pelo menos 3 letras..."
+                        autocomplete="off"
+                      />
+                      <span class="busca-carregando" id="buscaCondominioCarregando" hidden>
+                        Buscando...
+                      </span>
+                    </div>
+
+                    <p class="ajuda-campo">
+                      A pesquisa mostra somente condomínio e bairro. Os demais
+                      dados são carregados apenas após selecionar a oportunidade.
+                    </p>
+
+                    <div
+                      id="resultadosCondominio"
+                      class="resultados-condominio"
+                      hidden
+                    ></div>
+                  </div>
+
+                  <div id="buscaPorId" hidden>
+                    <label for="idOportunidadeExistente">
+                      ID da Oportunidade
+                      <span>*</span>
+                    </label>
+
+                    <input
+                      type="text"
+                      id="idOportunidadeExistente"
+                      name="idOportunidadeExistente"
+                      placeholder="Ex.: OPP-20260827-..."
+                    />
+
+                    <p class="ajuda-campo">
+                      Se souber o ID, informe-o e saia do campo para carregar o
+                      último registro da oportunidade.
+                    </p>
+                  </div>
+
+                  <div
+                    id="oportunidadeSelecionada"
+                    class="oportunidade-selecionada"
+                    hidden
+                  >
+                    <div>
+                      <span>Oportunidade selecionada</span>
+                      <strong id="oportunidadeSelecionadaNome"></strong>
+                      <small id="oportunidadeSelecionadaDetalhes"></small>
+                    </div>
+
+                    <button
+                      type="button"
+                      id="btnTrocarOportunidade"
+                      class="btn-trocar-oportunidade"
+                    >
+                      Trocar
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!--VENDEDOR-->
+
+              <div class="campo campo-grande">
+                <label for="vendedor">
+                  Responsável
+                  <span>*</span>
+                </label>
+
+                <select id="vendedor" name="vendedor" required>
+                  <option value="" selected disabled>
+                    Selecione o responsável
+                  </option>
+
+                  <optgroup label="Vendedores">
+                    <option value="Reinaldo Silva Soares Dias">Reinaldo Silva Soares Dias</option>
+                    <option value="Pedro Pereira Filho">Pedro Pereira Filho</option>
+                  </optgroup>
+
+                  <optgroup label="Consultores">
+                    <option value="Thiago Ribeiro Fernandes">Thiago Ribeiro Fernandes</option>
+                    <option value="Dayanna da Silva Pinto">Dayanna da Silva Pinto</option>
+                    <option value="Luanda de Souza Santos">Luanda de Souza Santos</option>
+                    <option value="Renata Costa Hygino de Miranda">Renata Costa Hygino de Miranda</option>
+                    <option value="Renata Martins Martellote de Castilho">Renata Martins Martellote de Castilho</option>
+                    <option value="Erickson de Carvalho Souto Maior">Erickson de Carvalho Souto Maior</option>
+                    <option value="Pedro Ivo Valente do Carmo Gomes">Pedro Ivo Valente do Carmo Gomes</option>
+                    <option value="Renata Alves Narciso da Silva">Renata Alves Narciso da Silva</option>
+                    <option value="Mariana da Silva dos Santos">Mariana da Silva dos Santos</option>
+                  </optgroup>
+                </select>
+
+                <p class="ajuda-campo" id="perfilResponsavel"></p>
+              </div>
+
+              <!-- MODALIDADE DE NEGÓCIOS -->
+
+              <div class="campo campo-grande">
+                <label>
+                  Modalidade de Negócios
+                  <span>*</span>
+                </label>
+
+                <div class="opcoes">
+                  <label class="opcao-card">
+                    <input
+                      type="radio"
+                      name="modalidade"
+                      value="Resgate"
+                      required
+                    />
+
+                    <span class="radio-personalizado"></span>
+
+                    <span>Resgate</span>
+                  </label>
+
+                  <label class="opcao-card">
+                    <input type="radio" name="modalidade" value="Captação" />
+
+                    <span class="radio-personalizado"></span>
+
+                    <span>Captação</span>
+                  </label>
+
+                  <label class="opcao-card">
+                    <input type="radio" name="modalidade" value="Retenção" />
+
+                    <span class="radio-personalizado"></span>
+
+                    <span>Retenção</span>
+                  </label>
+                </div>
+
+                <div class="aviso-retencao" id="avisoRetencao" hidden>
+                  <strong>Fluxo de Retenção</strong>
+                  <span>
+                    Modalidade fica automaticamente como Retenção. Permanecem ativos:
+                    Tipo (Residencial/Comercial), Natureza da Visita (Relacionamento),
+                    Data da Visita, Cliente e Local, Contato do Cliente e Observações Gerais.
+                  </span>
+                </div>
+              </div>
+
+              <!-- TIPO - RESIDENCIAL / COMERCIAL -->
+
+              <div class="campo campo-grande">
+                <label>
+                  Tipo
+                  <span>*</span>
+                </label>
+
+                <div class="opcoes opcoes-tipo-cliente">
+                  <label class="opcao-card">
+                    <input
+                      type="radio"
+                      name="tipoCliente"
+                      value="Residencial"
+                      required
+                    />
+                    <span class="radio-personalizado"></span>
+                    <span>Residencial</span>
+                  </label>
+
+                  <label class="opcao-card">
+                    <input type="radio" name="tipoCliente" value="Comercial" />
+                    <span class="radio-personalizado"></span>
+                    <span>Comercial</span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- NATUREZA DA VISITA -->
+
+              <div class="campo campo-grande">
+                <label id="rotuloNatureza">
+                  Natureza da Visita
+                  <span>*</span>
+                </label>
+
+                <div class="opcoes">
+                  <label class="opcao-card">
+                    <input type="radio" name="natureza" value="Prospecção" required />
+                    <span class="radio-personalizado"></span>
+                    <span>Prospecção</span>
+                  </label>
+
+                  <label class="opcao-card">
+                    <input type="radio" name="natureza" value="Vistoria" />
+                    <span class="radio-personalizado"></span>
+                    <span>Vistoria</span>
+                  </label>
+
+                  <label class="opcao-card">
+                    <input type="radio" name="natureza" value="Apresentação da Proposta" />
+                    <span class="radio-personalizado"></span>
+                    <span>Apresentação da Proposta</span>
+                  </label>
+
+                  <label class="opcao-card">
+                    <input type="radio" name="natureza" value="Reunião com o cliente" />
+                    <span class="radio-personalizado"></span>
+                    <span>Reunião com o Cliente</span>
+                  </label>
+
+                  <label class="opcao-card">
+                    <input type="radio" name="natureza" value="Relacionamento" />
+                    <span class="radio-personalizado"></span>
+                    <span>Relacionamento</span>
+                  </label>
+
+                  <label class="opcao-card">
+                    <input type="radio" name="natureza" value="Proposta Assinada" />
+                    <span class="radio-personalizado"></span>
+                    <span>Proposta Assinada</span>
+                  </label>
+
+                  <label class="opcao-card">
+                    <input type="radio" name="natureza" value="Proposta Perdida" />
+                    <span class="radio-personalizado"></span>
+                    <span>Proposta Perdida</span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- STATUS COMERCIAL -->
+
+              <div class="campo campo-grande">
+                <label for="statusComercial">
+                  Status Comercial
+                  <span>*</span>
+                </label>
+
+                <select id="statusComercial" name="statusComercial" required>
+                  <option value="" selected disabled>
+                    Selecione o status atual
+                  </option>
+                  <option value="Em prospecção">Em prospecção</option>
+                  <option value="Aguardando vistoria">
+                    Aguardando vistoria
+                  </option>
+                  <option value="Aguardando geração da proposta">
+                    Aguardando geração da proposta
+                  </option>
+                  <option value="Em negociação">Em negociação</option>
+                  <option value="Aguardando retorno do cliente">
+                    Aguardando retorno do cliente
+                  </option>
+                  <option value="Assinado">Assinado</option>
+                  <option value="Perda">Perda</option>
+                </select>
+
+                <p class="ajuda-campo">
+                  Declínio passa a ser tratado como <strong>Perda</strong>,
+                  evitando duplicidade de conceitos no histórico comercial.
+                </p>
+
+                <div
+                  id="campoMotivoPerda"
+                  class="campo-condicional painel-condicional"
+                  hidden
+                >
+                  <label for="motivoPerda">
+                    Motivo da Perda
+                    <span>*</span>
+                  </label>
+
+                  <select id="motivoPerda" name="motivoPerda">
+                    <option value="" selected disabled>
+                      Selecione o motivo
+                    </option>
+                    <option value="Sem suporte técnico">
+                      Sem suporte técnico
+                    </option>
+                    <option value="Preço">Preço</option>
+                    <option value="Concorrência">Concorrência</option>
+                    <option value="Cliente desistiu">Cliente desistiu</option>
+                    <option value="Pendência financeira">
+                      Pendência financeira
+                    </option>
+                    <option value="Fora do escopo">Fora do escopo</option>
+                    <option value="Modernização">Modernização</option>
+                    <option value="Outro">Outro</option>
+                  </select>
+
+                  <div
+                    id="campoDestinoDeclinio"
+                    class="campo-condicional"
+                    hidden
+                  >
+                    <label>
+                      Destino do caso
+                      <span>*</span>
+                    </label>
+
+                    <p class="ajuda-campo">
+                      Para perda por falta de suporte técnico, informe se o caso
+                      seguiu para Modernização.
+                    </p>
+
+                    <div class="opcoes opcoes-destino">
+                      <label class="opcao-card">
+                        <input
+                          type="radio"
+                          name="destinoDeclinio"
+                          value="Encaminhado para Modernização"
+                        />
+                        <span class="radio-personalizado"></span>
+                        <span>Encaminhado para Modernização</span>
+                      </label>
+
+                      <label class="opcao-card">
+                        <input
+                          type="radio"
+                          name="destinoDeclinio"
+                          value="Sem condições para Modernização"
+                        />
+                        <span class="radio-personalizado"></span>
+                        <span>Sem condições para Modernização</span>
+                      </label>
+
+                      <label class="opcao-card">
+                        <input
+                          type="radio"
+                          name="destinoDeclinio"
+                          value="Não encaminhado para Modernização"
+                        />
+                        <span class="radio-personalizado"></span>
+                        <span>Não encaminhado para Modernização</span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- PREVISÃO DE FECHAMENTO -->
+
+              <div id="campoPrevisaoFechamento" class="campo campo-grande">
+                <label for="previsaoFechamento">
+                  Previsão de Fechamento
+                  <span>*</span>
+                </label>
+
+                <input
+                  type="date"
+                  id="previsaoFechamento"
+                  name="previsaoFechamento"
+                  required
+                />
+
+                <p class="ajuda-campo">
+                  Informe obrigatoriamente a data prevista de fechamento.
+                </p>
+              </div>
+
+              <!-- PRECISA DE APOIO? -->
+
+              <div class="campo campo-grande">
+                <label>Precisa de Apoio? <span>*</span></label>
+                <div class="opcoes">
+                  <label class="opcao-card"
+                    ><input
+                      type="radio"
+                      name="precisaApoio"
+                      value="Não"
+                      required
+                    /><span class="radio-personalizado"></span
+                    ><span>Não</span></label
+                  >
+                  <label class="opcao-card"
+                    ><input type="radio" name="precisaApoio" value="Sim" /><span
+                      class="radio-personalizado"
+                    ></span
+                    ><span>Sim</span></label
+                  >
+                </div>
+                <div id="campoApoios" class="campo-condicional" hidden>
+                  <label
+                    >Qual apoio? <span>*</span>
+                    <small>(pode marcar mais de um)</small></label
+                  >
+                  <div class="opcoes opcoes-apoio">
+                    <label class="opcao-card"
+                      ><input
+                        type="checkbox"
+                        name="apoio"
+                        value="Supervisor"
+                      /><span class="check-personalizado"></span
+                      ><span>Supervisor</span></label
+                    >
+                    <label class="opcao-card"
+                      ><input
+                        type="checkbox"
+                        name="apoio"
+                        value="Vistoriador"
+                      /><span class="check-personalizado"></span
+                      ><span>Vistoriador</span></label
+                    >
+                    <label class="opcao-card"
+                      ><input
+                        type="checkbox"
+                        name="apoio"
+                        value="Gestor"
+                      /><span class="check-personalizado"></span
+                      ><span>Gestor</span></label
+                    >
+                    <label class="opcao-card"
+                      ><input
+                        type="checkbox"
+                        name="apoio"
+                        value="Coordenador"
+                      /><span class="check-personalizado"></span
+                      ><span>Coordenador</span></label
+                    >
+                    <label class="opcao-card"
+                      ><input type="checkbox" name="apoio" value="Deca" /><span
+                        class="check-personalizado"
+                      ></span
+                      ><span>Deca</span></label
+                    >
+                    <label class="opcao-card"
+                      ><input type="checkbox" name="apoio" value="ITS" /><span
+                        class="check-personalizado"
+                      ></span
+                      ><span>ITS</span></label
+                    >
+                  </div>
+                </div>
+              </div>
+
+              <!-- JÁ EXISTE PROPOSTA? -->
+
+              <div class="campo campo-grande">
+                <label>
+                  Já existe proposta?
+                  <span>*</span>
+                </label>
+
+                <div class="opcoes opcoes-proposta">
+                  <label class="opcao-card">
+                    <input
+                      type="radio"
+                      name="temProposta"
+                      value="Sim"
+                      required
+                    />
+
+                    <span class="radio-personalizado"></span>
+                    <span>Sim</span>
+                  </label>
+
+                  <label class="opcao-card">
+                    <input type="radio" name="temProposta" value="Não" />
+
+                    <span class="radio-personalizado"></span>
+                    <span>Não</span>
+                  </label>
+                </div>
+
+                <p class="ajuda-campo ajuda-proposta">
+                  Se não houver proposta, o registro será salvo automaticamente
+                  como
+                  <strong>Sem Proposta</strong>.
+                </p>
+              </div>
+
+              <!-- DADOS DA PROPOSTA -->
+
+              <div
+                id="dadosProposta"
+                class="campo campo-grande painel-condicional"
+                hidden
+              >
+                <div class="cabecalho-condicional">
+                  <strong>Dados da proposta</strong>
+                  <small
+                    >Preencha somente quando já existir uma proposta.</small
+                  >
+                </div>
+
+                <div class="grid grid-condicional">
+                  <!-- TIPO DE CONTRATO -->
+                  <div class="campo campo-grande">
+                    <label for="tipoContrato">
+                      Tipo de Contrato <span>*</span>
+                    </label>
+
+                    <select id="tipoContrato" name="tipoContrato">
+                      <option value="" selected disabled>
+                        Selecione o tipo de contrato
+                      </option>
+                      <option value="MODULAR">MODULAR</option>
+                      <option value="DIGITAL">DIGITAL</option>
+                      <option value="EXPRESS">EXPRESS</option>
+                      <option value="Performance">Performance</option>
+                      <option value="PERFORMANCE-NÃO RENOVÁVEL">
+                        PERFORMANCE-NÃO RENOVÁVEL
+                      </option>
+                      <option value="Plus (cobra algumas peças)">
+                        Plus (cobra algumas peças)
+                      </option>
+                      <option value="PLUS-Não Renovável">
+                        PLUS-Não Renovável
+                      </option>
+                      <option value="PREMIUM (com emprego de peças)">
+                        PREMIUM (com emprego de peças)
+                      </option>
+                      <option value="Premium Ñ Renov.-EXTENSÃO">
+                        Premium Ñ Renov.-EXTENSÃO
+                      </option>
+                      <option value="PREMIUM OM (com emprego de peças)">
+                        PREMIUM OM (com emprego de peças)
+                      </option>
+                      <option value="PREMIUM TRIM (c/ emprego de pçs)">
+                        PREMIUM TRIM (c/ emprego de pçs)
+                      </option>
+                      <option value="Premium-Não Renovável">
+                        Premium-Não Renovável
+                      </option>
+                      <option value="Service (não cobre peças)">
+                        Service (não cobre peças)
+                      </option>
+                      <option value="SERVICE TRIM. (s/ emprego de pçs)">
+                        SERVICE TRIM. (s/ emprego de pçs)
+                      </option>
+                      <option value="Service-Não Renovável">
+                        Service-Não Renovável
+                      </option>
+                    </select>
+                  </div>
+
+                  <!-- VALOR DO CONTRATO -->
+                  <div class="campo">
+                    <label for="valorContrato">
+                      Valor do Contrato
+                      <span>*</span>
+                    </label>
+
+                    <div class="input-prefixo">
+                      <span>R$</span>
+
+                      <input
+                        type="text"
+                        id="valorContrato"
+                        name="valorContrato"
+                        placeholder="0,00"
+                        inputmode="numeric"
+                      />
+                    </div>
+                  </div>
+
+                  <!-- MARGEM DE VENDA -->
+                  <div class="campo">
+                    <label for="margemVenda">
+                      Margem de Venda (%) <span>*</span>
+                    </label>
+
+                    <div class="input-sufixo">
+                      <input
+                        type="number"
+                        id="margemVenda"
+                        name="margemVenda"
+                        placeholder="Ex.: 15"
+                        step="0.01"
+                        min="0"
+                      />
+                      <span>%</span>
+                    </div>
+                  </div>
+
+                  <!-- NÚMERO DA PROPOSTA -->
+                  <div class="campo campo-grande">
+                    <label for="numeroProposta">
+                      Número da Proposta <span>*</span>
+                    </label>
+
+                    <input
+                      type="text"
+                      id="numeroProposta"
+                      name="numeroProposta"
+                      placeholder="Digite o número da proposta"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <!-- DATA -->
+
+              <div class="campo">
+                <label for="dataVisita" id="rotuloDataRegistro">
+                  Data da Visita
+                  <span>*</span>
+                </label>
+
+                <input type="date" id="dataVisita" name="dataVisita" required />
+              </div>
+            </div>
+          </div>
+
+          <!-- =====================================
+                     BLOCO 2 - EQUIPAMENTOS
+                ====================================== -->
+
+          <div class="secao-formulario" id="secaoEquipamentos">
+            <div class="titulo-secao">
+              <span>02</span>
+
+              <div>
+                <h3>Equipamentos</h3>
+
+                <p>Informações técnicas dos equipamentos vinculados à oportunidade.</p>
               </div>
             </div>
 
-            <div class="management-line final"></div>
+            <div class="equipamentos-intro">
+              <div>
+                <strong>Cadastre cada tipo de equipamento separadamente.</strong>
+                <p>
+                  Uma mesma proposta pode conter vários tipos, marcas e quantidades.
+                  O total de paradas é calculado automaticamente por item.
+                </p>
+              </div>
+            </div>
+
+            <div id="listaEquipamentos" class="lista-equipamentos"></div>
+
+            <button
+              type="button"
+              class="btn-adicionar-equipamento"
+              id="btnAdicionarEquipamento"
+            >
+              <span aria-hidden="true">+</span>
+              Adicionar outro tipo de equipamento
+            </button>
+
+            <div class="resumo-equipamentos" aria-live="polite">
+              <div class="resumo-equipamento-item">
+                <span>Total de equipamentos</span>
+                <strong id="totalEquipamentosResumo">0</strong>
+              </div>
+
+              <div class="resumo-equipamento-item">
+                <span>Total de paradas</span>
+                <strong id="totalParadasResumo">0</strong>
+              </div>
+            </div>
+            </div>
           </div>
 
-          <!-- ÁREAS -->
-          <div class="departments">
-            <!-- COMERCIAL -->
-            <article class="department">
-              <header class="department-header">
-                <div>
-                  <span>Gestor Comercial</span>
-                  <h3>Carla Paiva</h3>
-                </div>
-              </header>
+          <!-- =====================================
+                     BLOCO 3 - CLIENTE E LOCAL
+                ====================================== -->
 
-              <div class="department-content">
-                <div class="block-title">Zonas atendidas</div>
+          <div class="secao-formulario" id="secaoCliente">
+            <div class="titulo-secao">
+              <span>03</span>
 
-                <div class="zone-tags">
-                  <span>01</span>
-                  <span>03</span>
-                  <span>05</span>
-                  <span>06</span>
-                  <span>07</span>
-                  <span>09 / 13</span>
-                  <span>10</span>
-                  <span>11</span>
-                  <span>18 / 19 / 20</span>
-                </div>
+              <div>
+                <h3>Cliente e local</h3>
 
-                <div class="divider"></div>
+                <p>Identificação do condomínio e empresa conservadora.</p>
+              </div>
+            </div>
 
-                <div class="block-title">Equipe</div>
+            <div class="grid">
+              <!-- EMPRESA CONSERVADORA -->
 
-                <div class="staff-grid">
-                  <div class="staff-card">
-                    <strong>Bruna</strong>
-                    <span>ADM Comercial</span>
-                  </div>
+              <div class="campo">
+                <label for="empresaConservadora">
+                  Empresa Conservadora
+                  <span>*</span>
+                </label>
 
-                  <div class="staff-card">
-                    <strong>Jessica</strong>
-                    <span>ADM Comercial</span>
-                  </div>
+                <select
+                  id="empresaConservadora"
+                  name="empresaConservadora"
+                  required
+                >
+                  <option value="" selected disabled>
+                    Selecione a empresa conservadora
+                  </option>
+                  <option value="Atlas/Schindler">Atlas/Schindler</option>
+                  <option value="OTIS">OTIS</option>
+                  <option value="Orona">Orona</option>
+                  <option value="Hyunday">Hyunday</option>
+                  <option value="Advance">Advance</option>
+                  <option value="VIP">VIP</option>
+                  <option value="Vertisul">Vertisul</option>
+                  <option value="Alcer">Alcer</option>
+                  <option value="Elite">Elite</option>
+                  <option value="Vertraem">Vertraem</option>
+                  <option value="Nalc">Nalc</option>
+                  <option value="Concertec">Concertec</option>
+                  <option value="CEL (Central de Elevadores)">
+                    CEL (Central de Elevadores)
+                  </option>
+                  <option value="Engetec">Engetec</option>
+                  <option value="Villarta">Villarta</option>
+                  <option value="Unitec">Unitec</option>
+                  <option value="Negatec Elevadores">Negatec Elevadores</option>
+                  <option value="Elevesul">Elevesul</option>
+                  <option value="OTV">OTV</option>
+                  <option value="Servesul">Servesul</option>
+                  <option value="Castelo">Castelo</option>
+                  <option value="TB RIO">TB RIO</option>
+                  <option value="SETE SERVIC">SETE SERVIC</option>
+                  <option value="Sem empresa conservadora">
+                    Sem empresa conservadora
+                  </option>
+                  <option value="Outros">Outros</option>
+                </select>
 
-                  <div class="staff-card">
-                    <strong>Antonio</strong>
-                    <span>ADM OP</span>
-                  </div>
+                <div
+                  id="campoOutraConservadora"
+                  class="campo-condicional"
+                  hidden
+                >
+                  <label for="outraConservadora">
+                    Qual empresa conservadora?
+                    <span>*</span>
+                  </label>
 
-                  <div class="staff-card">
-                    <strong>Pedro</strong>
-                    <span>Vendedor</span>
-                  </div>
-
-                  <div class="staff-card">
-                    <strong>Reinaldo</strong>
-                    <span>Vendedor</span>
-                  </div>
+                  <input
+                    type="text"
+                    id="outraConservadora"
+                    name="outraConservadora"
+                    placeholder="Digite o nome da empresa"
+                    autocomplete="organization"
+                  />
                 </div>
               </div>
-            </article>
 
-            <!-- OPERACIONAL - EDUARDO -->
-            <article class="department">
-              <header class="department-header">
-                <div>
-                  <span>Gestor Operacional</span>
-                  <h3>Eduardo</h3>
-                </div>
-              </header>
+              <!-- CONDOMÍNIO -->
 
-              <div class="department-content">
-                <div class="block-title">Zonas atendidas</div>
+              <div class="campo">
+                <label for="nomeCondominio">
+                  Nome do Condomínio
+                  <span>*</span>
+                </label>
 
-                <div class="zone-tags">
-                  <span>01</span>
-                  <span>03</span>
-                  <span>07</span>
-                  <span>11</span>
-                </div>
-
-                <div class="divider"></div>
-
-                <div class="block-title">Equipe</div>
-
-                <div class="staff-grid">
-                  <div class="staff-card">
-                    <strong>Rafaela</strong>
-                    <span>ADM OP</span>
-                  </div>
-
-                  <div class="staff-card">
-                    <strong>Rayssa</strong>
-                    <span>ADM OP</span>
-                  </div>
-
-                  <div class="staff-card">
-                    <strong>Antonio</strong>
-                    <span>ADM OP</span>
-                  </div>
-
-                  <div class="staff-card">
-                    <strong>Filipe</strong>
-                    <span>ADM OP</span>
-                  </div>
-                </div>
-
-                <div class="divider"></div>
-                <div class="block-title gem-title">Engenharia / GEM</div>
-
-                <div class="gem-hierarchy">
-                  <div class="staff-card gem-manager">
-                    <strong>Engenheiro Responsável GEM</strong>
-                    <span>Responsável pelo GEM</span>
-                  </div>
-
-                  <div class="gem-connector" aria-hidden="true"></div>
-
-                  <div class="staff-card gem-intern">
-                    <strong>Gustavo Meyer</strong>
-                    <span>Estagiário • GEM</span>
-                  </div>
-                </div>
+                <input
+                  type="text"
+                  id="nomeCondominio"
+                  name="nomeCondominio"
+                  placeholder="Nome do condomínio"
+                  required
+                />
               </div>
-            </article>
 
-            <!-- OPERACIONAL - ADRIELLE -->
-            <article class="department">
-              <header class="department-header">
-                <div>
-                  <span>Gestor Operacional</span>
-                  <h3>Adrielle</h3>
-                </div>
-              </header>
+              <!-- ENDEREÇO PADRONIZADO -->
 
-              <div class="department-content">
-                <div class="block-title">Zonas atendidas</div>
-
-                <div class="zone-tags">
-                  <span>04</span>
-                  <span>05</span>
-                  <span>06</span>
-                  <span>10</span>
-                </div>
-
-                <div class="divider"></div>
-
-                <div class="block-title">Equipe</div>
-
-                <div class="staff-grid single">
-                  <div class="staff-card">
-                    <strong>Bruno</strong>
-                    <span>ADM OP</span>
-                  </div>
-
-                  <div class="staff-card">
-                    <strong>Antonio</strong>
-                    <span>ADM OP</span>
-                  </div>
-                </div>
+              <div class="campo campo-grande">
+                <label for="endereco"
+                  >Endereço (logradouro e número) <span>*</span></label
+                >
+                <input
+                  type="text"
+                  id="endereco"
+                  name="endereco"
+                  placeholder="Ex.: Av. Rio Branco, 156"
+                  autocomplete="street-address"
+                  required
+                />
+                <small class="ajuda-campo"
+                  >Digite somente o logradouro e o número. Bairro, cidade e UF
+                  são informados separadamente.</small
+                >
               </div>
-            </article>
 
-            <!-- REPARO -->
-            <article class="department">
-              <header class="department-header">
-                <div>
-                  <span>Sup Adm Reparo</span>
-                  <h3>Iury Moraes</h3>
-                </div>
-              </header>
-
-              <div class="department-content">
-                <div class="block-title">Equipe</div>
-
-                <div class="staff-grid single">
-                  <div class="staff-card">
-                    <strong>William Farias</strong>
-                    <span>Sup OP Reparo</span>
-                  </div>
-
-                  <div class="staff-card">
-                    <strong>Hosana Ferreira</strong>
-                    <span>ADM</span>
-                  </div>
-
-                  <div class="staff-card">
-                    <strong>Gustavo Narciso</strong>
-                    <span>ADM</span>
-                  </div>
-
-                  <div class="staff-card">
-                    <strong>Fernanda Silva</strong>
-                    <span>ADM</span>
-                  </div>
-
-                  <div class="staff-card">
-                    <strong>Jean x Josinaldo</strong>
-                    <span>Reparo</span>
-                  </div>
-
-                  <div class="staff-card">
-                    <strong>Matheus x Sidnei</strong>
-                    <span>Reparo</span>
-                  </div>
-
-                  <div class="staff-card">
-                    <strong>Terceiros</strong>
-                    <span>Reparo</span>
-                  </div>
-                </div>
+              <div class="campo campo-grande">
+                <label for="bairro">Bairro <span>*</span></label>
+                <input
+                  type="text"
+                  id="bairro"
+                  name="bairro"
+                  list="listaBairrosRJ"
+                  placeholder="Digite para pesquisar o bairro"
+                  autocomplete="off"
+                  required
+                />
+                <datalist id="listaBairrosRJ">
+                  <option value="Abolição"></option>
+                  <option value="Acari"></option>
+                  <option value="Água Santa"></option>
+                  <option value="Alto da Boa Vista"></option>
+                  <option value="Anchieta"></option>
+                  <option value="Andaraí"></option>
+                  <option value="Anil"></option>
+                  <option value="Bancários"></option>
+                  <option value="Bangu"></option>
+                  <option value="Barra da Tijuca"></option>
+                  <option value="Barra de Guaratiba"></option>
+                  <option value="Barra Olímpica"></option>
+                  <option value="Barros Filho"></option>
+                  <option value="Benfica"></option>
+                  <option value="Bento Ribeiro"></option>
+                  <option value="Bonsucesso"></option>
+                  <option value="Botafogo"></option>
+                  <option value="Brás de Pina"></option>
+                  <option value="Cachambi"></option>
+                  <option value="Cacuia"></option>
+                  <option value="Caju"></option>
+                  <option value="Camorim"></option>
+                  <option value="Campinho"></option>
+                  <option value="Campo dos Afonsos"></option>
+                  <option value="Campo Grande"></option>
+                  <option value="Cascadura"></option>
+                  <option value="Catete"></option>
+                  <option value="Catumbi"></option>
+                  <option value="Cavalcanti"></option>
+                  <option value="Centro"></option>
+                  <option value="Cidade de Deus"></option>
+                  <option value="Cidade Nova"></option>
+                  <option value="Cidade Universitária"></option>
+                  <option value="Cocotá"></option>
+                  <option value="Coelho Neto"></option>
+                  <option value="Colégio"></option>
+                  <option value="Complexo do Alemão"></option>
+                  <option value="Copacabana"></option>
+                  <option value="Cordovil"></option>
+                  <option value="Cosme Velho"></option>
+                  <option value="Cosmos"></option>
+                  <option value="Costa Barros"></option>
+                  <option value="Curicica"></option>
+                  <option value="Del Castilho"></option>
+                  <option value="Deodoro"></option>
+                  <option value="Encantado"></option>
+                  <option value="Engenheiro Leal"></option>
+                  <option value="Engenho da Rainha"></option>
+                  <option value="Engenho de Dentro"></option>
+                  <option value="Engenho Novo"></option>
+                  <option value="Estácio"></option>
+                  <option value="Flamengo"></option>
+                  <option value="Freguesia (Ilha do Governador)"></option>
+                  <option value="Freguesia (Jacarepaguá)"></option>
+                  <option value="Galeão"></option>
+                  <option value="Gamboa"></option>
+                  <option value="Gardênia Azul"></option>
+                  <option value="Gávea"></option>
+                  <option value="Gericinó"></option>
+                  <option value="Glória"></option>
+                  <option value="Grajaú"></option>
+                  <option value="Grumari"></option>
+                  <option value="Guadalupe"></option>
+                  <option value="Guaratiba"></option>
+                  <option value="Higienópolis"></option>
+                  <option value="Honório Gurgel"></option>
+                  <option value="Humaitá"></option>
+                  <option value="Ilha de Guaratiba"></option>
+                  <option value="Inhaúma"></option>
+                  <option value="Inhoaíba"></option>
+                  <option value="Ipanema"></option>
+                  <option value="Irajá"></option>
+                  <option value="Itanhangá"></option>
+                  <option value="Jabour"></option>
+                  <option value="Jacaré"></option>
+                  <option value="Jacarepaguá"></option>
+                  <option value="Jacarezinho"></option>
+                  <option value="Jardim América"></option>
+                  <option value="Jardim Botânico"></option>
+                  <option value="Jardim Carioca"></option>
+                  <option value="Jardim Guanabara"></option>
+                  <option value="Jardim Sulacap"></option>
+                  <option value="Joá"></option>
+                  <option value="Lagoa"></option>
+                  <option value="Lapa"></option>
+                  <option value="Laranjeiras"></option>
+                  <option value="Leblon"></option>
+                  <option value="Leme"></option>
+                  <option value="Lins de Vasconcelos"></option>
+                  <option value="Madureira"></option>
+                  <option value="Magalhães Bastos"></option>
+                  <option value="Mangueira"></option>
+                  <option value="Manguinhos"></option>
+                  <option value="Maracanã"></option>
+                  <option value="Maré"></option>
+                  <option value="Marechal Hermes"></option>
+                  <option value="Maria da Graça"></option>
+                  <option value="Méier"></option>
+                  <option value="Moneró"></option>
+                  <option value="Olaria"></option>
+                  <option value="Oswaldo Cruz"></option>
+                  <option value="Paciência"></option>
+                  <option value="Padre Miguel"></option>
+                  <option value="Paquetá"></option>
+                  <option value="Parada de Lucas"></option>
+                  <option value="Parque Anchieta"></option>
+                  <option value="Parque Colúmbia"></option>
+                  <option value="Pavuna"></option>
+                  <option value="Pechincha"></option>
+                  <option value="Pedra de Guaratiba"></option>
+                  <option value="Penha"></option>
+                  <option value="Penha Circular"></option>
+                  <option value="Piedade"></option>
+                  <option value="Pilares"></option>
+                  <option value="Pitangueiras"></option>
+                  <option value="Portuguesa"></option>
+                  <option value="Praça da Bandeira"></option>
+                  <option value="Praça Seca"></option>
+                  <option value="Praia da Bandeira"></option>
+                  <option value="Quintino Bocaiúva"></option>
+                  <option value="Ramos"></option>
+                  <option value="Realengo"></option>
+                  <option value="Recreio dos Bandeirantes"></option>
+                  <option value="Riachuelo"></option>
+                  <option value="Ribeira"></option>
+                  <option value="Ricardo de Albuquerque"></option>
+                  <option value="Rio Comprido"></option>
+                  <option value="Rio das Pedras"></option>
+                  <option value="Rocha"></option>
+                  <option value="Rocha Miranda"></option>
+                  <option value="Rocinha"></option>
+                  <option value="Sampaio"></option>
+                  <option value="Santa Cruz"></option>
+                  <option value="Santa Teresa"></option>
+                  <option value="Santíssimo"></option>
+                  <option value="Santo Cristo"></option>
+                  <option value="São Conrado"></option>
+                  <option value="São Cristóvão"></option>
+                  <option value="São Francisco Xavier"></option>
+                  <option value="Saúde"></option>
+                  <option value="Senador Camará"></option>
+                  <option value="Senador Vasconcelos"></option>
+                  <option value="Sepetiba"></option>
+                  <option value="Tanque"></option>
+                  <option value="Taquara"></option>
+                  <option value="Tauá"></option>
+                  <option value="Tijuca"></option>
+                  <option value="Todos os Santos"></option>
+                  <option value="Tomás Coelho"></option>
+                  <option value="Turiaçu"></option>
+                  <option value="Urca"></option>
+                  <option value="Vargem Grande"></option>
+                  <option value="Vargem Pequena"></option>
+                  <option value="Vasco da Gama"></option>
+                  <option value="Vaz Lobo"></option>
+                  <option value="Vicente de Carvalho"></option>
+                  <option value="Vidigal"></option>
+                  <option value="Vigário Geral"></option>
+                  <option value="Vila da Penha"></option>
+                  <option value="Vila Isabel"></option>
+                  <option value="Vila Kennedy"></option>
+                  <option value="Vila Kosmos"></option>
+                  <option value="Vila Militar"></option>
+                  <option value="Vila Valqueire"></option>
+                  <option value="Vista Alegre"></option>
+                  <option value="Zumbi"></option>
+                </datalist>
+                <small class="ajuda-campo"
+                  >Comece a digitar e selecione um bairro da lista.</small
+                >
               </div>
-            </article>
+
+              <div class="campo">
+                <label for="cidade">Cidade <span>*</span></label>
+                <input
+                  type="text"
+                  id="cidade"
+                  name="cidade"
+                  value="Rio de Janeiro"
+                  readonly
+                  required
+                />
+              </div>
+
+              <div class="campo">
+                <label for="uf">UF <span>*</span></label>
+                <input
+                  type="text"
+                  id="uf"
+                  name="uf"
+                  value="RJ"
+                  readonly
+                  required
+                />
+              </div>
+
+              <div class="campo campo-grande">
+                <label for="regiao">Região</label>
+                <input
+                  type="text"
+                  id="regiao"
+                  name="regiao"
+                  placeholder="Preenchida automaticamente pelo bairro"
+                  readonly
+                />
+              </div>
+            </div>
           </div>
-        </section>
 
-        <!-- =====================================
-             TELA 2 - GESTÃO POR ZONAS
-        ====================================== -->
+          <!-- =====================================
+                     BLOCO 4 - CONTATO
+                ====================================== -->
 
-        <section id="zonas" class="page">
-          <div class="section-heading compact">
+          <div class="secao-formulario" id="secaoContato">
+            <div class="titulo-secao">
+              <span>04</span>
+
+              <div>
+                <h3>Contato do cliente</h3>
+                <p>Identificação e canais de contato do cliente.</p>
+              </div>
+            </div>
+
+            <div class="grid">
+              <!-- NOME -->
+
+              <div class="campo">
+                <label for="nomeContato">
+                  Nome Completo do Contato
+                  <span>*</span>
+                </label>
+
+                <input
+                  type="text"
+                  id="nomeContato"
+                  name="nomeContato"
+                  placeholder="Nome e sobrenome"
+                  required
+                />
+              </div>
+
+              <!-- TELEFONE -->
+
+              <div class="campo">
+                <label for="telefone">
+                  Telefone do Contato (WhatsApp)
+                  <span>*</span>
+                </label>
+
+                <input
+                  type="tel"
+                  id="telefone"
+                  name="telefone"
+                  maxlength="15"
+                  placeholder="(21) 99999-9999"
+                  inputmode="tel"
+                  autocomplete="tel"
+                  required
+                />
+              </div>
+
+              <!-- E-MAIL -->
+
+              <div class="campo campo-grande">
+                <label for="email">
+                  E-mail do Contato
+                  <span>*</span>
+                </label>
+
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  placeholder="contato@empresa.com.br"
+                  inputmode="email"
+                  autocomplete="email"
+                  required
+                />
+              </div>
+
+              <!-- OBSERVAÇÕES -->
+
+              <div class="campo campo-grande">
+                <label for="observacoes">
+                  Observações Gerais
+                  <span>*</span>
+                </label>
+
+                <textarea
+                  id="observacoes"
+                  name="observacoes"
+                  rows="5"
+                  maxlength="1000"
+                  placeholder="Registre informações importantes sobre a visita..."
+                  required
+                ></textarea>
+
+                <div class="contador">
+                  <span id="contadorCaracteres">0</span>/1000
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- =====================================
+                     RESUMO DE PENDÊNCIAS
+                ====================================== -->
+
+          <div class="resumo-erros-formulario" id="resumoErrosFormulario" hidden>
+            <div class="resumo-erros-icone">!</div>
             <div>
-              <span class="eyebrow">GESTÃO TERRITORIAL</span>
-              <h2>Responsáveis por Zona</h2>
+              <strong>Faltam informações para registrar a visita</strong>
+              <p>Preencha os campos destacados abaixo:</p>
+              <ul id="listaErrosFormulario"></ul>
             </div>
-
-            <p>Supervisão, consultoria e atendimentos dedicados</p>
           </div>
 
-          <div class="zones-grid">
-            <article class="zone-card">
-              <header>
-                <div>
-                  <span>ZONA</span>
-                  <strong>01</strong>
-                </div>
-              </header>
+          <!-- =====================================
+                     FINAL DO FORMULÁRIO
+                ====================================== -->
 
-              <div class="zone-body">
-                <div class="zone-person">
-                  <span>Supervisor</span>
-                  <strong>Jonatas dos Santos Oliveira</strong>
-                  <div class="person-contact">
-                    <a class="person-phone" href="tel:+5521995324482"
-                      >(21) 99532-4482</a
-                    >
-                    <a
-                      class="person-email"
-                      href="mailto:jonatas.oliveira@tkelevator.com"
-                      >jonatas.oliveira@tkelevator.com</a
-                    >
-                  </div>
-                </div>
-                <div class="zone-person">
-                  <span>Consultor</span>
-                  <strong>Thiago Ribeiro Fernandes</strong>
-                  <div class="person-contact">
-                    <a class="person-phone" href="tel:+5521996186138"
-                      >(21) 99618-6138</a
-                    >
-                    <a
-                      class="person-email"
-                      href="mailto:thiago.fernandes2@tkelevator.com"
-                      >thiago.fernandes2@tkelevator.com</a
-                    >
-                  </div>
-                </div>
+          <div class="acoes">
+            <div class="seguranca">
+              <span class="icone-check"> ✓ </span>
+
+              <div>
+                <strong> Confira os dados antes de enviar </strong>
+
+                <small> Todos os campos são obrigatórios. </small>
               </div>
-            </article>
-            <article class="zone-card">
-              <header>
-                <div>
-                  <span>ZONA</span>
-                  <strong>03</strong>
-                </div>
-              </header>
+            </div>
 
-              <div class="zone-body">
-                <div class="zone-person">
-                  <span>Supervisor</span>
-                  <strong>Paulo Cesar Pastor dos Santos</strong>
-                  <div class="person-contact">
-                    <a class="person-phone" href="tel:+5521995019222"
-                      >(21) 99501-9222</a
-                    >
-                    <a
-                      class="person-email"
-                      href="mailto:paulo.pastor@tkelevator.com"
-                      >paulo.pastor@tkelevator.com</a
-                    >
-                  </div>
-                </div>
-                <div class="zone-person">
-                  <span>Consultor</span>
-                  <strong>Erickson de Carvalho Souto Maior</strong>
-                  <div class="person-contact">
-                    <a class="person-phone" href="tel:+5521997976596"
-                      >(21) 99797-6596</a
-                    >
-                    <a
-                      class="person-email"
-                      href="mailto:erickson.maior@tkelevator.com"
-                      >erickson.maior@tkelevator.com</a
-                    >
-                  </div>
-                </div>
-              </div>
-            </article>
-            <article class="zone-card dedicated">
-              <header>
-                <div>
-                  <span>ZONA</span>
-                  <strong>04</strong>
-                </div>
-                <span class="badge">Cliente Especial</span>
-              </header>
+            <button type="submit" class="btn-enviar">
+              <span> Registrar visita </span>
 
-              <div class="zone-body">
-                <div class="zone-person">
-                  <span>Supervisor</span>
-                  <strong> Yago Gomes da Rocha </strong>
-                  <div class="person-contact">
-                    <a class="person-phone" href="tel:+5521999437739"
-                      >(21) 99943-7739</a
-                    >
-                    <a
-                      class="person-email"
-                      href="mailto:yago.rocha@tkelevator.com"
-                      >yago.rocha@tkelevator.com</a
-                    >
-                  </div>
-                </div>
-                <div class="zone-person">
-                  <span>Consultor</span>
-                  <strong> Yago Gomes da Rocha </strong>
-                  <div class="person-contact">
-                    <a class="person-phone" href="tel:+5521999437739"
-                      >(21) 99943-7739</a
-                    >
-                    <a
-                      class="person-email"
-                      href="mailto:yago.rocha@tkelevator.com"
-                      >yago.rocha@tkelevator.com</a
-                    >
-                  </div>
-                </div>
-              </div>
-            </article>
-            <article class="zone-card">
-              <header>
-                <div>
-                  <span>ZONA</span>
-                  <strong>05</strong>
-                </div>
-              </header>
-
-              <div class="zone-body">
-                <div class="zone-person">
-                  <span>Supervisor</span>
-                  <strong>Leandro Rodrigues Ribeiro</strong>
-                  <div class="person-contact">
-                    <a class="person-phone" href="tel:+5521996838713"
-                      >(21) 99683-8713</a
-                    >
-                    <a
-                      class="person-email"
-                      href="mailto:leandro.ribeiro@tkelevator.com"
-                      >leandro.ribeiro@tkelevator.com</a
-                    >
-                  </div>
-                </div>
-                <div class="zone-person">
-                  <span>Consultor</span>
-                  <strong>Pedro Ivo Valente do Carmo Gomes</strong>
-                  <div class="person-contact">
-                    <a class="person-phone" href="tel:+5521971240507"
-                      >(21) 97124-0507</a
-                    >
-                    <a
-                      class="person-email"
-                      href="mailto:pedro.gomes2@tkelevator.com"
-                      >pedro.gomes2@tkelevator.com</a
-                    >
-                  </div>
-                </div>
-              </div>
-            </article>
-            <article class="zone-card">
-              <header>
-                <div>
-                  <span>ZONA</span>
-                  <strong>06</strong>
-                </div>
-              </header>
-
-              <div class="zone-body">
-                <div class="zone-person">
-                  <span>Supervisor</span>
-                  <strong>Willian Portela Vieira</strong>
-                  <div class="person-contact">
-                    <a class="person-phone" href="tel:+5521972299548"
-                      >(21) 97229-9548</a
-                    >
-                    <a
-                      class="person-email"
-                      href="mailto:william.vieira@tkelevator.com"
-                      >william.vieira@tkelevator.com</a
-                    >
-                  </div>
-                </div>
-                <div class="zone-person">
-                  <span>Consultor</span>
-                  <strong>Renata Alves Narciso da Silva</strong>
-                  <div class="person-contact">
-                    <a class="person-phone" href="tel:+5521998848459"
-                      >(21) 99884-8459</a
-                    >
-                    <a
-                      class="person-email"
-                      href="mailto:renata.silva@tkelevator.com"
-                      >renata.silva@tkelevator.com</a
-                    >
-                  </div>
-                </div>
-              </div>
-            </article>
-            <article class="zone-card">
-              <header>
-                <div>
-                  <span>ZONA</span>
-                  <strong>07</strong>
-                </div>
-              </header>
-
-              <div class="zone-body">
-                <div class="zone-person">
-                  <span>Supervisor</span>
-                  <strong>Wagner Soares Moreira</strong>
-                  <div class="person-contact">
-                    <a class="person-phone" href="tel:+5521995066079"
-                      >(21) 99506-6079</a
-                    >
-                    <a
-                      class="person-email"
-                      href="mailto:wagner.moreira@tkelevator.com"
-                      >wagner.moreira@tkelevator.com</a
-                    >
-                  </div>
-                </div>
-                <div class="zone-person">
-                  <span>Consultor</span>
-                  <strong>Dayanna da Silva Pinto</strong>
-                  <div class="person-contact">
-                    <a class="person-phone" href="tel:+5521996012774"
-                      >(21) 99601-2774</a
-                    >
-                    <a
-                      class="person-email"
-                      href="mailto:dayanna.pinto@tkelevator.com"
-                      >dayanna.pinto@tkelevator.com</a
-                    >
-                  </div>
-                </div>
-              </div>
-            </article>
-            <article class="zone-card dedicated zone-9">
-              <header>
-                <div>
-                  <span>ZONA</span>
-                  <strong>09</strong>
-                </div>
-                <span class="badge">MetrôRio</span>
-              </header>
-
-              <div class="zone-body">
-                <div class="zone-person">
-                  <span>Supervisor</span>
-                  <strong>Douglas da Costa Oliveira</strong>
-                  <div class="person-contact">
-                    <a class="person-phone" href="tel:+5521995721332"
-                      >(21) 99572-1332</a
-                    >
-                    <a
-                      class="person-email"
-                      href="mailto:douglas.oliveira@tkelevator.com"
-                      >douglas.oliveira@tkelevator.com</a
-                    >
-                  </div>
-                </div>
-                <div class="zone-person">
-                  <span>Consultor</span>
-                  <strong>Luanda de Souza Santos</strong>
-                  <div class="person-contact">
-                    <a class="person-phone" href="tel:+5521999221285"
-                      >(21) 99922-1285</a
-                    >
-                    <a
-                      class="person-email"
-                      href="mailto:luanda.souza@tkelevator.com"
-                      >luanda.souza@tkelevator.com</a
-                    >
-                  </div>
-                </div>
-              </div>
-
-              <div class="technical-team">
-                <span class="technical-title">Consultores Técnicos</span>
-
-                <div class="technical-list">
-                  <div>
-                    <strong>Andre Luis de Souza Vieira</strong>
-                    <span>Consultor Técnico</span>
-                    <div class="person-contact">
-                      <a class="person-phone" href="tel:+5521967035898"
-                        >(21) 96703-5898</a
-                      >
-                      <a
-                        class="person-email"
-                        href="mailto:andre-luis.vieira@tkelevator.com"
-                        >andre-luis.vieira@tkelevator.com</a
-                      >
-                    </div>
-                  </div>
-
-                  <div>
-                    <strong>Rodrigo de Carvalho Ojeda</strong>
-                    <span>Consultor Técnico</span>
-                    <div class="person-contact">
-                      <a class="person-phone" href="tel:+5521998486396"
-                        >(21) 99848-6396</a
-                      >
-                      <a
-                        class="person-email"
-                        href="mailto:rodrigo.ojeda@tkelevator.com"
-                        >rodrigo.ojeda@tkelevator.com</a
-                      >
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </article>
-            <article class="zone-card">
-              <header>
-                <div>
-                  <span>ZONA</span>
-                  <strong>13</strong>
-                </div>
-              </header>
-
-              <div class="zone-body">
-                <div class="zone-person">
-                  <span>Supervisor</span>
-                  <strong>Douglas da Costa Oliveira</strong>
-                  <div class="person-contact">
-                    <a class="person-phone" href="tel:+5521995721332"
-                      >(21) 99572-1332</a
-                    >
-                    <a
-                      class="person-email"
-                      href="mailto:douglas.oliveira@tkelevator.com"
-                      >douglas.oliveira@tkelevator.com</a
-                    >
-                  </div>
-                </div>
-                <div class="zone-person">
-                  <span>Consultor</span>
-                  <strong>Luanda de Souza Santos</strong>
-                  <div class="person-contact">
-                    <a class="person-phone" href="tel:+5521999221285"
-                      >(21) 99922-1285</a
-                    >
-                    <a
-                      class="person-email"
-                      href="mailto:luanda.souza@tkelevator.com"
-                      >luanda.souza@tkelevator.com</a
-                    >
-                  </div>
-                </div>
-              </div>
-            </article>
-            <article class="zone-card">
-              <header>
-                <div>
-                  <span>ZONA</span>
-                  <strong>10</strong>
-                </div>
-              </header>
-
-              <div class="zone-body">
-                <div class="zone-person">
-                  <span>Supervisor</span>
-                  <strong>Rodrigo Odilon dos Ramos</strong>
-                  <div class="person-contact">
-                    <a class="person-phone" href="tel:+5521995047668"
-                      >(21) 99504-7668</a
-                    >
-                    <a
-                      class="person-email"
-                      href="mailto:rodrigo.ramos@tkelevator.com"
-                      >rodrigo.ramos@tkelevator.com</a
-                    >
-                  </div>
-                </div>
-                <div class="zone-person">
-                  <span>Consultor</span>
-                  <strong>Mariana da Silva dos Santos</strong>
-                  <div class="person-contact">
-                    <a class="person-phone" href="tel:+5521998669059"
-                      >(21) 99866-9059</a
-                    >
-                    <a
-                      class="person-email"
-                      href="mailto:mariana.santos@tkelevator.com"
-                      >mariana.santos@tkelevator.com</a
-                    >
-                  </div>
-                </div>
-              </div>
-            </article>
-            <article class="zone-card">
-              <header>
-                <div>
-                  <span>ZONA</span>
-                  <strong>11</strong>
-                </div>
-              </header>
-
-              <div class="zone-body">
-                <div class="zone-person">
-                  <span>Supervisor</span>
-                  <strong>Leonardo Pacheco Amaral</strong>
-                  <div class="person-contact">
-                    <a class="person-phone" href="tel:+5521967538871"
-                      >(21) 96753-8871</a
-                    >
-                    <a
-                      class="person-email"
-                      href="mailto:leonardo.amaral@tkelevator.com"
-                      >leonardo.amaral@tkelevator.com</a
-                    >
-                  </div>
-                </div>
-                <div class="zone-person">
-                  <span>Consultor</span>
-                  <strong>Renata Costa Hygino de Miranda</strong>
-                  <div class="person-contact">
-                    <a class="person-phone" href="tel:+5521996133919"
-                      >(21) 99613-3919</a
-                    >
-                    <a
-                      class="person-email"
-                      href="mailto:renata.miranda@tkelevator.com"
-                      >renata.miranda@tkelevator.com</a
-                    >
-                  </div>
-                </div>
-              </div>
-            </article>
-            <article class="zone-card dedicated">
-              <header>
-                <div>
-                  <span>ZONA</span>
-                  <strong>18</strong>
-                </div>
-                <span class="badge">Galeão</span>
-              </header>
-
-              <div class="zone-body">
-                <div class="zone-person">
-                  <span>Supervisor</span>
-                  <strong class="pending">A definir</strong>
-                </div>
-
-                <div class="zone-person">
-                  <span>Consultor</span>
-                  <strong>Renata Martins Martellote de Castilho</strong>
-                  <div class="person-contact">
-                    <a class="person-phone" href="tel:+5521997983380"
-                      >(21) 99798-3380</a
-                    >
-                    <a
-                      class="person-email"
-                      href="mailto:renata.castilho@tkelevator.com"
-                      >renata.castilho@tkelevator.com</a
-                    >
-                  </div>
-                </div>
-              </div>
-            </article>
-            <article class="zone-card dedicated">
-              <header>
-                <div>
-                  <span>ZONA</span>
-                  <strong>19</strong>
-                </div>
-                <span class="badge">Globo</span>
-              </header>
-
-              <div class="zone-body">
-                <div class="zone-person">
-                  <span>Supervisor</span>
-                  <strong class="pending">A definir</strong>
-                </div>
-
-                <div class="zone-person">
-                  <span>Consultor</span>
-                  <strong>Renata Martins Martellote de Castilho</strong>
-                  <div class="person-contact">
-                    <a class="person-phone" href="tel:+5521997983380"
-                      >(21) 99798-3380</a
-                    >
-                    <a
-                      class="person-email"
-                      href="mailto:renata.castilho@tkelevator.com"
-                      >renata.castilho@tkelevator.com</a
-                    >
-                  </div>
-                </div>
-              </div>
-            </article>
+              <span class="seta" aria-hidden="true"> → </span>
+            </button>
           </div>
+        </form>
+      </section>
+    </main>
 
-          <section class="rescue-section">
-            <div class="rescue-heading">
-              <span>VENDEDORES</span>
-              <h3>Resgate / Captação</h3>
-            </div>
+    <!-- =====================================
+     MODAL DE SUCESSO
+====================================== -->
 
-            <div class="rescue-grid">
-              <article class="rescue-card">
-                <div class="rescue-card-header">
-                  <div>
-                    <span>RESGATE / CAPTAÇÃO</span>
-                    <strong>Pedro Pereira Filho</strong>
-                  </div>
-                </div>
+    <div
+      class="modal"
+      id="modalSucesso"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="tituloModalSucesso"
+    >
+      <div class="modal-box">
+        <button
+          type="button"
+          class="fechar-modal"
+          id="fecharModal"
+          aria-label="Fechar"
+        >
+          ×
+        </button>
 
-                <div class="rescue-card-body">
-                  <div class="rescue-contact">
-                    <a href="tel:+5521999158322">(21) 99915-8322</a>
-                    <a href="mailto:pedro.filho@tkelevator.com"
-                      >pedro.filho@tkelevator.com</a
-                    >
-                  </div>
+        <div class="icone-sucesso">✓</div>
 
-                  <div
-                    class="rescue-zones"
-                    aria-label="Zonas de resgate e captação de Pedro"
-                  >
-                    <span>Zona 05</span>
-                    <span>Zona 06</span>
-                    <span>Zona 11</span>
-                  </div>
-                </div>
-              </article>
+        <span class="modal-tag"> REGISTRO CONCLUÍDO </span>
 
-              <article class="rescue-card">
-                <div class="rescue-card-header">
-                  <div>
-                    <span>RESGATE / CAPTAÇÃO</span>
-                    <strong>Reinaldo Silva Soares Dias</strong>
-                  </div>
-                </div>
+        <h2 id="tituloModalSucesso">Registro concluído!</h2>
 
-                <div class="rescue-card-body">
-                  <div class="rescue-contact">
-                    <a href="tel:+5521999945603">(21) 99994-5603</a>
-                    <a href="mailto:reinaldo.soares@tkelevator.com"
-                      >reinaldo.soares@tkelevator.com</a
-                    >
-                  </div>
+        <p id="textoModalSucesso">As informações foram registradas com sucesso.</p>
 
-                  <div
-                    class="rescue-zones"
-                    aria-label="Zonas confirmadas de resgate e captação de Reinaldo"
-                  >
-                    <span>Zona 01</span>
-                    <span>Zona 03</span>
-                    <span>Zona 04</span>
-                    <span>Zona 05</span>
-                    <span>Zona 07</span>
-                    <span>Zona 10</span>
-                  </div>
+        <!-- ID DO REGISTRO -->
 
-                  <!-- Adicione aqui as demais zonas do Reinaldo quando forem confirmadas. -->
-                </div>
-              </article>
-            </div>
-          </section>
-        </section>
-      </main>
+        <div class="registro-id-box">
+          <span>ID DO REGISTRO</span>
 
-      <!-- =====================================
+          <strong id="idRegistroGerado"> — </strong>
+        </div>
+
+        <!-- ID DA OPORTUNIDADE -->
+
+        <div class="registro-id-box">
+          <span>ID DA OPORTUNIDADE</span>
+
+          <strong id="idOportunidadeGerado"> — </strong>
+        </div>
+
+        <!-- ID DA VISITA: aparece somente quando houve presença física -->
+
+        <div class="registro-id-box" id="boxIdVisitaGerado">
+          <span>ID DA VISITA</span>
+
+          <strong id="idVisitaGerado"> — </strong>
+        </div>
+
+        <!-- EXPORTAÇÕES -->
+
+        <div class="acoes-exportacao">
+          <!-- EXCEL -->
+          <button
+            type="button"
+            class="btn-exportar btn-excel"
+            id="exportarExcel"
+          >
+            <span class="icone-exportacao icone-excel">
+              <svg
+                viewBox="0 0 24 24"
+                width="25"
+                height="25"
+                aria-hidden="true"
+              >
+                <path
+                  fill="currentColor"
+                  d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm1 7V4.5L19.5 9H15z"
+                />
+                <path
+                  fill="#ffffff"
+                  d="m7.3 11 1.8 3-1.9 3h1.7l1.1-1.9 1.1 1.9h1.7l-1.9-3 1.8-3H11l-1 1.8L9 11H7.3z"
+                />
+              </svg>
+            </span>
+
+            <span class="texto-exportacao">
+              <small>Baixar arquivo</small>
+              Excel
+            </span>
+          </button>
+
+          <!-- PDF -->
+          <button type="button" class="btn-exportar btn-pdf" id="exportarPdf">
+            <span class="icone-exportacao icone-pdf">
+              <svg
+                viewBox="0 0 24 24"
+                width="25"
+                height="25"
+                aria-hidden="true"
+              >
+                <path
+                  fill="currentColor"
+                  d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm1 7V4.5L19.5 9H15z"
+                />
+                <text
+                  x="6.4"
+                  y="17"
+                  fill="#ffffff"
+                  font-size="5.3"
+                  font-weight="bold"
+                >
+                  PDF
+                </text>
+              </svg>
+            </span>
+
+            <span class="texto-exportacao">
+              <small>Baixar arquivo</small>
+              PDF
+            </span>
+          </button>
+        </div>
+        <button type="button" class="btn-novo" id="novaVisita">
+          Registrar novo registro
+        </button>
+      </div>
+    </div>
+
+    <!-- =====================================
          RODAPÉ
     ====================================== -->
 
-      <footer class="footer">
-        <div>TK Elevator</div>
+    <footer>
+      <div class="footer-conteudo">
+        <img src="img/logo-tke.png" alt="TKE" />
 
-        <div>Estrutura Organizacional • Rio de Janeiro</div>
-      </footer>
-    </div>
+        <p>Registro de Visitas RJCAP • Rio de Janeiro</p>
+      </div>
+    </footer>
 
-    <script src="script.js"></script>
+    <!-- BIBLIOTECAS PARA EXPORTAÇÃO -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+
+    <!-- JAVASCRIPT -->
+    <script src="script.js?v=9"></script>
   </body>
 </html>
