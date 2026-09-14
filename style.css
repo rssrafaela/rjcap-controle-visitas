@@ -1,29 +1,6 @@
-/* =========================================
-   VARIÁVEIS
-========================================= */
-
-:root {
-    --tke-purple: #6200c9;
-    --tke-orange: #f36c21;
-
-    --dark: #2d2d2d;
-    --text: #2f2f2f;
-
-    --gray-700: #6e6e6e;
-    --gray-500: #8d8d8d;
-
-    --gray-300: #d7d7d7;
-    --gray-200: #e7e7e7;
-    --gray-100: #f3f3f4;
-    --gray-50: #f8f8f9;
-
-    --white: #ffffff;
-}
-
-
-/* =========================================
-   RESET
-========================================= */
+/* ================================
+   CONFIGURAÇÕES GERAIS
+================================ */
 
 * {
     margin: 0;
@@ -31,2492 +8,3134 @@
     box-sizing: border-box;
 }
 
-html,
-body {
-    width: 100%;
-    min-height: 100%;
+:root {
+    --roxo: #6900d8;
+    --roxo-escuro: #4c008f;
+    --magenta: #b21885;
+    --laranja: #ff6500;
+    --laranja-claro: #ff7a00;
+
+    --texto: #20202a;
+    --texto-secundario: #6d6d78;
+
+    --fundo: #f5f5f7;
+    --branco: #ffffff;
+    --borda: #e4e4e9;
+
+    --gradiente: linear-gradient(
+        120deg,
+        #6900d8 0%,
+        #a10aa3 32%,
+        #d33e65 60%,
+        #ff6500 100%
+    );
+
+    --sombra: 0 20px 60px rgba(32, 20, 50, 0.08);
 }
 
 html {
-    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
 }
 
 body {
     font-family:
+        Inter,
+        -apple-system,
+        BlinkMacSystemFont,
         "Segoe UI",
         Arial,
         sans-serif;
 
-    background: #e9e9ea;
-    color: var(--text);
+    background: var(--fundo);
+    color: var(--texto);
+    min-height: 100vh;
 }
 
 
-/* =========================================
-   APP
-========================================= */
+/* ================================
+   TOPO
+================================ */
 
-.app {
-    width: 100vw;
-    height: 100vh;
-
-    display: flex;
-    flex-direction: column;
-
-    background: var(--white);
-
-    overflow: hidden;
-}
-
-
-/* =========================================
-   HEADER
-========================================= */
-
-.header {
+.topo {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.97);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
     position: relative;
-
-    height: 11vh;
-    min-height: 85px;
-
-    display: grid;
-
-    grid-template-columns:
-        180px
-        1fr
-        280px;
-
-    align-items: center;
-
-    padding: 0 3vw;
-
-    border-top: 5px solid var(--tke-orange);
-    border-bottom: 1px solid var(--gray-200);
-
-    flex-shrink: 0;
+    z-index: 10;
 }
 
-.header-logo img {
-    width: 105px;
-    height: auto;
-
-    display: block;
-}
-
-.header-center {
-    text-align: center;
-}
-
-.header-center h1 {
-    font-size: clamp(22px, 1.65vw, 32px);
-    font-weight: 650;
-
-    color: var(--dark);
-}
-
-.header-center p {
-    margin-top: 5px;
-
-    font-size: clamp(11px, 0.8vw, 15px);
-
-    color: var(--gray-500);
-}
-
-
-/* =========================================
-   BOTÕES
-========================================= */
-
-.header-actions {
-    display: flex;
-
-    justify-content: flex-end;
-    align-items: center;
-
-    gap: 8px;
-}
-
-.slide-btn {
-    height: 34px;
-
-    padding: 0 15px;
-
-    border: 1px solid var(--gray-300);
-    border-radius: 20px;
-
-    background: white;
-
-    color: var(--gray-700);
-
-    cursor: pointer;
-
-    font-size: 11px;
-    font-weight: 600;
-
-    transition:
-        background 0.2s,
-        color 0.2s,
-        border-color 0.2s;
-}
-
-.slide-btn:hover {
-    border-color: var(--tke-purple);
-    color: var(--tke-purple);
-}
-
-.slide-btn.active {
-    background: var(--tke-purple);
-
-    color: white;
-
-    border-color: var(--tke-purple);
-}
-
-
-/* =========================================
-   MAIN
-========================================= */
-
-.main {
-    flex: 1;
-
-    min-height: 0;
-
-    padding:
-        2vh
-        3vw
-        1vh;
-
-    overflow: hidden;
-}
-
-.page {
-    display: none;
-
-    height: 100%;
-}
-
-.page.active {
-    display: block;
-}
-
-
-/* =========================================
-   TITULOS
-========================================= */
-
-.section-heading {
-    min-height: 60px;
-
-    display: flex;
-
-    justify-content: space-between;
-    align-items: center;
-
-    margin-bottom: 1vh;
-}
-
-.section-heading.compact {
-    min-height: 50px;
-}
-
-.eyebrow {
-    display: block;
-
-    margin-bottom: 4px;
-
-    color: var(--tke-orange);
-
-    font-size: clamp(8px, 0.65vw, 12px);
-
-    font-weight: 800;
-
-    letter-spacing: 1.2px;
-}
-
-.section-heading h2 {
-    font-size: clamp(22px, 1.55vw, 30px);
-
-    font-weight: 650;
-
-    color: var(--dark);
-}
-
-.section-heading p {
-    width: 380px;
-
-    text-align: right;
-
-    font-size: clamp(11px, 0.78vw, 14px);
-
-    line-height: 1.5;
-
-    color: var(--gray-500);
-}
-
-
-/* =========================================
-   GERÊNCIA
-========================================= */
-
-.management {
-    display: flex;
-
-    flex-direction: column;
-
-    align-items: center;
-}
-
-.person-card {
-    width: 220px;
-    min-height: 52px;
-
-    display: flex;
-
-    flex-direction: column;
-
-    align-items: center;
-    justify-content: center;
-
-    background: white;
-
-    border: 1px solid var(--gray-200);
-
-    border-radius: 9px;
-
-    box-shadow:
-        0 4px 12px rgba(0, 0, 0, 0.04);
-}
-
-.person-card span {
-    margin-bottom: 3px;
-
-    font-size: 8px;
-
-    font-weight: 700;
-
-    text-transform: uppercase;
-
-    letter-spacing: 0.7px;
-
-    color: var(--gray-500);
-}
-
-.person-card strong {
-    font-size: 14px;
-
-    color: var(--dark);
-}
-
-.gerente {
-    border-top: 3px solid #666;
-}
-
-.coordenador {
-    border-top: 3px solid var(--tke-purple);
-}
-
-.management-line {
-    width: 1px;
-    height: 15px;
-
-    background: var(--gray-300);
-}
-
-.management-line.final {
-    height: 20px;
-}
-
-
-/* =========================================
-   DEPARTAMENTOS
-========================================= */
-
-.departments {
-    position: relative;
-
-    display: grid;
-
-    grid-template-columns:
-        repeat(4, minmax(0, 1fr));
-
-    gap: 1.2vw;
-}
-
-.departments::before {
+.topo::before {
     content: "";
-
     position: absolute;
-
-    left: 12.5%;
-    right: 12.5%;
-
-    top: -20px;
-
-    height: 1px;
-
-    background: var(--gray-300);
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 4px;
+    background: var(--gradiente);
 }
 
-.department {
-    min-width: 0;
-
-    overflow: hidden;
-
-    border: 1px solid var(--gray-200);
-
-    border-radius: 9px;
-
-    background: white;
-}
-
-.department-header {
-    min-height: 54px;
+.topo-conteudo {
+    width: min(1180px, calc(100% - 40px));
+    min-height: 90px;
+    margin: auto;
 
     display: flex;
-
     align-items: center;
-
-    padding: 0 14px;
-
-    background: var(--gray-50);
-
-    border-bottom: 1px solid var(--gray-200);
-}
-
-.department-header span {
-    display: block;
-
-    margin-bottom: 3px;
-
-    font-size: 8px;
-
-    font-weight: 700;
-
-    text-transform: uppercase;
-
-    letter-spacing: 0.5px;
-
-    color: var(--gray-500);
-}
-
-.department-header h3 {
-    font-size: 13px;
-
-    color: var(--dark);
-}
-
-.department-content {
-    padding: 12px;
-}
-
-.block-title {
-    margin-bottom: 8px;
-
-    color: var(--gray-500);
-
-    font-size: 8px;
-
-    font-weight: 800;
-
-    text-transform: uppercase;
-
-    letter-spacing: 0.6px;
-}
-
-
-/* =========================================
-   ZONAS - PRIMEIRA TELA
-========================================= */
-
-.zone-tags {
-    display: flex;
-
-    flex-wrap: wrap;
-
-    gap: 5px;
-}
-
-.zone-tags span {
-    min-height: 24px;
-
-    display: inline-flex;
-
-    align-items: center;
-
-    padding: 0 8px;
-
-    border-radius: 4px;
-
-    background: var(--gray-100);
-
-    color: var(--gray-700);
-
-    font-size: 9px;
-
-    font-weight: 600;
-}
-
-.divider {
-    height: 1px;
-
-    margin: 12px 0;
-
-    background: var(--gray-200);
-}
-
-
-/* =========================================
-   STAFF
-========================================= */
-
-.staff-grid {
-    display: grid;
-
-    grid-template-columns:
-        1fr 1fr;
-
-    gap: 6px;
-}
-
-.staff-grid.single {
-    grid-template-columns: 1fr;
-}
-
-.staff-card {
-    min-height: 40px;
-
-    display: flex;
-
-    flex-direction: column;
-
-    justify-content: center;
-
-    padding: 6px 8px;
-
-    border:
-        1px solid var(--gray-200);
-
-    border-left:
-        3px solid var(--tke-orange);
-
-    border-radius: 5px;
-
-    background: white;
-}
-
-.staff-card strong {
-    font-size: 10px;
-
-    color: var(--dark);
-}
-
-.staff-card span {
-    margin-top: 2px;
-
-    font-size: 7px;
-
-    color: var(--gray-500);
-
-    text-transform: uppercase;
-}
-
-
-/* =========================================
-   GESTÃO POR ZONAS
-========================================= */
-
-.zones-grid {
-    display: grid;
-
-    grid-template-columns:
-        repeat(4, minmax(0, 1fr));
-
-    gap: 1vw;
-}
-
-.zone-card {
-    min-width: 0;
-
-    overflow: hidden;
-
-    border: 1px solid var(--gray-200);
-
-    border-radius: 8px;
-
-    background: white;
-}
-
-.zone-card header {
-    min-height: 46px;
-
-    display: flex;
-
-    align-items: center;
-
     justify-content: space-between;
-
-    padding: 0 12px;
-
-    background: var(--dark);
-
-    color: white;
+    gap: 30px;
 }
 
-.zone-card header > div {
+.marca {
     display: flex;
-
-    align-items: baseline;
-
-    gap: 6px;
-}
-
-.zone-card header span {
-    font-size: 8px;
-
-    letter-spacing: 0.9px;
-
-    text-transform: uppercase;
-
-    color: #d7d7d7;
-}
-
-.zone-card header strong {
-    font-size: 16px;
-}
-
-.badge {
-    padding: 5px 8px;
-
-    border-radius: 12px;
-
-    background: rgba(255, 255, 255, 0.12);
-
-    font-size: 7px !important;
-
-    font-weight: 700;
-
-    color: white !important;
-
-    white-space: nowrap;
-}
-
-.zone-body {
-    display: grid;
-
-    grid-template-columns:
-        1fr 1fr;
-}
-
-.zone-body > div {
-    min-width: 0;
-
-    min-height: 64px;
-
-    padding: 10px 11px;
-}
-
-.zone-body > div + div {
-    border-left: 1px solid var(--gray-200);
-}
-
-.zone-body span {
-    display: block;
-
-    margin-bottom: 5px;
-
-    font-size: 7px;
-
-    font-weight: 700;
-
-    text-transform: uppercase;
-
-    color: var(--gray-500);
-}
-
-.zone-body strong {
-    display: block;
-
-    font-size: 10px;
-
-    line-height: 1.25;
-
-    color: var(--dark);
-
-    overflow-wrap: anywhere;
-}
-
-.zone-body > div:first-child {
-    border-bottom: 3px solid var(--tke-purple);
-}
-
-.zone-body > div:last-child {
-    border-bottom: 3px solid var(--tke-orange);
-}
-
-.pending {
-    color: var(--gray-500) !important;
-
-    font-style: italic;
-}
-
-
-/* =========================================
-   ZONA 09 - CONSULTORIA TÉCNICA
-========================================= */
-
-.technical-team {
-    padding: 8px 10px 9px;
-
-    background: var(--gray-50);
-
-    border-top: 1px solid var(--gray-200);
-}
-
-.technical-title {
-    display: block;
-
-    margin-bottom: 6px;
-
-    color: var(--gray-500);
-
-    font-size: 7px;
-
-    font-weight: 800;
-
-    text-transform: uppercase;
-
-    letter-spacing: 0.6px;
-}
-
-.technical-list {
-    display: grid;
-
-    grid-template-columns:
-        1fr 1fr;
-
-    gap: 5px;
-}
-
-.technical-list > div {
-    min-width: 0;
-
-    padding: 6px 7px;
-
-    border: 1px solid var(--gray-200);
-
-    border-radius: 4px;
-
-    background: white;
-}
-
-.technical-list strong {
-    display: block;
-
-    font-size: 8px;
-
-    line-height: 1.2;
-
-    color: var(--dark);
-
-    overflow-wrap: anywhere;
-}
-
-.technical-list span {
-    display: block;
-
-    margin-top: 2px;
-
-    color: var(--gray-500);
-
-    font-size: 6px;
-
-    text-transform: uppercase;
-}
-
-
-/* =========================================
-   FOOTER
-========================================= */
-
-.footer {
-    height: 4vh;
-    min-height: 28px;
-
-    display: flex;
-
     align-items: center;
-
-    justify-content: space-between;
-
-    padding: 0 3vw;
-
-    border-top: 1px solid var(--gray-200);
-
-    background: var(--gray-50);
-
-    color: var(--gray-500);
-
-    font-size: 8px;
-
-    flex-shrink: 0;
+    gap: 20px;
 }
 
-
-/* =========================================
-   TABLET / NOTEBOOK MENOR
-========================================= */
-
-@media (max-width: 1200px) {
-
-    .header {
-        grid-template-columns:
-            140px
-            1fr
-            240px;
-    }
-
-    .header-logo img {
-        width: 90px;
-    }
-
-    .departments {
-        gap: 10px;
-    }
-
-    .zones-grid {
-        gap: 8px;
-    }
-
-    .zone-body strong {
-        font-size: 9px;
-    }
-}
-
-
-/* =====================================================
-   MOBILE / IPHONE
-===================================================== */
-
-@media (max-width: 700px) {
-
-    html {
-        width: 100%;
-        height: auto !important;
-
-        overflow-x: hidden;
-        overflow-y: auto;
-    }
-
-    body {
-        width: 100%;
-
-        height: auto !important;
-        min-height: 100vh;
-
-        overflow-x: hidden;
-        overflow-y: auto;
-
-        background: #ffffff;
-
-        -webkit-overflow-scrolling: touch;
-    }
-
-
-    /* =========================================
-       APP
-    ========================================= */
-
-    .app {
-        width: 100%;
-
-        height: auto !important;
-        min-height: 100vh;
-
-        display: block;
-
-        overflow: visible !important;
-    }
-
-
-    /* =========================================
-       HEADER MOBILE
-    ========================================= */
-
-    .header {
-        position: relative;
-
-        width: 100%;
-
-        height: auto !important;
-        min-height: 0;
-
-        display: grid;
-
-        grid-template-columns:
-            90px
-            minmax(0, 1fr);
-
-        grid-template-rows:
-            auto
-            auto;
-
-        align-items: center;
-
-        column-gap: 10px;
-        row-gap: 12px;
-
-        padding:
-            14px
-            14px
-            12px;
-
-        border-top:
-            4px solid var(--tke-orange);
-
-        overflow: visible;
-    }
-
-    .header-logo {
-        width: 90px;
-    }
-
-    .header-logo img {
-        display: block;
-
-        width: 82px;
-        max-width: 100%;
-
-        height: auto;
-    }
-
-    .header-center {
-        min-width: 0;
-
-        text-align: right;
-    }
-
-    .header-center h1 {
-        margin: 0;
-
-        font-size: 20px;
-
-        line-height: 1.05;
-
-        white-space: normal;
-    }
-
-    .header-center p {
-        display: none;
-    }
-
-
-    /* =========================================
-       BOTÕES MOBILE
-    ========================================= */
-
-    .header-actions {
-        grid-column: 1 / -1;
-
-        width: 100%;
-
-        display: grid !important;
-
-        grid-template-columns:
-            1fr
-            1fr;
-
-        gap: 8px;
-
-        margin-top: 2px;
-
-        position: static !important;
-
-        visibility: visible !important;
-        opacity: 1 !important;
-    }
-
-    .slide-btn {
-        display: flex !important;
-
-        align-items: center;
-        justify-content: center;
-
-        width: 100%;
-
-        height: 42px;
-
-        padding: 0 10px;
-
-        border:
-            1px solid var(--gray-300);
-
-        border-radius: 7px;
-
-        background: #ffffff;
-
-        color: var(--gray-700);
-
-        font-size: 12px;
-
-        font-weight: 600;
-
-        visibility: visible !important;
-        opacity: 1 !important;
-    }
-
-    .slide-btn.active {
-        background: var(--tke-purple);
-
-        color: white;
-
-        border-color: var(--tke-purple);
-    }
-
-
-    /* =========================================
-       MAIN MOBILE
-    ========================================= */
-
-    .main {
-        width: 100%;
-
-        height: auto !important;
-        min-height: 0 !important;
-
-        display: block;
-
-        padding:
-            18px
-            14px
-            calc(35px + env(safe-area-inset-bottom));
-
-        overflow: visible !important;
-    }
-
-
-    /* =========================================
-       PÁGINAS
-    ========================================= */
-
-    .page {
-        width: 100%;
-
-        height: auto !important;
-        min-height: 0 !important;
-
-        overflow: visible !important;
-    }
-
-    .page.active {
-        display: block !important;
-
-        height: auto !important;
-
-        overflow: visible !important;
-    }
-
-    .page:not(.active) {
-        display: none !important;
-    }
-
-
-    /* =========================================
-       TITULO MOBILE
-    ========================================= */
-
-    .section-heading,
-    .section-heading.compact {
-        width: 100%;
-
-        height: auto !important;
-        min-height: 0;
-
-        display: block;
-
-        margin-bottom: 22px;
-    }
-
-    .section-heading p {
-        display: none;
-    }
-
-    .eyebrow {
-        display: block;
-
-        margin-bottom: 5px;
-
-        font-size: 9px;
-    }
-
-    .section-heading h2 {
-        font-size: 23px;
-
-        line-height: 1.08;
-    }
-
-
-    /* =========================================
-       GERENTE / COORDENADOR
-    ========================================= */
-
-    .management {
-        width: 100%;
-
-        margin-bottom: 20px;
-
-        overflow: visible;
-    }
-
-    .person-card {
-        width: 210px;
-        max-width: 80%;
-
-        min-height: 50px;
-    }
-
-    .person-card span {
-        font-size: 8px;
-    }
-
-    .person-card strong {
-        font-size: 13px;
-    }
-
-    .management-line {
-        height: 14px;
-    }
-
-    .management-line.final {
-        height: 14px;
-    }
-
-
-    /* =========================================
-       REMOVE LINHA DESKTOP
-    ========================================= */
-
-    .departments::before {
-        display: none;
-    }
-
-
-    /* =========================================
-       DEPARTAMENTOS MOBILE
-    ========================================= */
-
-    .departments {
-        width: 100%;
-
-        display: grid;
-
-        grid-template-columns:
-            minmax(0, 1fr);
-
-        gap: 14px;
-    }
-
-    .department {
-        width: 100%;
-        min-width: 0;
-
-        overflow: hidden;
-    }
-
-    .department-header {
-        min-height: 58px;
-
-        padding:
-            10px
-            14px;
-    }
-
-    .department-header span {
-        font-size: 9px;
-    }
-
-    .department-header h3 {
-        font-size: 15px;
-    }
-
-    .department-content {
-        padding: 14px;
-    }
-
-    .block-title {
-        font-size: 9px;
-    }
-
-
-    /* =========================================
-       ZONAS PRIMEIRA TELA
-    ========================================= */
-
-    .zone-tags {
-        gap: 6px;
-    }
-
-    .zone-tags span {
-        min-height: 28px;
-
-        padding:
-            0
-            9px;
-
-        font-size: 10px;
-    }
-
-
-    /* =========================================
-       EQUIPE MOBILE
-    ========================================= */
-
-    .staff-grid,
-    .staff-grid.single {
-        display: grid;
-
-        grid-template-columns:
-            1fr
-            1fr;
-
-        gap: 7px;
-    }
-
-    .staff-card {
-        min-width: 0;
-
-        min-height: 50px;
-    }
-
-    .staff-card strong {
-        font-size: 11px;
-
-        overflow-wrap: anywhere;
-    }
-
-    .staff-card span {
-        font-size: 8px;
-    }
-
-
-    /* =========================================
-       GESTÃO POR ZONAS MOBILE
-    ========================================= */
-
-    .zones-grid {
-        width: 100%;
-
-        display: grid;
-
-        grid-template-columns:
-            minmax(0, 1fr);
-
-        gap: 12px;
-
-        overflow: visible;
-    }
-
-    .zone-card {
-        width: 100%;
-        min-width: 0;
-
-        overflow: hidden;
-    }
-
-    .zone-card header {
-        width: 100%;
-
-        min-height: 52px;
-
-        padding:
-            10px
-            14px;
-    }
-
-    .zone-card header strong {
-        font-size: 18px;
-    }
-
-    .zone-card header span {
-        font-size: 8px;
-    }
-
-    .badge {
-        max-width: 45%;
-
-        padding:
-            5px
-            9px;
-
-        font-size: 8px !important;
-
-        white-space: normal;
-
-        text-align: center;
-    }
-
-
-    /* =========================================
-       SUPERVISOR / CONSULTOR
-    ========================================= */
-
-    .zone-body {
-        width: 100%;
-
-        display: grid;
-
-        grid-template-columns:
-            minmax(0, 1fr)
-            minmax(0, 1fr);
-    }
-
-    .zone-body > div {
-        min-width: 0;
-
-        min-height: 78px;
-
-        padding:
-            11px
-            12px;
-    }
-
-    .zone-body span {
-        font-size: 8px;
-    }
-
-    .zone-body strong {
-        font-size: 12px;
-
-        line-height: 1.25;
-
-        overflow-wrap: anywhere;
-    }
-
-
-    /* =========================================
-       CONSULTORES TÉCNICOS ZONA 09
-    ========================================= */
-
-    .technical-team {
-        width: 100%;
-
-        padding:
-            10px
-            12px
-            12px;
-
-        overflow: visible;
-    }
-
-    .technical-title {
-        margin-bottom: 8px;
-
-        font-size: 8px;
-    }
-
-    .technical-list {
-        width: 100%;
-
-        display: grid;
-
-        grid-template-columns: 1fr;
-
-        gap: 7px;
-    }
-
-    .technical-list > div {
-        min-width: 0;
-
-        padding:
-            9px
-            10px;
-    }
-
-    .technical-list strong {
-        font-size: 10px;
-
-        line-height: 1.25;
-
-        overflow-wrap: anywhere;
-    }
-
-    .technical-list span {
-        margin-top: 3px;
-
-        font-size: 7px;
-    }
-
-
-    /* =========================================
-       FOOTER MOBILE
-    ========================================= */
-
-    .footer {
-        width: 100%;
-
-        height: auto !important;
-        min-height: 42px;
-
-        display: flex;
-
-        padding:
-            10px
-            14px
-            calc(10px + env(safe-area-inset-bottom));
-
-        gap: 10px;
-
-        font-size: 8px;
-
-        overflow: visible;
-    }
-}
-
-
-/* =========================================
-   IPHONE PEQUENO
-========================================= */
-
-@media (max-width: 430px) {
-
-    .header {
-        grid-template-columns:
-            78px
-            minmax(0, 1fr);
-
-        padding-left: 12px;
-        padding-right: 12px;
-    }
-
-    .header-logo {
-        width: 78px;
-    }
-
-    .header-logo img {
-        width: 72px;
-    }
-
-    .header-center h1 {
-        font-size: 18px;
-    }
-
-    .main {
-        padding-left: 12px;
-        padding-right: 12px;
-    }
-
-    .section-heading h2 {
-        font-size: 21px;
-    }
-
-    .person-card {
-        width: 200px;
-    }
-
-    .staff-grid,
-    .staff-grid.single {
-        grid-template-columns: 1fr;
-    }
-
-    .zone-body {
-        grid-template-columns: 1fr;
-    }
-
-    .zone-body > div + div {
-        border-left: none;
-
-        border-top:
-            1px solid var(--gray-200);
-    }
-
-    .zone-body > div:first-child {
-        border-bottom: none;
-
-        border-left:
-            3px solid var(--tke-purple);
-    }
-
-    .zone-body > div:last-child {
-        border-bottom: none;
-
-        border-left:
-            3px solid var(--tke-orange);
-    }
-}
-
-
-/* =========================================
-   SAFARI / IOS
-========================================= */
-
-@supports (-webkit-touch-callout: none) {
-
-    @media (max-width: 700px) {
-
-        html,
-        body,
-        .app,
-        .main,
-        .page,
-        .page.active {
-            height: auto !important;
-
-            max-height: none !important;
-        }
-
-        html,
-        body {
-            overflow-y: auto !important;
-        }
-
-        .app,
-        .main,
-        .page,
-        .page.active {
-            overflow: visible !important;
-        }
-
-        body {
-            min-height: -webkit-fill-available;
-        }
-
-        .app {
-            min-height: -webkit-fill-available;
-        }
-    }
-}
-/* =====================================================
-   AJUSTE FINAL — HIERARQUIA GEM + RESPONSIVIDADE GLOBAL
-   ===================================================== */
-
-/* A página nunca deve cortar conteúdo em telas menores. */
-html,
-body {
-    width: 100%;
-    min-height: 100%;
-    overflow-x: hidden;
-}
-
-body {
-    min-width: 0;
-}
-
-.app {
-    width: 100%;
-    min-height: 100vh;
+.logo {
+    width: 135px;
     height: auto;
-    overflow: visible;
+    display: block;
 }
 
-.main {
-    width: 100%;
-    min-width: 0;
-    min-height: 0;
-    overflow: visible;
-}
+.marca-texto {
+    border-left: 1px solid var(--borda);
+    padding-left: 20px;
 
-.page,
-.page.active {
-    min-width: 0;
-    height: auto;
-    min-height: 0;
-}
-
-/* Mantém o organograma moderno, mas permite que os cards se reorganizem. */
-.departments,
-.zones-grid {
-    width: 100%;
-    min-width: 0;
-}
-
-.department,
-.zone-card,
-.staff-card {
-    min-width: 0;
-}
-
-.department-content,
-.staff-card,
-.zone-body,
-.technical-list > div {
-    overflow-wrap: anywhere;
-    word-break: normal;
-}
-
-/* Hierarquia correta: Engenheiro GEM -> Gustavo Meyer */
-.gem-hierarchy {
-    width: 100%;
     display: flex;
     flex-direction: column;
-    align-items: stretch;
 }
 
-.gem-manager,
-.gem-intern {
-    width: 100%;
-}
-
-.gem-manager {
-    border-left-color: var(--tke-purple);
-}
-
-.gem-intern {
-    margin-left: 9%;
-    width: 91%;
-}
-
-.gem-connector {
-    width: 1px;
-    height: 10px;
-    margin-left: 18px;
-    background: var(--gray-300);
-}
-
-/* Desktop grande */
-@media (min-width: 1501px) {
-    .main {
-        padding-left: clamp(28px, 3vw, 58px);
-        padding-right: clamp(28px, 3vw, 58px);
-    }
-
-    .departments,
-    .zones-grid {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-    }
-}
-
-/* Notebook / desktop comum */
-@media (min-width: 1101px) and (max-width: 1500px) {
-    .header {
-        height: auto;
-        min-height: 82px;
-        grid-template-columns: minmax(110px, 150px) 1fr minmax(210px, 260px);
-        padding-top: 10px;
-        padding-bottom: 10px;
-    }
-
-    .main {
-        padding: 18px 24px 24px;
-    }
-
-    .section-heading {
-        margin-bottom: 12px;
-    }
-
-    .departments,
-    .zones-grid {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 12px;
-    }
-
-    .department-header {
-        padding: 8px 11px;
-    }
-
-    .department-content {
-        padding: 10px;
-    }
-
-    .staff-card {
-        padding: 7px;
-    }
-
-    .zone-tags span {
-        padding-left: 7px;
-        padding-right: 7px;
-    }
-}
-
-/* Tablet horizontal / notebook estreito */
-@media (min-width: 701px) and (max-width: 1100px) {
-    .header {
-        height: auto;
-        min-height: 78px;
-        grid-template-columns: 110px 1fr auto;
-        gap: 14px;
-        padding: 10px 20px;
-    }
-
-    .header-logo img {
-        width: 82px;
-    }
-
-    .header-center h1 {
-        font-size: clamp(20px, 2.4vw, 27px);
-    }
-
-    .header-actions {
-        min-width: 170px;
-    }
-
-    .main {
-        padding: 18px 20px 28px;
-    }
-
-    .section-heading {
-        gap: 20px;
-    }
-
-    .section-heading p {
-        width: min(320px, 42vw);
-    }
-
-    .departments,
-    .zones-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 14px;
-    }
-
-    .departments::before {
-        display: none;
-    }
-
-    .department-header h3 {
-        font-size: 14px;
-    }
-
-    .staff-card strong,
-    .zone-body strong {
-        font-size: 11px;
-    }
-}
-
-/* Celular */
-@media (max-width: 700px) {
-    .app,
-    .main,
-    .page,
-    .page.active {
-        height: auto !important;
-        max-height: none !important;
-        overflow: visible !important;
-    }
-
-    .header {
-        position: relative;
-    }
-
-    .departments,
-    .zones-grid {
-        grid-template-columns: minmax(0, 1fr) !important;
-    }
-
-    .gem-intern {
-        margin-left: 7%;
-        width: 93%;
-    }
-
-    .footer {
-        flex-wrap: wrap;
-    }
-}
-
-/* Celular muito estreito */
-@media (max-width: 430px) {
-    .header-center h1 {
-        font-size: clamp(16px, 5.2vw, 18px);
-    }
-
-    .slide-btn {
-        min-width: 0;
-    }
-
-    .zone-tags span {
-        max-width: 100%;
-    }
-
-    .gem-intern {
-        margin-left: 0;
-        width: 100%;
-    }
-
-    .gem-connector {
-        margin-left: 14px;
-    }
-}
-
-/* =====================================================
-   AJUSTE FINAL — RESPONSABILIDADE OPERACIONAL / RESPONSIVO
-===================================================== */
-
-/* Carlos Ramalho - responsabilidade operacional direta */
-.operational-responsibility {
-    width: min(460px, 92vw);
-    padding: 9px 12px 11px;
-    border: 1px solid var(--gray-200);
-    border-radius: 9px;
-    background: var(--gray-50);
-    text-align: center;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.035);
-}
-
-.operational-label {
-    display: block;
-    margin-bottom: 7px;
-    color: var(--gray-500);
-    font-size: 8px;
+.marca-texto span {
+    font-size: 11px;
+    letter-spacing: 2px;
     font-weight: 800;
-    letter-spacing: .7px;
-    text-transform: uppercase;
+    color: var(--texto-secundario);
 }
 
-.operational-zones {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 6px;
+.marca-texto strong {
+    margin-top: 3px;
+    font-size: 14px;
 }
 
-.operational-zones span {
-    min-height: 25px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0 10px;
-    border-radius: 5px;
-    background: var(--tke-purple);
-    color: #fff;
-    font-size: 9px;
-    font-weight: 700;
-    white-space: nowrap;
-}
 
-/* Evita corte de conteúdo em notebooks/telas com pouca altura */
-html,
-body {
-    height: auto;
-    min-height: 100%;
-    overflow-x: hidden;
-}
+/* ================================
+   AÇÕES DO TOPO
+================================ */
 
-body {
-    min-height: 100vh;
-}
-
-.app {
-    width: 100%;
-    min-height: 100vh;
-    height: auto;
-    overflow: visible;
-}
-
-.main {
-    min-height: 0;
-    overflow: visible;
-}
-
-.page,
-.page.active {
-    height: auto;
-}
-
-/* Desktop grande: mantém o visual original em 4 colunas */
-@media (min-width: 1401px) {
-    .departments {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-    }
-
-    .zones-grid {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-    }
-}
-
-/* Notebook / desktop menor */
-@media (max-width: 1400px) and (min-width: 901px) {
-    .header {
-        grid-template-columns: 130px minmax(0, 1fr) 220px;
-        padding-left: 24px;
-        padding-right: 24px;
-    }
-
-    .header-logo img {
-        width: 88px;
-    }
-
-    .main {
-        padding-left: 24px;
-        padding-right: 24px;
-    }
-
-    .departments {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 14px;
-    }
-
-    .departments::before {
-        display: none;
-    }
-
-    .zones-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 12px;
-    }
-
-    .department,
-    .zone-card {
-        min-width: 0;
-    }
-}
-
-/* Tablet */
-@media (max-width: 900px) and (min-width: 701px) {
-    .header {
-        height: auto;
-        min-height: 82px;
-        grid-template-columns: 105px minmax(0, 1fr) auto;
-        gap: 12px;
-        padding: 12px 20px;
-    }
-
-    .header-logo img {
-        width: 78px;
-    }
-
-    .header-center h1 {
-        font-size: 22px;
-    }
-
-    .header-center p {
-        font-size: 11px;
-    }
-
-    .main {
-        padding: 18px 20px 24px;
-    }
-
-    .section-heading {
-        align-items: flex-start;
-        gap: 18px;
-    }
-
-    .section-heading p {
-        width: 280px;
-    }
-
-    .departments,
-    .zones-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 12px;
-    }
-
-    .departments::before {
-        display: none;
-    }
-
-    .person-card {
-        width: 210px;
-    }
-}
-
-/* Celular */
-@media (max-width: 700px) {
-    .operational-responsibility {
-        width: min(100%, 360px);
-        padding: 10px;
-    }
-
-    .operational-label {
-        font-size: 8px;
-    }
-
-    .operational-zones span {
-        flex: 1 1 calc(50% - 6px);
-        min-width: 110px;
-        min-height: 30px;
-        font-size: 10px;
-    }
-}
-
-/* Celulares muito estreitos */
-@media (max-width: 430px) {
-    .operational-zones {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-    }
-
-    .operational-zones span {
-        min-width: 0;
-        width: 100%;
-    }
-}
-
-/* =====================================================
-   V4 — ZONAS DO CARLOS AO LADO DO COORDENADOR
-   Mantém as zonas como responsabilidade própria do Carlos,
-   sem dar a impressão de que elas coordenam os gestores abaixo.
-===================================================== */
-
-.coordinator-row {
-    width: min(760px, 94vw);
+.acoes-topo {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 14px;
-    position: relative;
+    justify-content: flex-end;
+    gap: 12px;
 }
 
-.coordinator-row .coordenador {
-    flex: 0 0 220px;
-}
-
-.coordinator-row .operational-responsibility {
-    width: auto;
-    max-width: 430px;
-    padding: 8px 10px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    text-align: left;
-    box-shadow: none;
-}
-
-.coordinator-row .operational-label {
-    margin: 0;
-    flex: 0 0 auto;
-    white-space: nowrap;
-}
-
-.coordinator-row .operational-zones {
-    justify-content: flex-start;
-    flex-wrap: nowrap;
-}
-
-.coordinator-row .operational-zones span {
-    min-height: 24px;
-    padding: 0 8px;
-    font-size: 8px;
-}
-
-/* A linha para os departamentos nasce do coordenador, não do bloco das zonas */
-.management-line.final {
-    margin-left: 0;
-}
-
-@media (max-width: 900px) {
-    .coordinator-row {
-        width: 100%;
-        flex-wrap: wrap;
-        gap: 10px;
-    }
-
-    .coordinator-row .operational-responsibility {
-        max-width: 100%;
-    }
-}
-
-@media (max-width: 700px) {
-    .coordinator-row {
-        flex-direction: column;
-    }
-
-    .coordinator-row .coordenador {
-        flex: 0 0 auto;
-    }
-
-    .coordinator-row .operational-responsibility {
-        width: min(100%, 360px);
-        display: block;
-        text-align: center;
-        padding: 9px 10px 10px;
-    }
-
-    .coordinator-row .operational-label {
-        display: block;
-        margin-bottom: 7px;
-        white-space: normal;
-    }
-
-    .coordinator-row .operational-zones {
-        justify-content: center;
-        flex-wrap: wrap;
-    }
-}
-
-/* =====================================================
-   V5 — CARLOS PERMANECE CENTRALIZADO
-   As zonas são apenas uma informação lateral e NÃO
-   participam do fluxo que define o centro do organograma.
-===================================================== */
-
-.coordinator-row {
-    width: 220px;
-    position: relative;
-    display: block;
-    margin: 0 auto;
-}
-
-.coordinator-row .coordenador {
-    width: 220px;
-    max-width: 100%;
-    margin: 0 auto;
-    flex: none;
-}
-
-.coordinator-row .operational-responsibility {
-    position: absolute;
-    left: calc(100% + 18px);
-    top: 50%;
-    transform: translateY(-50%);
-
-    width: max-content;
-    max-width: none;
-    min-height: 42px;
-
+.status {
     display: flex;
     align-items: center;
     gap: 9px;
 
-    padding: 7px 9px;
-    margin: 0;
+    font-size: 13px;
+    font-weight: 700;
+    color: #555560;
 
-    border: 1px solid var(--gray-200);
-    border-radius: 8px;
-    background: var(--gray-50);
-    box-shadow: none;
-    text-align: left;
+    background: #f7f7f9;
+    border: 1px solid #ededf0;
+
+    padding: 10px 16px;
+    border-radius: 100px;
 }
 
-.coordinator-row .operational-label {
-    margin: 0;
-    white-space: nowrap;
-    font-size: 7px;
-}
-
-.coordinator-row .operational-zones {
-    display: flex;
-    flex-wrap: nowrap;
-    justify-content: flex-start;
-    gap: 5px;
-}
-
-.coordinator-row .operational-zones span {
-    min-height: 23px;
-    padding: 0 7px;
-    font-size: 8px;
-}
-
-/* Mantém a linha vertical exatamente no eixo central do Carlos */
-.management-line.final {
-    margin-left: 0 !important;
-}
-
-/* Em notebooks menores, reduzimos o bloco lateral sem mover o Carlos */
-@media (max-width: 1250px) and (min-width: 901px) {
-    .coordinator-row .operational-responsibility {
-        left: calc(100% + 12px);
-        gap: 6px;
-        padding: 6px 7px;
-    }
-
-    .coordinator-row .operational-label {
-        font-size: 6.5px;
-    }
-
-    .coordinator-row .operational-zones {
-        gap: 4px;
-    }
-
-    .coordinator-row .operational-zones span {
-        padding: 0 6px;
-        font-size: 7px;
-    }
-}
-
-/* Tablet: o Carlos continua centralizado e as zonas vão para baixo */
-@media (max-width: 900px) {
-    .coordinator-row {
-        width: 220px;
-        display: block;
-        margin: 0 auto;
-    }
-
-    .coordinator-row .operational-responsibility {
-        position: static;
-        transform: none;
-
-        width: min(420px, calc(100vw - 40px));
-        max-width: none;
-
-        margin-top: 10px;
-        margin-left: 50%;
-        translate: -50% 0;
-
-        justify-content: center;
-        flex-wrap: wrap;
-        text-align: center;
-    }
-
-    .coordinator-row .operational-zones {
-        justify-content: center;
-        flex-wrap: wrap;
-    }
-}
-
-/* Celular: informação compacta abaixo, eixo continua central */
-@media (max-width: 700px) {
-    .coordinator-row {
-        width: min(220px, 80vw);
-    }
-
-    .coordinator-row .coordenador {
-        width: 100%;
-    }
-
-    .coordinator-row .operational-responsibility {
-        width: min(340px, calc(100vw - 28px));
-        display: block;
-        padding: 9px 10px 10px;
-    }
-
-    .coordinator-row .operational-label {
-        display: block;
-        margin-bottom: 7px;
-        font-size: 8px;
-        white-space: normal;
-    }
-
-    .coordinator-row .operational-zones {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 6px;
-    }
-
-    .coordinator-row .operational-zones span {
-        width: 100%;
-        min-width: 0;
-        min-height: 28px;
-        font-size: 9px;
-    }
-}
-
-@media (max-width: 430px) {
-    .coordinator-row .operational-responsibility {
-        width: min(310px, calc(100vw - 24px));
-    }
+.status-bolinha {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--laranja);
 }
 
 
-/* =====================================================
-   AJUSTES FINAIS - CONTATOS, GEM, RESGATE E RESPONSIVIDADE
-===================================================== */
+/* BOTÃO LIMPAR DADOS */
 
-/* Permite que páginas maiores rolem sem cortar conteúdo */
-.app {
-    min-height: 100vh;
-    height: auto;
-    overflow: visible;
-}
+.btn-limpar-topo {
+    height: 42px;
 
-.main {
-    min-height: calc(100vh - 115px);
-    overflow: visible;
-}
-
-.page,
-.page.active {
-    height: auto;
-    min-height: 0;
-}
-
-/* GEM centralizado */
-.gem-title {
-    width: 100%;
-    margin-bottom: 10px;
-    text-align: center;
-}
-
-.gem-hierarchy {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
+    gap: 8px;
+
+    padding: 0 17px;
+
+    border: 1px solid rgba(105, 0, 216, 0.18);
+    border-radius: 100px;
+
+    background: #ffffff;
+    color: var(--roxo);
+
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 800;
+
+    cursor: pointer;
+    white-space: nowrap;
+
+    box-shadow: 0 4px 14px rgba(105, 0, 216, 0.06);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        border-color 0.2s ease,
+        background 0.2s ease;
 }
 
-.gem-manager,
-.gem-intern {
-    width: 85%;
-    text-align: center;
-    align-items: center;
-}
+.icone-nova-visita {
+    width: 22px;
+    height: 22px;
 
-.gem-connector {
-    width: 1px;
-    height: 14px;
-    background: var(--gray-300);
+    display: grid;
+    place-items: center;
+
     flex-shrink: 0;
+
+    border-radius: 50%;
+
+    background: var(--gradiente);
+    color: #ffffff;
+
+    font-size: 17px;
+    font-weight: 500;
+    line-height: 1;
 }
 
-/* Cards de zonas com contatos */
-.zone-card {
+.btn-limpar-topo:hover {
+    transform: translateY(-1px);
+
+    border-color: rgba(105, 0, 216, 0.35);
+    background: #faf7ff;
+
+    box-shadow: 0 7px 20px rgba(105, 0, 216, 0.12);
+}
+
+.btn-limpar-topo:active {
+    transform: translateY(0);
+}
+
+.btn-limpar-topo:focus-visible {
+    outline: none;
+
+    box-shadow:
+        0 0 0 4px rgba(105, 0, 216, 0.12);
+}
+
+
+/* ================================
+   HERO
+================================ */
+
+.pagina {
+    min-height: 100vh;
+}
+
+.hero {
+    position: relative;
+    overflow: hidden;
+    background: #15131a;
+}
+
+.hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+
+    background:
+        radial-gradient(
+            circle at 75% 20%,
+            rgba(255, 101, 0, 0.2),
+            transparent 32%
+        ),
+        radial-gradient(
+            circle at 20% 90%,
+            rgba(105, 0, 216, 0.32),
+            transparent 40%
+        );
+}
+
+.hero::after {
+    content: "";
+    position: absolute;
+
+    width: 650px;
+    height: 650px;
+
+    right: -330px;
+    top: -350px;
+
+    border-radius: 50%;
+
+    background: var(--gradiente);
+
+    filter: blur(20px);
+    opacity: 0.6;
+}
+
+.hero-conteudo {
+    width: min(1180px, calc(100% - 40px));
+    min-height: 365px;
+    margin: auto;
+
+    position: relative;
+    z-index: 2;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.hero-texto {
+    max-width: 690px;
+    padding: 60px 0;
+}
+
+.tag {
+    display: inline-flex;
+    align-items: center;
+
+    color: #ffffff;
+
+    font-size: 11px;
+    letter-spacing: 2.2px;
+    font-weight: 800;
+
+    padding: 8px 13px;
+
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 100px;
+
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.hero h1 {
+    margin-top: 24px;
+
+    color: #ffffff;
+
+    font-size: clamp(42px, 6vw, 70px);
+    line-height: 0.98;
+    letter-spacing: -3px;
+
+    max-width: 700px;
+}
+
+.hero h1 span {
+    display: block;
+
+    background: linear-gradient(
+        90deg,
+        #c777ff,
+        #ff668b,
+        #ff8a21
+    );
+
+    -webkit-background-clip: text;
+    background-clip: text;
+
+    color: transparent;
+}
+
+.hero p {
+    margin-top: 24px;
+    max-width: 540px;
+
+    color: #c9c7cf;
+
+    font-size: 17px;
+    line-height: 1.7;
+}
+
+.hero-decoracao {
+    position: relative;
+    width: 300px;
+    height: 300px;
+}
+
+.circulo {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.circulo-1 {
+    width: 260px;
+    height: 260px;
+    right: 0;
+    top: 20px;
+}
+
+.circulo-2 {
+    width: 180px;
+    height: 180px;
+    right: 40px;
+    top: 60px;
+}
+
+.circulo-3 {
+    width: 90px;
+    height: 90px;
+
+    right: 85px;
+    top: 105px;
+
+    background: var(--gradiente);
+    border: none;
+
+    box-shadow: 0 20px 70px rgba(255, 80, 0, 0.25);
+}
+
+
+/* ================================
+   FORMULÁRIO
+================================ */
+
+.formulario-container {
+    width: min(1080px, calc(100% - 40px));
+
+    margin: -55px auto 80px;
+
+    background: var(--branco);
+
+    border-radius: 24px;
+
+    position: relative;
+    z-index: 5;
+
+    box-shadow: var(--sombra);
+
     overflow: hidden;
 }
 
-.zone-body {
-    align-items: stretch;
-}
+.formulario-container::before {
+    content: "";
 
-.zone-person {
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-}
-
-.zone-person strong {
-    margin-bottom: 5px;
-}
-
-.person-contact {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    margin-top: 3px;
-    min-width: 0;
-}
-
-.person-phone,
-.person-email {
     display: block;
-    max-width: 100%;
-    color: var(--gray-700);
-    text-decoration: none;
-    overflow-wrap: anywhere;
-    word-break: break-word;
-}
 
-.person-phone {
-    font-size: 7px;
-    font-weight: 700;
-}
-
-.person-email {
-    font-size: 6.5px;
-    line-height: 1.25;
-}
-
-.person-phone:hover,
-.person-email:hover {
-    color: var(--tke-purple);
-    text-decoration: underline;
-}
-
-/* Consultores técnicos da Zona 09 */
-.technical-list .person-contact {
-    margin-top: 5px;
-}
-
-.technical-list .person-phone {
-    font-size: 6.5px;
-}
-
-.technical-list .person-email {
-    font-size: 6px;
-}
-
-/* Resgate / Captação */
-.rescue-section {
     width: 100%;
-    margin-top: 22px;
-    padding-top: 16px;
-    padding-bottom: 12px;
-    border-top: 1px solid var(--gray-200);
+    height: 5px;
+
+    background: var(--gradiente);
 }
 
-.rescue-heading {
-    margin-bottom: 12px;
+
+/* ================================
+   CABEÇALHO DO FORMULÁRIO
+================================ */
+
+.cabecalho-formulario {
+    padding: 36px 45px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    gap: 30px;
+
+    border-bottom: 1px solid #eeeef2;
 }
 
-.rescue-heading > span {
-    display: block;
-    margin-bottom: 3px;
-    color: var(--tke-orange);
-    font-size: 8px;
+.cabecalho-formulario > div:first-child {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.numero-etapa {
+    width: 48px;
+    height: 48px;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 13px;
+
+    background: var(--gradiente);
+
+    color: #ffffff;
+
+    font-size: 13px;
     font-weight: 800;
-    letter-spacing: 0.8px;
+}
+
+.cabecalho-formulario h2 {
+    font-size: 23px;
+    letter-spacing: -0.5px;
+}
+
+.cabecalho-formulario p {
+    margin-top: 5px;
+
+    font-size: 14px;
+    color: var(--texto-secundario);
+}
+
+.obrigatorio {
+    font-size: 12px;
+    color: var(--texto-secundario);
+}
+
+.obrigatorio span {
+    color: var(--laranja);
+    font-weight: 900;
+}
+
+
+/* ================================
+   SEÇÕES DO FORMULÁRIO
+================================ */
+
+.secao-formulario {
+    padding: 44px 45px;
+    border-bottom: 1px solid #eeeef2;
+}
+
+.titulo-secao {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+
+    margin-bottom: 30px;
+}
+
+.titulo-secao > span {
+    width: 38px;
+    height: 38px;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 10px;
+
+    color: var(--roxo);
+    background: #f1e8ff;
+
+    font-size: 11px;
+    font-weight: 900;
+}
+
+.titulo-secao h3 {
+    font-size: 18px;
+    letter-spacing: -0.3px;
+}
+
+.titulo-secao p {
+    margin-top: 4px;
+
+    color: var(--texto-secundario);
+
+    font-size: 13px;
+}
+
+
+/* ================================
+   GRID
+================================ */
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    gap: 28px 24px;
+}
+
+.campo {
+    display: flex;
+    flex-direction: column;
+}
+
+.campo-grande {
+    grid-column: 1 / -1;
+}
+
+.campo > label {
+    margin-bottom: 10px;
+
+    font-size: 13px;
+    font-weight: 750;
+}
+
+.campo > label span {
+    color: var(--laranja);
+}
+
+
+/* ================================
+   INPUTS
+================================ */
+
+input,
+select,
+textarea {
+    width: 100%;
+
+    font-family: inherit;
+    font-size: 15px;
+    color: var(--texto);
+
+    border: 1px solid var(--borda);
+    outline: none;
+
+    border-radius: 11px;
+
+    background: #fafafa;
+
+    transition:
+        border 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease;
+}
+
+input,
+select {
+    height: 53px;
+    padding: 0 16px;
+}
+
+textarea {
+    min-height: 130px;
+
+    padding: 16px;
+
+    resize: vertical;
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: #a4a4ad;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    background: #ffffff;
+
+    border-color: #9b43e8;
+
+    box-shadow: 0 0 0 4px rgba(105, 0, 216, 0.08);
+}
+
+select {
+    cursor: pointer;
+}
+
+
+
+
+/* ================================
+   CAMPO CONDICIONAL - CONSERVADORA
+================================ */
+
+.campo-condicional {
+    margin-top: 18px;
+}
+
+.campo-condicional label {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 13px;
+    font-weight: 750;
+}
+
+.campo-condicional label span {
+    color: var(--laranja);
+}
+
+.campo-condicional[hidden] {
+    display: none;
+}
+
+
+/* ================================
+   VALOR DO CONTRATO
+================================ */
+
+.input-prefixo {
+    position: relative;
+}
+
+.input-prefixo > span {
+    position: absolute;
+
+    left: 16px;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    font-weight: 800;
+    color: var(--roxo);
+}
+
+.input-prefixo input {
+    padding-left: 48px;
+}
+
+
+/* ================================
+   OPÇÕES
+================================ */
+
+.opcoes {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 10px;
+}
+
+.opcoes-equipamentos {
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+}
+
+.opcao-card {
+    min-height: 52px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 11px;
+
+    padding: 13px 15px;
+
+    border: 1px solid var(--borda);
+    border-radius: 11px;
+
+    background: #fafafa;
+
+    cursor: pointer;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    transition:
+        border-color 0.2s ease,
+        background 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.opcao-card:hover {
+    border-color: #c3a1e5;
+    background: #fcfaff;
+}
+
+.opcao-card input {
+    display: none;
+}
+
+.radio-personalizado {
+    width: 18px;
+    height: 18px;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    border: 2px solid #b5b5bd;
+
+    position: relative;
+
+    transition: border-color 0.2s ease;
+}
+
+.opcao-card input:checked + .radio-personalizado {
+    border-color: var(--roxo);
+}
+
+.opcao-card input:checked + .radio-personalizado::after {
+    content: "";
+
+    position: absolute;
+
+    width: 8px;
+    height: 8px;
+
+    border-radius: 50%;
+
+    background: var(--gradiente);
+
+    left: 50%;
+    top: 50%;
+
+    transform: translate(-50%, -50%);
+}
+
+.opcao-card:has(input:checked) {
+    border-color: #9e56dc;
+    background: #faf5ff;
+
+    box-shadow:
+        0 0 0 2px rgba(105, 0, 216, 0.05);
+}
+
+
+/* ================================
+   CONTADOR
+================================ */
+
+.contador {
+    margin-top: 7px;
+
+    text-align: right;
+
+    color: #9a9aa2;
+
+    font-size: 11px;
+}
+
+
+/* ================================
+   FINAL DO FORMULÁRIO
+================================ */
+
+.acoes {
+    padding: 30px 45px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 25px;
+
+    background: #fafafa;
+}
+
+.seguranca {
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+}
+
+.icone-check {
+    width: 35px;
+    height: 35px;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 50%;
+
+    background: #f0e6ff;
+    color: var(--roxo);
+
+    font-weight: 900;
+}
+
+.seguranca div {
+    display: flex;
+    flex-direction: column;
+}
+
+.seguranca strong {
+    font-size: 12px;
+}
+
+.seguranca small {
+    margin-top: 3px;
+
+    color: var(--texto-secundario);
+
+    font-size: 11px;
+}
+
+
+/* BOTÃO REGISTRAR VISITA */
+
+.btn-enviar {
+    min-width: 210px;
+    height: 55px;
+
+    padding: 0 23px;
+
+    border: none;
+    border-radius: 11px;
+    outline: none;
+
+    background: var(--gradiente);
+
+    color: #ffffff;
+
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 800;
+
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    box-shadow:
+        0 12px 30px rgba(151, 25, 147, 0.2);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.btn-enviar:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 16px 35px rgba(151, 25, 147, 0.28);
+}
+
+.btn-enviar:active {
+    transform: translateY(0);
+}
+
+.seta {
+    font-size: 20px;
+}
+
+
+/* ================================
+   ERROS
+================================ */
+
+.campo-erro input,
+.campo-erro select,
+.campo-erro textarea {
+    border-color: #e5484d;
+}
+
+.erro-mensagem {
+    margin-top: 7px;
+
+    color: #d83a40;
+
+    font-size: 11px;
+}
+
+
+/* ================================
+   MODAL
+================================ */
+
+.modal {
+    position: fixed;
+    inset: 0;
+
+    background: rgba(15, 10, 20, 0.75);
+
+    backdrop-filter: blur(7px);
+
+    display: none;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+
+    z-index: 100;
+}
+
+.modal.ativo {
+    display: flex;
+}
+
+.modal-box {
+    width: min(450px, 100%);
+
+    position: relative;
+
+    background: #ffffff;
+
+    padding: 48px 38px 38px;
+
+    border-radius: 22px;
+
+    text-align: center;
+
+    box-shadow:
+        0 35px 100px rgba(0, 0, 0, 0.25);
+
+    animation: aparecer 0.3s ease;
+}
+
+@keyframes aparecer {
+    from {
+        opacity: 0;
+
+        transform:
+            translateY(15px)
+            scale(0.97);
+    }
+
+    to {
+        opacity: 1;
+
+        transform:
+            translateY(0)
+            scale(1);
+    }
+}
+
+.fechar-modal {
+    position: absolute;
+
+    right: 18px;
+    top: 14px;
+
+    border: none;
+    background: transparent;
+
+    font-size: 27px;
+
+    cursor: pointer;
+
+    color: #888888;
+}
+
+.icone-sucesso {
+    width: 72px;
+    height: 72px;
+
+    margin: 0 auto 22px;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 50%;
+
+    background: var(--gradiente);
+
+    color: #ffffff;
+
+    font-size: 30px;
+    font-weight: 900;
+
+    box-shadow:
+        0 15px 40px rgba(130, 0, 190, 0.2);
+}
+
+.modal-tag {
+    color: var(--roxo);
+
+    font-size: 10px;
+    letter-spacing: 2px;
+    font-weight: 900;
+}
+
+.modal-box h2 {
+    margin-top: 12px;
+
+    font-size: 27px;
+    letter-spacing: -0.8px;
+}
+
+.modal-box p {
+    margin: 13px auto 25px;
+
+    max-width: 320px;
+
+    color: var(--texto-secundario);
+
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+/* ID ÚNICO E EXPORTAÇÕES */
+
+.registro-id {
+    margin: -5px 0 22px;
+    padding: 14px 16px;
+    border: 1px solid #ece7f2;
+    border-radius: 12px;
+    background: #faf8fc;
+}
+
+.registro-id span {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--texto-secundario);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1px;
     text-transform: uppercase;
 }
 
-.rescue-heading h3 {
-    font-size: 18px;
-    color: var(--dark);
+.registro-id strong {
+    display: block;
+    color: var(--roxo);
+    font-size: 14px;
+    overflow-wrap: anywhere;
 }
 
-.rescue-grid {
+.acoes-exportacao {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.btn-exportar {
+    min-height: 48px;
+    padding: 0 14px;
+    border: 1px solid rgba(105, 0, 216, 0.22);
+    border-radius: 10px;
+    background: #ffffff;
+    color: var(--roxo);
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-exportar:hover {
+    transform: translateY(-1px);
+    background: #faf7ff;
+    box-shadow: 0 7px 18px rgba(105, 0, 216, 0.09);
+}
+
+.btn-novo {
+    width: 100%;
+    height: 52px;
+
+    border: none;
+    border-radius: 10px;
+
+    background: var(--gradiente);
+
+    color: #ffffff;
+
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 800;
+
+    cursor: pointer;
+}
+
+
+/* ================================
+   RODAPÉ
+================================ */
+
+footer {
+    background: #17151b;
+
+    padding: 30px 20px;
+}
+
+.footer-conteudo {
+    width: min(1080px, 100%);
+
+    margin: auto;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 30px;
+}
+
+.footer-conteudo img {
+    width: 100px;
+}
+
+.footer-conteudo p {
+    color: #8f8d95;
+
+    font-size: 12px;
+}
+
+
+/* =========================================
+   TABLET
+========================================= */
+
+@media (max-width: 850px) {
+
+    .hero-decoracao {
+        display: none;
+    }
+
+    .hero-conteudo {
+        min-height: 320px;
+    }
+
+    .hero-texto {
+        max-width: 100%;
+    }
+
+    .grid {
+        grid-template-columns: 1fr;
+    }
+
+    .campo-grande {
+        grid-column: auto;
+    }
+
+    .opcoes,
+    .opcoes-equipamentos {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+}
+
+
+/* =========================================
+   CELULAR
+========================================= */
+
+@media (max-width: 600px) {
+
+    body {
+        overflow-x: hidden;
+    }
+
+
+    /* TOPO */
+
+    .topo-conteudo {
+        width: calc(100% - 28px);
+
+        min-height: 72px;
+
+        gap: 12px;
+    }
+
+    .marca {
+        gap: 10px;
+        min-width: 0;
+    }
+
+    .logo {
+        width: 95px;
+        max-width: 100%;
+    }
+
+    .marca-texto {
+        display: none;
+    }
+
+    .acoes-topo {
+        flex-shrink: 0;
+        gap: 6px;
+    }
+
+    /*
+       No celular o status é escondido
+       para dar espaço ao botão Limpar dados.
+    */
+
+    .acoes-topo .status {
+        display: none;
+    }
+
+    .btn-limpar-topo {
+        height: 40px;
+
+        padding: 0 12px;
+
+        gap: 6px;
+
+        font-size: 11px;
+
+        box-shadow:
+            0 3px 10px rgba(105, 0, 216, 0.06);
+    }
+
+    .icone-nova-visita {
+        width: 21px;
+        height: 21px;
+
+        font-size: 16px;
+    }
+
+
+    /* HERO */
+
+    .hero-conteudo {
+        width: calc(100% - 32px);
+
+        min-height: 290px;
+    }
+
+    .hero-texto {
+        width: 100%;
+
+        padding: 42px 0 75px;
+    }
+
+    .tag {
+        padding: 7px 11px;
+
+        font-size: 9px;
+        letter-spacing: 1.5px;
+    }
+
+    .hero h1 {
+        margin-top: 18px;
+
+        font-size: 38px;
+        line-height: 1.02;
+        letter-spacing: -1.8px;
+    }
+
+    .hero p {
+        margin-top: 18px;
+
+        max-width: 100%;
+
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+
+    /* CONTAINER DO FORMULÁRIO */
+
+    .formulario-container {
+        width: calc(100% - 20px);
+
+        margin: -42px auto 45px;
+
+        border-radius: 16px;
+    }
+
+
+    /* CABEÇALHO DO FORMULÁRIO */
+
+    .cabecalho-formulario {
+        padding: 25px 20px;
+
+        flex-direction: column;
+        align-items: flex-start;
+
+        gap: 16px;
+    }
+
+    .cabecalho-formulario > div:first-child {
+        gap: 13px;
+    }
+
+    .numero-etapa {
+        width: 42px;
+        height: 42px;
+        min-width: 42px;
+    }
+
+    .cabecalho-formulario h2 {
+        font-size: 19px;
+    }
+
+    .cabecalho-formulario p {
+        font-size: 12px;
+        line-height: 1.5;
+    }
+
+
+    /* SEÇÕES */
+
+    .secao-formulario {
+        padding: 30px 20px;
+    }
+
+    .titulo-secao {
+        align-items: flex-start;
+
+        gap: 12px;
+
+        margin-bottom: 25px;
+    }
+
+    .titulo-secao > span {
+        width: 35px;
+        height: 35px;
+        min-width: 35px;
+    }
+
+    .titulo-secao h3 {
+        font-size: 17px;
+    }
+
+    .titulo-secao p {
+        font-size: 12px;
+        line-height: 1.5;
+    }
+
+
+    /* GRID */
+
+    .grid {
+        grid-template-columns: 1fr;
+
+        gap: 23px;
+    }
+
+    .campo,
+    .campo-grande {
+        width: 100%;
+        min-width: 0;
+
+        grid-column: auto;
+    }
+
+
+    /* LABELS */
+
+    .campo > label {
+        font-size: 13px;
+        line-height: 1.4;
+    }
+
+
+    /* CAMPOS */
+
+    input,
+    select {
+        width: 100%;
+        min-width: 0;
+
+        height: 54px;
+
+        padding-left: 14px;
+        padding-right: 14px;
+
+        /*
+           16px evita o zoom automático
+           do Safari no iPhone.
+        */
+
+        font-size: 16px;
+    }
+
+    textarea {
+        width: 100%;
+        min-width: 0;
+
+        min-height: 125px;
+
+        padding: 14px;
+
+        font-size: 16px;
+    }
+
+
+    /* OPÇÕES */
+
+    .opcoes,
+    .opcoes-equipamentos {
+        grid-template-columns: 1fr;
+
+        gap: 9px;
+    }
+
+    .opcao-card {
+        width: 100%;
+
+        min-height: 55px;
+
+        padding: 14px;
+
+        border-radius: 10px;
+
+        font-size: 13px;
+        line-height: 1.4;
+    }
+
+    .radio-personalizado {
+        width: 20px;
+        height: 20px;
+        min-width: 20px;
+    }
+
+
+    /* VALOR */
+
+    .input-prefixo,
+    .input-prefixo input {
+        width: 100%;
+    }
+
+
+    /* FINAL DO FORMULÁRIO */
+
+    .acoes {
+        padding: 24px 20px;
+
+        flex-direction: column;
+        align-items: stretch;
+
+        gap: 20px;
+    }
+
+    .seguranca {
+        align-items: flex-start;
+    }
+
+    .btn-enviar {
+        width: 100%;
+        min-width: 0;
+
+        height: 58px;
+
+        border-radius: 11px;
+
+        font-size: 14px;
+    }
+
+
+    /* MODAL */
+
+    .modal {
+        padding: 15px;
+    }
+
+    .modal-box {
+        width: 100%;
+
+        padding: 45px 24px 28px;
+
+        border-radius: 18px;
+    }
+
+    .modal-box h2 {
+        font-size: 23px;
+    }
+
+    .acoes-exportacao {
+        grid-template-columns: 1fr;
+    }
+
+
+    /* RODAPÉ */
+
+    footer {
+        padding: 27px 20px;
+    }
+
+    .footer-conteudo {
+        flex-direction: column;
+        justify-content: center;
+
+        gap: 12px;
+
+        text-align: center;
+    }
+
+    .footer-conteudo img {
+        width: 90px;
+    }
+}
+
+
+/* =========================================
+   CELULARES PEQUENOS
+========================================= */
+
+@media (max-width: 380px) {
+
+    .topo-conteudo {
+        width: calc(100% - 20px);
+        gap: 8px;
+    }
+
+    .logo {
+        width: 82px;
+    }
+
+    .btn-limpar-topo {
+        height: 38px;
+
+        padding: 0 9px;
+
+        gap: 5px;
+
+        font-size: 10px;
+    }
+
+    .icone-nova-visita {
+        width: 19px;
+        height: 19px;
+
+        font-size: 14px;
+    }
+
+    .hero h1 {
+        font-size: 34px;
+    }
+
+    .hero-conteudo {
+        width: calc(100% - 26px);
+    }
+
+    .formulario-container {
+        width: calc(100% - 14px);
+    }
+
+    .secao-formulario,
+    .cabecalho-formulario {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+
+    .acoes {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+}
+
+/* =========================================================
+   ENDEREÇO PADRONIZADO / BAIRRO PESQUISÁVEL
+========================================================= */
+.ajuda-campo {
+    margin-top: 7px;
+    color: var(--texto-secundario);
+    font-size: 11px;
+    line-height: 1.45;
+}
+
+input[readonly] {
+    background: #f3f3f6;
+    color: #5f5f69;
+    cursor: default;
+}
+
+/* =========================================================
+   LISTA PESQUISÁVEL DE BAIRROS
+========================================================= */
+
+.lista-bairros {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+
+    max-height: 260px;
+    overflow-y: auto;
+
+    background: #ffffff;
+
+    border: 1px solid var(--borda);
+    border-radius: 11px;
+
+    box-shadow:
+        0 14px 35px rgba(32, 20, 50, 0.14);
+
+    z-index: 1000;
+
+    padding: 6px;
+}
+
+
+/* Quando estiver escondida */
+
+.lista-bairros[hidden] {
+    display: none;
+}
+
+
+/* =========================================================
+   CADA BAIRRO DA LISTA
+========================================================= */
+
+.opcao-bairro {
+    width: 100%;
+    min-height: 42px;
+
+    display: flex;
+    align-items: center;
+
+    padding: 10px 12px;
+
+    border: none;
+    border-radius: 8px;
+
+    background: transparent;
+
+    color: var(--texto);
+
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+
+    text-align: left;
+
+    cursor: pointer;
+
+    transition:
+        background 0.15s ease,
+        color 0.15s ease;
+}
+
+
+/* Mouse em cima */
+
+.opcao-bairro:hover {
+    background: #f5edff;
+    color: var(--roxo);
+}
+
+
+/* Seleção usando as setas do teclado */
+
+.opcao-bairro.ativo {
+    background: #f1e8ff;
+    color: var(--roxo);
+}
+
+
+/* =========================================================
+   NENHUM BAIRRO ENCONTRADO
+========================================================= */
+
+.bairro-sem-resultado {
+    padding: 14px 12px;
+
+    color: var(--texto-secundario);
+
+    font-size: 13px;
+    text-align: center;
+}
+
+
+/* =========================================================
+   BARRA DE ROLAGEM
+========================================================= */
+
+.lista-bairros::-webkit-scrollbar {
+    width: 7px;
+}
+
+.lista-bairros::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.lista-bairros::-webkit-scrollbar-thumb {
+    background: #d6c6e7;
+    border-radius: 20px;
+}
+
+.lista-bairros::-webkit-scrollbar-thumb:hover {
+    background: #b99bd5;
+}
+
+
+/* =========================================================
+   BAIRRO COM FOCO
+========================================================= */
+
+#bairro:focus {
+    background: #ffffff;
+
+    border-color: #9b43e8;
+
+    box-shadow:
+        0 0 0 4px rgba(105, 0, 216, 0.08);
+}
+
+
+/* =========================================================
+   CELULAR
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .lista-bairros {
+        max-height: 230px;
+
+        border-radius: 10px;
+
+        padding: 5px;
+    }
+
+    .opcao-bairro {
+        min-height: 46px;
+
+        padding: 11px 12px;
+
+        font-size: 15px;
+    }
+
+}
+
+
+/* =========================================================
+   MODAL DE SUCESSO — AJUSTE FINAL
+   Layout compacto: ID em caixa + Excel/PDF empilhados
+========================================================= */
+
+.modal-box {
+    width: min(390px, 100%);
+    position: relative;
+    background: #ffffff;
+    padding: 32px 24px 24px;
+    border-radius: 18px;
+    text-align: center;
+    box-shadow: 0 28px 80px rgba(0, 0, 0, 0.24);
+    animation: aparecer 0.3s ease;
+}
+
+.fechar-modal {
+    position: absolute;
+    right: 15px;
+    top: 12px;
+    border: none;
+    background: transparent;
+    color: #8b8b8b;
+    font-family: inherit;
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.icone-sucesso {
+    width: 62px;
+    height: 62px;
+    margin: 0 auto 15px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--gradiente);
+    color: #ffffff;
+    font-size: 28px;
+    font-weight: 900;
+    box-shadow: 0 12px 30px rgba(130, 0, 190, 0.18);
+}
+
+.modal-tag {
+    display: block;
+    margin: 0;
+    color: var(--roxo);
+    font-size: 9px;
+    line-height: 1.2;
+    letter-spacing: 2.2px;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.modal-box h2 {
+    margin: 10px 0 0;
+    color: var(--texto);
+    font-size: 23px;
+    line-height: 1.15;
+    letter-spacing: -0.6px;
+}
+
+.modal-box p {
+    margin: 12px auto 17px;
+    max-width: 310px;
+    color: var(--texto-secundario);
+    font-size: 12px;
+    line-height: 1.55;
+}
+
+/* Caixa separada do ID */
+.registro-id {
+    width: 100%;
+    margin: 0 0 10px;
+    padding: 11px 12px;
+    border: 1px solid rgba(105, 0, 216, 0.16);
+    border-radius: 10px;
+    background: #faf7ff;
+    text-align: center;
+}
+
+.registro-id span {
+    display: block;
+    margin: 0 0 3px;
+    color: #777681;
+    font-size: 8px;
+    line-height: 1.2;
+    font-weight: 800;
+    letter-spacing: 1.7px;
+    text-transform: uppercase;
+}
+
+.registro-id strong {
+    display: block;
+    color: var(--texto);
+    font-size: 12px;
+    line-height: 1.3;
+    font-weight: 800;
+    overflow-wrap: anywhere;
+}
+
+/* Excel e PDF: um embaixo do outro */
+.acoes-exportacao {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+    margin: 0 0 9px;
+}
+
+.btn-exportar {
+    width: 100%;
+    min-height: 55px;
+    padding: 8px 15px;
+    border: 1px solid rgba(105, 0, 216, 0.22);
+    border-radius: 10px;
+    background: #ffffff;
+    color: var(--texto);
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 800;
+    text-align: left;
+    cursor: pointer;
+    transition:
+        transform 0.2s ease,
+        background 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.btn-exportar:hover {
+    transform: translateY(-1px);
+    background: #faf7ff;
+    border-color: rgba(105, 0, 216, 0.38);
+    box-shadow: 0 7px 18px rgba(105, 0, 216, 0.08);
+}
+
+/* Mantém ícones/conteúdo internos alinhados caso existam */
+.btn-exportar > * {
+    vertical-align: middle;
+}
+
+/* Botão final */
+.btn-novo {
+    width: 100%;
+    height: 50px;
+    border: none;
+    border-radius: 10px;
+    background: var(--gradiente);
+    color: #ffffff;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+/* Celular: mantém exatamente a mesma organização vertical */
+@media (max-width: 600px) {
+    .modal {
+        padding: 10px;
+    }
+
+    .modal-box {
+        width: min(100%, 390px);
+        padding: 30px 16px 17px;
+        border-radius: 16px;
+    }
+
+    .fechar-modal {
+        right: 12px;
+        top: 10px;
+        font-size: 22px;
+    }
+
+    .icone-sucesso {
+        width: 58px;
+        height: 58px;
+        margin-bottom: 13px;
+        font-size: 26px;
+    }
+
+    .modal-tag {
+        font-size: 8px;
+        letter-spacing: 2px;
+    }
+
+    .modal-box h2 {
+        margin-top: 9px;
+        font-size: 20px;
+    }
+
+    .modal-box p {
+        margin: 10px auto 15px;
+        max-width: 285px;
+        font-size: 11px;
+        line-height: 1.5;
+    }
+
+    .registro-id {
+        padding: 10px;
+        margin-bottom: 8px;
+    }
+
+    .registro-id strong {
+        font-size: 11px;
+    }
+
+    .acoes-exportacao {
+        grid-template-columns: 1fr;
+        gap: 7px;
+        margin-bottom: 8px;
+    }
+
+    .btn-exportar {
+        min-height: 52px;
+        padding: 7px 13px;
+    }
+
+    .btn-novo {
+        height: 48px;
+        font-size: 12px;
+    }
+}
+
+/* =========================================================
+   CAMPOS CONDICIONAIS - PROPOSTA / RESULTADO DA VISITA
+========================================================= */
+
+.painel-condicional {
+    margin-top: 18px;
+    padding: 22px;
+    border: 1px solid rgba(105, 0, 216, 0.13);
+    border-radius: 14px;
+    background: linear-gradient(
+        135deg,
+        rgba(105, 0, 216, 0.035),
+        rgba(255, 101, 0, 0.025)
+    );
+}
+
+.painel-condicional[hidden] {
+    display: none !important;
+}
+
+.cabecalho-condicional {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.cabecalho-condicional strong {
+    font-size: 14px;
+    color: var(--texto);
+}
+
+.cabecalho-condicional small {
+    font-size: 12px;
+    color: var(--texto-secundario);
+    line-height: 1.5;
+}
+
+.grid-condicional {
+    gap: 22px 20px;
+}
+
+.ajuda-campo {
+    margin-top: 9px;
+    color: var(--texto-secundario);
+    font-size: 12px;
+    line-height: 1.55;
+}
+
+.ajuda-campo strong {
+    color: var(--roxo);
+}
+
+.opcoes-proposta {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.opcoes-resultado {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.opcoes-destino {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+@media (max-width: 850px) {
+    .opcoes-resultado,
+    .opcoes-destino {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .painel-condicional {
+        padding: 17px;
+    }
+
+    .opcoes-proposta {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .grid-condicional {
+        grid-template-columns: 1fr;
+    }
+
+    .grid-condicional .campo-grande {
+        grid-column: auto;
+    }
+}
+
+/* =========================================================
+   OPORTUNIDADE / STATUS COMERCIAL
+========================================================= */
+
+.opcoes-tipo-registro,
+.opcoes-tipo-cliente {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+#campoOportunidadeExistente,
+#campoMotivoPerda {
+    margin-top: 18px;
+}
+
+#campoPrevisaoFechamento[hidden] {
+    display: none !important;
+}
+
+#campoMotivoPerda select {
+    margin-bottom: 4px;
+}
+
+#obsMotivo {
+    min-height: 105px;
+}
+
+.registro-id-box + .registro-id-box {
+    margin-top: 10px;
+}
+
+@media (max-width: 700px) {
+    .opcoes-tipo-registro,
+    .opcoes-tipo-cliente {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+
+/* ================================
+   EQUIPAMENTOS DINÂMICOS
+================================ */
+
+.equipamentos-intro {
+    margin-bottom: 22px;
+    padding: 17px 19px;
+    border: 1px solid rgba(105, 0, 216, 0.13);
+    border-radius: 14px;
+    background: linear-gradient(135deg, #fbf9ff 0%, #fffaf7 100%);
+}
+
+.equipamentos-intro strong {
+    display: block;
+    font-size: 13px;
+    color: var(--texto);
+}
+
+.equipamentos-intro p {
+    margin-top: 5px;
+    font-size: 12px;
+    line-height: 1.55;
+    color: var(--texto-secundario);
+}
+
+.lista-equipamentos {
+    display: grid;
+    gap: 18px;
+}
+
+.equipamento-card {
+    position: relative;
+    padding: 22px;
+    border: 1px solid #e7e3ec;
+    border-radius: 17px;
+    background: #ffffff;
+    box-shadow: 0 9px 28px rgba(32, 20, 50, 0.055);
+}
+
+.equipamento-card-cabecalho {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.equipamento-card-titulo {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+}
+
+.equipamento-numero {
+    width: 31px;
+    height: 31px;
+    display: grid;
+    place-items: center;
+    border-radius: 9px;
+    background: #f1e8ff;
+    color: var(--roxo);
+    font-size: 11px;
+    font-weight: 900;
+}
+
+.equipamento-card-titulo strong {
+    font-size: 14px;
+}
+
+.btn-remover-equipamento {
+    border: 1px solid #eadfe2;
+    border-radius: 9px;
+    background: #fff;
+    color: #a34b5c;
+    padding: 8px 11px;
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.btn-remover-equipamento:hover {
+    background: #fff7f8;
+    border-color: #d9aab3;
+}
+
+.equipamento-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px 16px;
+}
+
+.equipamento-grid .campo {
+    min-width: 0;
+}
+
+.campo-total-paradas input {
+    background: #f4f1f8;
+    color: var(--roxo-escuro);
+    font-weight: 850;
+}
+
+.ajuda-equipamento {
+    display: block;
+    margin-top: 7px;
+    color: #8b8993;
+    font-size: 11px;
+    line-height: 1.4;
+}
+
+.btn-adicionar-equipamento {
+    width: 100%;
+    min-height: 52px;
+    margin-top: 17px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    border: 1px dashed rgba(105, 0, 216, 0.38);
+    border-radius: 12px;
+    background: #fbf8ff;
+    color: var(--roxo);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 850;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.btn-adicionar-equipamento span {
+    width: 24px;
+    height: 24px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--roxo);
+    color: #fff;
+    font-size: 18px;
+    line-height: 1;
+}
+
+.btn-adicionar-equipamento:hover {
+    transform: translateY(-1px);
+    border-color: var(--roxo);
+    background: #f7f0ff;
+}
+
+.resumo-equipamentos {
+    margin-top: 20px;
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 12px;
 }
 
-.rescue-card {
-    min-width: 0;
-    overflow: hidden;
-    border: 1px solid var(--gray-200);
-    border-radius: 8px;
-    background: white;
-}
-
-.rescue-card-header {
-    min-height: 50px;
+.resumo-equipamento-item {
+    padding: 15px 17px;
+    border: 1px solid #ece9f0;
+    border-radius: 12px;
+    background: #fafafa;
     display: flex;
     align-items: center;
-    padding: 9px 13px;
-    background: var(--tke-orange);
-    color: white;
+    justify-content: space-between;
+    gap: 14px;
 }
 
-.rescue-card-header span {
-    display: block;
-    margin-bottom: 3px;
-    font-size: 7px;
+.resumo-equipamento-item span {
+    color: var(--texto-secundario);
+    font-size: 12px;
     font-weight: 700;
-    letter-spacing: 0.5px;
 }
 
-.rescue-card-header strong {
+.resumo-equipamento-item strong {
+    color: var(--roxo);
+    font-size: 20px;
+}
+
+@media (max-width: 720px) {
+    .equipamento-grid,
+    .resumo-equipamentos {
+        grid-template-columns: 1fr;
+    }
+
+    .equipamento-card {
+        padding: 18px;
+    }
+
+    .equipamento-card-cabecalho {
+        align-items: flex-start;
+    }
+}
+
+
+/* =========================================================
+   ACESSO RESTRITO
+========================================================= */
+
+body.acesso-bloqueado {
+    overflow: hidden;
+}
+
+.tela-acesso {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+    background:
+        radial-gradient(circle at 15% 85%, rgba(105, 0, 216, 0.28), transparent 38%),
+        radial-gradient(circle at 85% 10%, rgba(255, 101, 0, 0.22), transparent 32%),
+        #15131a;
+}
+
+.tela-acesso[hidden] {
+    display: none;
+}
+
+.acesso-box {
+    width: min(460px, 100%);
+    overflow: hidden;
+    border-radius: 24px;
+    background: #ffffff;
+    box-shadow: 0 30px 90px rgba(0, 0, 0, 0.3);
+}
+
+.acesso-marca {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 24px 28px;
+    border-bottom: 1px solid #eeeeF2;
+}
+
+.acesso-logo {
+    width: 96px;
+    height: auto;
     display: block;
+}
+
+.acesso-marca > div {
+    display: flex;
+    flex-direction: column;
+    padding-left: 18px;
+    border-left: 1px solid var(--borda);
+}
+
+.acesso-marca span {
+    color: var(--texto-secundario);
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 2px;
+}
+
+.acesso-marca strong {
+    margin-top: 3px;
+    font-size: 14px;
+}
+
+.acesso-conteudo {
+    padding: 30px 28px 32px;
+}
+
+.acesso-tag {
+    display: inline-flex;
+    padding: 7px 11px;
+    border-radius: 999px;
+    background: #f1e8ff;
+    color: var(--roxo);
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 1.5px;
+}
+
+.acesso-conteudo h2 {
+    margin-top: 14px;
+    font-size: 25px;
+    letter-spacing: -0.6px;
+}
+
+.acesso-conteudo > p {
+    margin-top: 8px;
+    color: var(--texto-secundario);
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.form-acesso {
+    display: grid;
+    gap: 18px;
+    margin-top: 24px;
+}
+
+.form-acesso .campo > label span {
+    color: var(--laranja);
+}
+
+.btn-entrar {
+    height: 54px;
+    padding: 0 18px;
+    border: 0;
+    border-radius: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--gradiente);
+    color: #ffffff;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 850;
+    cursor: pointer;
+}
+
+.btn-entrar:disabled {
+    cursor: wait;
+    opacity: 0.65;
+}
+
+.erro-acesso {
+    margin: 0 !important;
+    padding: 11px 13px;
+    border: 1px solid #f0caca;
+    border-radius: 10px;
+    background: #fff5f5;
+    color: #a52a2a !important;
+    font-size: 12px !important;
+}
+
+.acesso-aviso {
+    display: block;
+    margin-top: 16px;
+    color: #8a8a93;
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+.btn-sair-topo {
+    height: 42px;
+    padding: 0 16px;
+    border: 1px solid #e5d8f2;
+    border-radius: 999px;
+    background: #ffffff;
+    color: var(--roxo);
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+
+/* =========================================================
+   BUSCA DE OPORTUNIDADE / CONDOMÍNIO
+========================================================= */
+
+.busca-oportunidade-topo {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.busca-oportunidade-topo > div:first-child > strong {
+    font-size: 14px;
+}
+
+.busca-oportunidade-topo .ajuda-campo {
+    margin-top: 4px;
+}
+
+.busca-oportunidade-modos {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.modo-busca {
+    position: relative;
+    cursor: pointer;
+}
+
+.modo-busca input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.modo-busca span {
+    display: inline-flex;
+    min-height: 36px;
+    align-items: center;
+    padding: 0 12px;
+    border: 1px solid var(--borda);
+    border-radius: 999px;
+    background: #ffffff;
+    color: var(--texto-secundario);
+    font-size: 11px;
+    font-weight: 800;
+    transition: 0.2s ease;
+}
+
+.modo-busca input:checked + span {
+    border-color: #9e56dc;
+    background: #f7f0ff;
+    color: var(--roxo);
+    box-shadow: 0 0 0 2px rgba(105, 0, 216, 0.05);
+}
+
+.campo-busca-condominio {
+    position: relative;
+}
+
+.campo-busca-condominio input {
+    padding-right: 95px;
+}
+
+.busca-carregando {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--roxo);
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.resultados-condominio {
+    display: grid;
+    gap: 8px;
+    margin-top: 12px;
+    max-height: 280px;
+    overflow-y: auto;
+}
+
+.resultado-condominio {
+    width: 100%;
+    padding: 13px 14px;
+    border: 1px solid var(--borda);
+    border-radius: 11px;
+    background: #ffffff;
+    text-align: left;
+    cursor: pointer;
+    font-family: inherit;
+    transition: 0.2s ease;
+}
+
+.resultado-condominio:hover {
+    border-color: #b98ee2;
+    background: #fcfaff;
+}
+
+.resultado-condominio strong,
+.resultado-condominio span {
+    display: block;
+}
+
+.resultado-condominio strong {
+    color: var(--texto);
     font-size: 13px;
 }
 
-.rescue-card-body {
-    padding: 12px 13px;
+.resultado-condominio span {
+    margin-top: 4px;
+    color: var(--texto-secundario);
+    font-size: 11px;
 }
 
-.rescue-contact {
+.resultados-vazio {
+    padding: 14px;
+    border: 1px dashed var(--borda);
+    border-radius: 11px;
+    color: var(--texto-secundario);
+    font-size: 12px;
+    text-align: center;
+}
+
+.oportunidade-selecionada {
+    margin-top: 16px;
     display: flex;
-    flex-wrap: wrap;
-    gap: 5px 16px;
-    margin-bottom: 10px;
-}
-
-.rescue-contact a {
-    color: var(--gray-700);
-    font-size: 8px;
-    font-weight: 600;
-    text-decoration: none;
-    overflow-wrap: anywhere;
-}
-
-.rescue-contact a:hover {
-    color: var(--tke-purple);
-    text-decoration: underline;
-}
-
-.rescue-zones {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-}
-
-.rescue-zones span {
-    min-height: 25px;
-    display: inline-flex;
     align-items: center;
-    justify-content: center;
-    padding: 0 9px;
-    border-radius: 4px;
-    background: var(--gray-100);
-    color: var(--gray-700);
-    font-size: 8px;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 14px 15px;
+    border: 1px solid #d7c4ea;
+    border-radius: 12px;
+    background: #faf6ff;
+}
+
+.oportunidade-selecionada[hidden] {
+    display: none;
+}
+
+.oportunidade-selecionada > div {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+}
+
+.oportunidade-selecionada span {
+    color: var(--roxo);
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+}
+
+.oportunidade-selecionada strong {
+    margin-top: 3px;
+    font-size: 13px;
+}
+
+.oportunidade-selecionada small {
+    margin-top: 3px;
+    color: var(--texto-secundario);
+    font-size: 11px;
+}
+
+.btn-trocar-oportunidade {
+    flex-shrink: 0;
+    padding: 8px 11px;
+    border: 1px solid #d4b9ed;
+    border-radius: 9px;
+    background: #ffffff;
+    color: var(--roxo);
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+#vendedor.vendedor-bloqueado {
+    background: #f2f2f4;
+    color: #666671;
+    cursor: not-allowed;
+}
+
+@media (max-width: 720px) {
+    .busca-oportunidade-topo {
+        flex-direction: column;
+    }
+
+    .busca-oportunidade-modos {
+        justify-content: flex-start;
+    }
+
+    .acesso-box {
+        border-radius: 18px;
+    }
+}
+
+
+/* =====================================
+   ORIGEM DA ATUALIZAÇÃO
+===================================== */
+
+.origem-atualizacao {
+    margin-top: 18px;
+    padding: 20px;
+    border: 1px solid rgba(105, 0, 216, 0.12);
+    border-radius: 14px;
+    background: #faf7ff;
+}
+
+.origem-atualizacao > label {
+    display: block;
+    margin-bottom: 12px;
+    font-size: 13px;
+    font-weight: 750;
+}
+
+.origem-atualizacao > label span {
+    color: var(--laranja);
+}
+
+.opcoes-origem-atualizacao {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+#boxIdVisitaGerado[hidden] {
+    display: none;
+}
+
+@media (max-width: 900px) {
+    .opcoes-origem-atualizacao {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 560px) {
+    .opcoes-origem-atualizacao {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+/* ================================
+   PERFIL / RETENÇÃO
+================================ */
+
+.opcao-somente-consultor[hidden] {
+    display: none !important;
+}
+
+.opcao-card.opcao-bloqueada {
+    opacity: 0.45;
+    cursor: not-allowed;
+    background: #f3f3f5;
+}
+
+.opcao-card.opcao-bloqueada:hover {
+    border-color: var(--borda);
+    background: #f3f3f5;
+    box-shadow: none;
+}
+
+#perfilResponsavel {
+    margin-top: 8px;
+    font-weight: 800;
+    color: var(--roxo);
+}
+
+
+/* =========================================================
+   LEITURA VISUAL DAS SEÇÕES
+========================================================= */
+
+.secao-formulario {
+    position: relative;
+    transition:
+        opacity 0.2s ease,
+        filter 0.2s ease,
+        background 0.2s ease;
+}
+
+#secaoDadosComerciais,
+#secaoCliente {
+    background: #ffffff;
+}
+
+#secaoEquipamentos,
+#secaoContato {
+    background: #fbfbfd;
+}
+
+.titulo-secao {
+    padding-bottom: 18px;
+    border-bottom: 1px solid #ececf1;
+}
+
+.titulo-secao > span {
+    box-shadow: 0 6px 18px rgba(105, 0, 216, 0.10);
+}
+
+
+/* =========================================================
+   FLUXO DE RETENÇÃO
+========================================================= */
+
+.aviso-retencao {
+    margin-top: 14px;
+    padding: 14px 16px;
+    border: 1px solid rgba(105, 0, 216, 0.16);
+    border-radius: 12px;
+    background: #f7f1ff;
+}
+
+.aviso-retencao strong,
+.aviso-retencao span {
+    display: block;
+}
+
+.aviso-retencao strong {
+    color: var(--roxo);
+    margin-bottom: 4px;
+}
+
+.aviso-retencao span {
+    color: var(--texto-secundario);
+    font-size: 12px;
+    line-height: 1.55;
+}
+
+.modo-retencao .secao-retencao-inativa {
+    background: #f1f1f3 !important;
+    opacity: 0.62;
+    filter: grayscale(0.85);
+}
+
+.modo-retencao .secao-retencao-inativa::after {
+    content: "Não se aplica ao fluxo de Retenção";
+    position: absolute;
+    top: 22px;
+    right: 32px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: #dedee3;
+    color: #70707a;
+    font-size: 10px;
+    font-weight: 800;
+}
+
+.campo-retencao-inativo {
+    opacity: 0.48;
+    filter: grayscale(0.8);
+}
+
+.campo-retencao-inativo input,
+.campo-retencao-inativo select,
+.campo-retencao-inativo textarea {
+    background: #ececef !important;
+    cursor: not-allowed;
+}
+
+.opcao-card.opcao-bloqueada {
+    opacity: 0.46;
+    cursor: not-allowed;
+    background: #eeeeF1;
+}
+
+
+/* =========================================================
+   RESUMO DOS CAMPOS NÃO PREENCHIDOS
+========================================================= */
+
+.resumo-erros-formulario {
+    margin: 24px 45px 0;
+    padding: 18px 20px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    border: 1px solid #e5a0a0;
+    border-radius: 14px;
+    background: #fff6f6;
+}
+
+.resumo-erros-formulario[hidden] {
+    display: none;
+}
+
+.resumo-erros-icone {
+    width: 30px;
+    height: 30px;
+    flex: 0 0 30px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: #b42318;
+    color: #ffffff;
+    font-weight: 900;
+}
+
+.resumo-erros-formulario strong {
+    display: block;
+    color: #8f1d15;
+    font-size: 14px;
+}
+
+.resumo-erros-formulario p {
+    margin-top: 3px;
+    color: #6d3a36;
+    font-size: 12px;
+}
+
+.resumo-erros-formulario ul {
+    margin: 10px 0 0 18px;
+    display: grid;
+    gap: 5px;
+    color: #7b2822;
+    font-size: 12px;
     font-weight: 700;
 }
 
-/* Notebook: preserva 4 colunas, mas permite conteúdo maior */
-@media (max-width: 1450px) {
-    .zones-grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-
-    .person-email {
-        font-size: 6px;
-    }
+.campo-erro {
+    scroll-margin-top: 120px;
 }
 
-/* Tablet / notebook estreito */
-@media (max-width: 1050px) {
-    .zones-grid,
-    .departments {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .departments::before {
-        display: none;
-    }
-
-    .person-phone {
-        font-size: 8px;
-    }
-
-    .person-email {
-        font-size: 7px;
-    }
-}
-
-/* Celular */
 @media (max-width: 700px) {
-    .zones-grid,
-    .departments,
-    .rescue-grid {
+    .resumo-erros-formulario {
+        margin: 18px 20px 0;
+    }
+
+    .modo-retencao .secao-retencao-inativa::after {
+        position: static;
+        display: inline-flex;
+        margin: 0 0 14px;
+    }
+}
+
+
+/* =========================================================
+   LOGIN ESCALÁVEL: FILIAL > PERFIL > NOME
+========================================================= */
+
+.login-etapas {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.login-etapas .campo-login-nome {
+    grid-column: 1 / -1;
+}
+
+.login-etapas select:disabled {
+    cursor: not-allowed;
+    background: #eeeeF2;
+    color: #8d8d96;
+}
+
+@media (max-width: 640px) {
+    .login-etapas {
         grid-template-columns: 1fr;
     }
 
-    .zone-body {
-        grid-template-columns: 1fr;
+    .login-etapas .campo-login-nome {
+        grid-column: auto;
+    }
+}
+
+
+/* =========================================================
+   PROTEÇÃO VISUAL CONTRA DUPLO ENVIO
+========================================================= */
+
+.btn-enviar:disabled,
+.btn-enviar.btn-enviando {
+    opacity: 0.72;
+    cursor: wait;
+    pointer-events: none;
+}
+
+.btn-enviar.btn-enviando .seta {
+    opacity: 0.45;
+}
+
+
+/* =========================================================
+   V19.5 - RESPONSIVIDADE GLOBAL / MOBILE
+========================================================= */
+
+html,
+body {
+    width: 100%;
+    max-width: 100%;
+}
+
+body {
+    overflow-x: hidden;
+}
+
+img,
+svg,
+video,
+canvas,
+input,
+select,
+textarea,
+button {
+    max-width: 100%;
+}
+
+.grid > *,
+.login-etapas > *,
+.equipamento-grid > *,
+.resumo-equipamentos > *,
+.grid-condicional > *,
+.opcoes > * {
+    min-width: 0;
+}
+
+body.acesso-bloqueado {
+    overflow: hidden;
+}
+
+.tela-acesso {
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+}
+
+.acesso-box {
+    max-width: min(460px, 100%);
+}
+
+@media (max-width: 640px) {
+    .tela-acesso {
+        display: block;
+        padding:
+            max(12px, env(safe-area-inset-top))
+            12px
+            max(16px, env(safe-area-inset-bottom));
     }
 
-    .zone-body > div + div {
-        border-left: none;
-        border-top: 1px solid var(--gray-200);
-    }
-
-    .zone-body > div:first-child,
-    .zone-body > div:last-child {
-        border-bottom: none;
-    }
-
-    .zone-body > div:first-child {
-        border-left: 3px solid var(--tke-purple);
-    }
-
-    .zone-body > div:last-child {
-        border-left: 3px solid var(--tke-orange);
-    }
-
-    .person-phone {
-        font-size: 10px;
-    }
-
-    .person-email {
-        font-size: 9px;
-    }
-
-    .technical-list {
-        grid-template-columns: 1fr;
-    }
-
-    .technical-list .person-phone {
-        font-size: 9px;
-    }
-
-    .technical-list .person-email {
-        font-size: 8px;
-    }
-
-    .rescue-card-header strong {
-        font-size: 14px;
-    }
-
-    .rescue-contact {
-        flex-direction: column;
-        gap: 4px;
-    }
-
-    .rescue-contact a {
-        font-size: 9px;
-    }
-
-    .gem-manager,
-    .gem-intern {
+    .acesso-box {
         width: 100%;
+        margin: 0 auto;
+        border-radius: 16px;
+    }
+
+    .acesso-marca {
+        gap: 12px;
+        padding: 16px 18px;
+    }
+
+    .acesso-logo {
+        width: 78px;
+    }
+
+    .acesso-marca > div {
+        padding-left: 12px;
+    }
+
+    .acesso-marca strong {
+        font-size: 13px;
+    }
+
+    .acesso-conteudo {
+        padding: 20px 18px 22px;
+    }
+
+    .acesso-conteudo h2 {
+        margin-top: 10px;
+        font-size: clamp(21px, 6vw, 25px);
+        line-height: 1.08;
+    }
+
+    .acesso-conteudo > p {
+        margin-top: 7px;
+        font-size: 12px;
+        line-height: 1.5;
+    }
+
+    .form-acesso {
+        gap: 14px;
+        margin-top: 18px;
+    }
+
+    .login-etapas {
+        gap: 14px;
+    }
+
+    .form-acesso input,
+    .form-acesso select {
+        min-height: 50px;
+        height: 50px;
+        font-size: 16px;
+    }
+
+    .btn-entrar {
+        height: 50px;
+    }
+
+    .acesso-aviso {
+        margin-top: 12px;
+    }
+
+    .hero-conteudo,
+    .topo-conteudo,
+    .formulario-container {
+        max-width: 100%;
+    }
+
+    .formulario-container {
+        width: calc(100% - 20px);
+        border-radius: 16px;
+    }
+
+    .cabecalho-formulario,
+    .secao-formulario,
+    .acoes {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+
+    .opcoes,
+    .opcoes-equipamentos,
+    .opcoes-proposta,
+    .opcoes-origem-atualizacao {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 380px) {
+    .tela-acesso {
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+
+    .acesso-conteudo {
+        padding-left: 14px;
+        padding-right: 14px;
+    }
+
+    .acesso-marca {
+        padding-left: 14px;
+        padding-right: 14px;
+    }
+
+    .acesso-logo {
+        width: 70px;
+    }
+
+    .formulario-container {
+        width: calc(100% - 12px);
+    }
+
+    .cabecalho-formulario,
+    .secao-formulario,
+    .acoes {
+        padding-left: 13px;
+        padding-right: 13px;
+    }
+}
+
+@media (max-height: 760px) {
+    .tela-acesso {
+        display: block;
+        padding-top: max(10px, env(safe-area-inset-top));
+        padding-bottom: max(12px, env(safe-area-inset-bottom));
+    }
+
+    .acesso-box {
+        margin: 0 auto;
     }
 }
